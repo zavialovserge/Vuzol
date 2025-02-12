@@ -12,7 +12,7 @@ namespace Vuzol.Services
         private const string GET_ALL_Untis_SQL =
                    @"SELECT  [ID]
                             ,[Name]
-                            FROM [PropertyDb].[dbo].[Unit]";
+                            FROM [dbo].[Unit]";
         private const string UPDATE_UNIT_SQL  =
                    @"UPDATE [dbo].[Unit] SET [Name] =";
         private const string INSERT_UNIT_SQL =

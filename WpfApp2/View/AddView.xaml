@@ -7,9 +7,6 @@
              xmlns:convertor="clr-namespace:Vuzol.Converteres"
              mc:Ignorable="d" 
              d:DesignHeight="600"  Background="White" >
-    <UserControl.Resources>
-        <convertor:StringToIntConvertor x:Key="myConverter"/>
-    </UserControl.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -29,7 +26,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="30" />
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160"/>
@@ -46,9 +43,10 @@
             <TextBox Grid.Row="1" Grid.Column="1"  Text="{Binding Name}"/>
             <Label Grid.Row="0" Grid.Column="2" Content="Заводський номер" HorizontalAlignment="Center"/>
             <TextBox Grid.Row="1" Grid.Column="2" 
-             Text="{Binding FactoryNumberStr,
+             Text="{Binding FactoryNumber,
              UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="0" Grid.Column="3" Content="Формуляр" HorizontalAlignment="Center"/>
+            <Label Grid.Row="0" Grid.Column="3" BorderBrush="Black" BorderThickness="1" 
+                   Content="Формуляр" HorizontalAlignment="Center" Width="160"/>
             <TextBox Grid.Row="1" Grid.Column="3"  Text="{Binding FormId,
                                                                 UpdateSourceTrigger=PropertyChanged}"/>
             <Label Grid.Row="0" Grid.Column="4" Content="Накладна" HorizontalAlignment="Center"/>
@@ -99,32 +97,42 @@
                     
                 </DataGrid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Додати"  Command="{Binding AddComlectnessCommand}" Width="400" />
-                    <Button Content="Видалити"  Command="{Binding DelComlectnessCommand}" 
-                            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="400"/>
+                    <Button Content="Додати"  Command="{Binding AddHardwareEquipmentCommand}" Width="266" />
+                    <Button Content="Змінити"  Command="{Binding EditHardwareEquipmentCommand}" Width="266" />
+                    <Button Content="Видалити"  Command="{Binding DelHardwareEquipmentCommand}" 
+                             Width="267"/>
                 </StackPanel>
             </Grid>
-            <!--<TextBox Grid.Row="9" Grid.ColumnSpan="5" 
-             Text="{Binding CompletnessId,
-                   UpdateSourceTrigger=PropertyChanged}"/>-->
             <Label Grid.Row="10" Grid.ColumnSpan="5" Content="Комплектність(програмне забазпечення)" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="11" Grid.ColumnSpan="5" >
+            <Grid Grid.Row="11" Grid.ColumnSpan="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <DataGrid Grid.Row="0">
-
+                <DataGrid BorderBrush="Black" Grid.Row="0"  Width="auto"
+                                     Name="myDataGrid" ItemsSource="{Binding SoftwareEquipmentList}" 
+                                     SelectedItem="{Binding SelectedSoftwareEquipment}" 
+                                     SelectedValue="{Binding SelectedSoftwareEquipment}" 
+                                     IsReadOnly="True" AutoGenerateColumns="False" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding CountId}"/>
+                        <DataGridTextColumn Width="*" Header="Найменування" Binding="{Binding Description}">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment"
+                                            Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
                 </DataGrid>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Додати"  Command="{Binding AddComlectnessCommand}" Width="400" />
-                    <Button Content="Видалити"  Command="{Binding DelComlectnessCommand}" 
-                CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="400"/>
+                <StackPanel  Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Додати"  Command="{Binding AddSoftwareEquipmentCommand}" Width="266" />
+                    <Button Content="Змінити"  Command="{Binding EditSoftwareEquipmentCommand}" Width="266" />
+                    <Button Content="Видалити"  Command="{Binding DelSoftwareEquipmentCommand}" 
+                            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="267"/>
                 </StackPanel>
             </Grid>
-            <!--<TextBox Grid.Row="11" Grid.ColumnSpan="5" 
- Text="{Binding CompletnessId,
-       UpdateSourceTrigger=PropertyChanged}"/>-->
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="{Binding ButtonName}"   Command="{Binding AddPropertyCommand}"  Width="200"/>

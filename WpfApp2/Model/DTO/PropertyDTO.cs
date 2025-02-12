@@ -15,7 +15,6 @@
         public DateTime FormDate { get; set; }
         public int OrderId { get; set; }
         public int PropertyTypeId { get; set; }
-        public int CompletnessId { get; set; }
         public string? Additionalnfo { get; set; }
         public DateTime DLM { get; set; }
         public int FIO_R { get; set; }

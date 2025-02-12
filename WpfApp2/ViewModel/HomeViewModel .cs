@@ -149,14 +149,12 @@ namespace Vuzol.ViewModel
                                string? FormId =  Convert.ToString((xlRange.Cells[rCnt, 6] as Excel.Range).Value);
                                int OrderId = Convert.ToInt32((xlRange.Cells[rCnt, 7] as Excel.Range).Value); ;
                                int PropertyTypeId =  Convert.ToInt32((xlRange.Cells[rCnt, 8] as Excel.Range).Value);
-                               int CompletnessId = Convert.ToInt32((xlRange.Cells[rCnt, 9] as Excel.Range).Value); 
-                               string? Additionalnfo =  Convert.ToString((xlRange.Cells[rCnt, 10] as Excel.Range).Value);
+                               string? Additionalnfo =  Convert.ToString((xlRange.Cells[rCnt, 9] as Excel.Range).Value);
                                Property property = new Property(factoryNumber, Name,
                                              InventoryNumber,
                                              InvoiceId, BookId, BookId, FormId,
                                              string.Empty, DateTime.Now,
                                              OrderId, PropertyTypeId,
-                                             CompletnessId,
                                              Additionalnfo, 
                                              DateTime.Now,0,0,"","","",0,0,DateTime.Now,0);
                                properties.Add(property);

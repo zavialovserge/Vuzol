@@ -12,13 +12,12 @@ namespace Vuzol.Services
                   @"Select pr.FactoryNumber,pr.Name,pr.FactoryNumber,pr.InventoryNumber,
                   InvoiceId,FIO_R,FIO_I,BookId,pr.FormId,pr.OrderId,o.Date_D as OrderDate,
                   OrderBookId,PropertyTypeId,[Status],ps.Name as StatusName,
-                  CompletnessId,Additionalnfo,pr.DLM,f.Name as FormName,BookPage
+                  Additionalnfo,pr.DLM,f.Name as FormName,BookPage
                   ,OrderBookPage,f.date_d as FormDate
                   ,e1.LastName + ' ' + e1.FirstName as [FIO_R_STR]
 	              ,e2.LastName + ' ' + e2.FirstName as [FIO_I_STR]
                   ,u.Name as UnitName
                   from Property  as pr 
-                  left join Completeness as c on c.ID = pr.CompletnessId
                   left join Form as f on f.FormId = pr.FormId
                   left join [dbo].[Employee] as e1 on e1.Id = pr.FIO_R
                   left join [dbo].[Employee] as e2 on e2.Id = pr.Fio_I
@@ -40,7 +39,6 @@ namespace Vuzol.Services
            ,[OrderBookPage]
            ,[PropertyTypeId]
            ,[Status]
-           ,[CompletnessId]
            ,[Additionalnfo]
            ,[DLM])
             VALUES ";
@@ -69,7 +67,6 @@ namespace Vuzol.Services
                                "[OrderId] =" + $"{propertyDTO.OrderId}," +                               
                                "[PropertyTypeId] =" + $"{propertyDTO.PropertyTypeId}," +
                                "[Status] =" + $"{propertyDTO.Status}," +
-                               "[CompletnessId] =" + $"{propertyDTO.CompletnessId}," +
                                "[Additionalnfo] =" + $"N'{propertyDTO.Additionalnfo}'," +
                                "[BookPage] =" + $"N'{propertyDTO.BookPage}'," +
                                "[OrderBookPage] =" + $"N'{propertyDTO.OrderBookPage}'," +
@@ -96,7 +93,6 @@ namespace Vuzol.Services
                                                                  $"{propertyDTO.OrderBookPage}," +
                                                                  $"{propertyDTO.PropertyTypeId}," +
                                                                  $"{propertyDTO.Status}," +
-                                                                 $"{propertyDTO.CompletnessId}," +
                                                                  $"N'{propertyDTO.Additionalnfo}'," +
                                                                  $"GETDATE())";
             var result = database.Execute(strInsert);
@@ -123,7 +119,6 @@ namespace Vuzol.Services
                           $"{propertyDTO.OrderBookId}," +
                           $"{propertyDTO.OrderBookPage}," +
                           $"{propertyDTO.PropertyTypeId}," +
-                          $"{propertyDTO.CompletnessId}," +
                           $"N'{propertyDTO.Additionalnfo}'," +
                           $"GETDATE())") ;
 
@@ -151,7 +146,6 @@ namespace Vuzol.Services
                                 dto.FormDate,
                                 dto.OrderId,
                                 dto.PropertyTypeId,
-                                dto.CompletnessId,
                                 dto.Additionalnfo,
                                 dto.DLM,
                                 dto.FIO_R,
@@ -179,7 +173,6 @@ namespace Vuzol.Services
                        FormDate=prop.FormDate,
                        OrderId=prop.OrderId,
                        PropertyTypeId=prop.PropertyTypeId,
-                       CompletnessId=prop.CompletnessId,
                        Additionalnfo=prop.Additionalnfo,
                        FIO_I=prop.FIO_I,
                        FIO_R=prop.FIO_R,

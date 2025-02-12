@@ -7,7 +7,7 @@ using Vuzol.ViewModel.Model;
 namespace Vuzol.ViewModel
 {
     public class AddViewModel:BaseViewModel 
-    {        
+    {
         public AddViewModel(NavigationProperty NavigationProperty,Property current,bool isEdit=false)
         {
             HomeCommand = new NavigateCommand<HomeViewModel>(NavigationProperty, 
@@ -17,10 +17,11 @@ namespace Vuzol.ViewModel
             PropertyTypeList = PropertyTypeData.GetAllPropertyType().ToList();
             PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();
             EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
-            PropertyAdd = new PropertyModel()
+            
+            PropertyAdd = new PropertyModel(current.FactoryNumber)
             {
                 InventoryNumberStr = current.InventoryNumber,
-                FactoryNumberStr = current.FactoryNumber,
+                FactoryNumber = current.FactoryNumber,
                 Name = current.Name,
                 InvoiceId = current.InvoiceId,
                 BookId = current.BookId,
@@ -29,7 +30,6 @@ namespace Vuzol.ViewModel
                 OrderId = current.OrderId,
                 OrderDate = current.OrderDate.ToString("yyyy/MM/dd"),
                 PropertyTypeId = current.PropertyTypeId,
-                CompletnessId = current.CompletnessId,
                 Additionalnfo = current.Additionalnfo,
                 UnitName = current.UnitName,
                 BookPage = current.BookPage,
@@ -46,7 +46,8 @@ namespace Vuzol.ViewModel
                                             .ToList(),
             };
             ButtonName = isEdit ? "Коригувати" : "Додати";
-            
+
+
         }
         private HomeViewModel EditNewPropertyFunc(NavigationProperty navigationProperty)
         {
@@ -56,14 +57,13 @@ namespace Vuzol.ViewModel
             int status = PropertyStatusList
                                  .Where(a => a.Name == PropertyAdd.PropertyStatusName)
                                  .First().Id;
-            Property property = new Property(PropertyAdd.FactoryNumberStr, PropertyAdd.Name,
+            Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
                                              PropertyAdd.InventoryNumberStr,
                                              PropertyAdd.InvoiceId, PropertyAdd.BookId, 
                                              PropertyAdd.OrderBookId,
                                              PropertyAdd.FormId,
                                              string.Empty, DateTime.Now,
                                              PropertyAdd.OrderId, propertyTypeId,
-                                             PropertyAdd.CompletnessId,
                                              PropertyAdd.Additionalnfo, DateTime.Now,
                                              PropertyAdd.FIO_R, PropertyAdd.FIO_I,
                                              PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR,
@@ -84,14 +84,13 @@ namespace Vuzol.ViewModel
             int status = PropertyStatusList
                                  .Where(a => a.Name == PropertyAdd.PropertyStatusName)
                                  .First().Id;
-            Property property = new Property(PropertyAdd.FactoryNumberStr, PropertyAdd.Name,
+            Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
                                              PropertyAdd.InventoryNumberStr,
                                              PropertyAdd.InvoiceId, 
                                              PropertyAdd.BookId, PropertyAdd.OrderBookId,
                                              PropertyAdd.FormId,
                                              string.Empty, DateTime.Now,
-                                             PropertyAdd.OrderId, PropertyAdd.PropertyTypeId,
-                                             PropertyAdd.CompletnessId,
+                                             PropertyAdd.OrderId, propertyTypeId,
                                              PropertyAdd.Additionalnfo, DateTime.Now, 
                                              PropertyAdd.FIO_R, PropertyAdd.FIO_I,
                                              PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR, 
@@ -103,10 +102,12 @@ namespace Vuzol.ViewModel
         }
         public ICommand HomeCommand { get; }
         public ICommand AddPropertyCommand { get; }
+       
         public ObservableCollection<Employee> EmployeesList { get; set; }
-        public PropertyModel PropertyAdd { get; set; }
+        public PropertyModel PropertyAdd { get; set; }      
         public List<PropertyType> PropertyTypeList { get; set; }
         public List<PropertyStatus> PropertyStatusList { get; set; }
         public string ButtonName { get; set; }
+        
     }
 }

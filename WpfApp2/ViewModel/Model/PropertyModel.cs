@@ -1,21 +1,119 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 using Vuzol.Services;
+using Vuzol.View;
+using Vuzol.ViewModel.Command;
 
 namespace Vuzol.ViewModel.Model
 {
     public class PropertyModel : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+    {    
+        private RelayCommand _addSoftwareEquipmentCommand;
+        private RelayCommand _editSoftwareEquipmentCommand;
+        private RelayCommand _delSoftwareEquipmentCommand;
+        private RelayCommand _addHardwareEquipmentCommand;
+        private RelayCommand _editHardwareEquipmentCommand;
+        private RelayCommand _delHardwareEquipmentCommand;
+        private SoftwareEquipment _softwareEquipment;
+        public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
+        public PropertyModel(int factoryNumber)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public PropertyModel()
-        {
+            SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
+                                    SoftwareEquipmentData.GetAllSoftwareEquipment(factoryNumber));
             //PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();               
             //PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
             //PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name
+        }
+        public SoftwareEquipment SelectedSoftwareEquipment
+        {
+            get { return _softwareEquipment; }
+            set
+            {
+                _softwareEquipment = value;
+                OnPropertyChanged(nameof(_softwareEquipment));
+            }
+        }
+        public ICommand AddSoftwareEquipmentCommand
+        {
+            get
+            {
+                return _addSoftwareEquipmentCommand ?? (_addSoftwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+                       string description = GetSoftwareEquipmentDescription(string.Empty);
+                       if (string.IsNullOrEmpty(description)) return;
+                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0,FactoryNumber, description);
+                       SoftwareEquipmentData.InsertSoftwareEquipment(softwareEquipment);
+                       RefreshCollection();
+                   }));
+            }
+        }
+        public ICommand EditSoftwareEquipmentCommand
+        {
+            get
+            {
+                return _editSoftwareEquipmentCommand ?? (_editSoftwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+                       string description = GetSoftwareEquipmentDescription(SelectedSoftwareEquipment.Description);
+                       if (string.IsNullOrEmpty(description)) return;
+                       SelectedSoftwareEquipment.Description = description;
+                       SoftwareEquipmentData.EditSoftwareEquipment(SelectedSoftwareEquipment);
+                       RefreshCollection();
+                   }));
+            }
+        }
+        public ICommand DelSoftwareEquipmentCommand
+        {
+            get
+            {
+                return _delSoftwareEquipmentCommand ?? (_delSoftwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+                       if (MessageBox.Show("Ви дійсно хочете видалити елемент?", "Видалити елемент",
+                           MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                       {
+                           return;
+                       }
+                       SoftwareEquipmentData.DeleteFromDb(SelectedSoftwareEquipment);
+                       SoftwareEquipmentList.Remove(SelectedSoftwareEquipment);
+                   }));
+            }
+        }
+        public ICommand AddHardwareEquipmentCommand
+        {
+            get
+            {
+                return _addHardwareEquipmentCommand ?? (_addHardwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+
+                   }));
+            }
+        }
+        public ICommand EditHardwareEquipmentCommand
+        {
+            get
+            {
+                return _editHardwareEquipmentCommand ?? (_editHardwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+
+                   }));
+            }
+        }
+        public ICommand DelHardwareEquipmentCommand
+        {
+            get
+            {
+                return _delHardwareEquipmentCommand ?? (_delHardwareEquipmentCommand = new RelayCommand(
+                   property =>
+                   {
+
+                   }));
+            }
         }
         private List<string> _propertyTypeNameList { get; set; }
         private List<string> _propertyStatusNameList { get; set; }
@@ -27,7 +125,7 @@ namespace Vuzol.ViewModel.Model
         private string _FIO_I_STR { get; set; }
         private string? _additionalnfo { get; set; }
         private int _inventoryNumberStr { get; set; }
-        private int _factoryNumberStr { get; set; }
+        private int _factoryNumber { get; set; }
         private string? _name { get; set; }
         private int _invoiceId { get; set; }
         private int _bookId { get; set; }
@@ -37,7 +135,6 @@ namespace Vuzol.ViewModel.Model
         private int _orderId { get; set; }
         private string _orderDate { get; set; }
         private int _propertyTypeId { get; set; }
-        private int _completnessId { get; set; }
         private string _unitName { get; set; }
         private int _bookPage { get; set; }
         private int _orderBookPage { get; set; }
@@ -71,13 +168,13 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_inventoryNumberStr));
             }
         }
-        public int FactoryNumberStr
+        public int FactoryNumber
         {
-            get { return _factoryNumberStr; }
+            get { return _factoryNumber; }
             set
             {
-                _factoryNumberStr = value;
-                OnPropertyChanged(nameof(_factoryNumberStr));
+                _factoryNumber = value;
+                OnPropertyChanged(nameof(_factoryNumber));
             }
         }
         public string? Name
@@ -206,15 +303,6 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_propertyTypeId));
             }
         }
-        public int CompletnessId
-        {
-            get { return _completnessId; }
-            set
-            {
-                _completnessId = value;
-                OnPropertyChanged(nameof(_completnessId));
-            }
-        }
         public int FIO_R
         {
             get { return _FIO_R; }
@@ -278,6 +366,30 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_unitName));
             }
         }
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private void RefreshCollection()
+        {
+            SoftwareEquipmentList.Clear();
+            var softwareEquipmentData = SoftwareEquipmentData.GetAllSoftwareEquipment(FactoryNumber);
+            foreach (var softwareEquipment in softwareEquipmentData)
+            {
+                SoftwareEquipmentList.Add(softwareEquipment);
+            }
+        }
+
+        private string GetSoftwareEquipmentDescription(string name)
+        {
+            InputDialogSample inputDialog =
+                       new InputDialogSample("Введіть опис", name);
+            if (inputDialog.ShowDialog() == false
+                || string.IsNullOrEmpty(inputDialog.Answer)) return string.Empty;
+
+            return inputDialog.Answer;
+        }
     }
 }

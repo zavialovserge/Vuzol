@@ -11,7 +11,7 @@ namespace Vuzol.Services
         private const string GET_ALL_RANKS_SQL =
                    @"SELECT  [ID]
                             ,[Description]
-                            FROM [PropertyDb].[dbo].[Rank]";
+                            FROM [dbo].[Rank]";
  
         private const string UPDATE_RANK_SQL =
                    @"UPDATE [dbo].[Rank] SET [Description] =";

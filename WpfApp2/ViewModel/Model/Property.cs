@@ -13,7 +13,6 @@
         public DateTime FormDate { get; set; }
         public int OrderId { get; set; }
         public int PropertyTypeId { get; set; }
-        public int CompletnessId { get; set; }
         public string? Additionalnfo { get; set; }
         public DateTime DLM { get; set; }
         public int FIO_R { get; set; }
@@ -31,7 +30,7 @@
             int bookId, int orderBookId,string? formId, 
             string? formName, DateTime formDate, 
             int orderId, int propertyTypeId, 
-            int completnessId, string? additionalnfo, 
+            string? additionalnfo, 
             DateTime dLM,int fio_r, int fio_i,string fio_r_str, string fio_i_str,string unit_name,
             int bookPage,int orderBookPage, DateTime orderDate,int status)
         {
@@ -46,7 +45,6 @@
             FormDate = formDate;
             OrderId = orderId;
             PropertyTypeId = propertyTypeId;
-            CompletnessId = completnessId;
             Additionalnfo = additionalnfo;
             DLM = dLM;
             FIO_R = fio_r;

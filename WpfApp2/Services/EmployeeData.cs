@@ -18,9 +18,9 @@ namespace Vuzol.Services
                             ,r.[Description] as RankDescription
                             ,em.[UnitId]
                             ,u.[Name] as UnitName
-                            FROM [PropertyDb].[dbo].[Employee] as em
-                            left join [PropertyDb].[dbo].[Rank] as r on r.ID = em.[Rank]
-                            left join [PropertyDb].[dbo].[Unit] as u on u.ID = em.[UnitId]";
+                            FROM [dbo].[Employee] as em
+                            left join [dbo].[Rank] as r on r.ID = em.[Rank]
+                            left join [dbo].[Unit] as u on u.ID = em.[UnitId]";
         private const string Insert_EMPLOYEE_SQL =
                   @"INSERT INTO [dbo].[Employee]
                                 (
