@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Vuzol.View.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vuzol.View"
+             mc:Ignorable="d" 
+             d:Height="450" d:Width="800" Background="White">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Друк">
+                <MenuItem Header="Формуляр" Command="{Binding PrintForm}" />
+                <Separator />
+                <MenuItem Header="Карта обліку" Command="{Binding PrintAccountingForm}"/>
+            </MenuItem>
+            <MenuItem Header="Персонал">
+                <MenuItem Header="Довідник" Command="{Binding ShowEmployees}" />
+                <MenuItem Header="Підрозділи" Command="{Binding ShowUnits}"/>
+                <MenuItem Header="Звання" Command="{Binding ShowRanks}"/>
+            </MenuItem>
+            <MenuItem Header="Довідники">
+                <MenuItem Header="Мітка" Command="{Binding ShowPropertyType}" />
+                <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}" />
+            </MenuItem>
+            <MenuItem Header="Комплектність">
+                <MenuItem Header="Комплектність(Hardware)" Command="{Binding Complectness}"/>
+                <MenuItem Header="Комплектність програмне забезбечення" 
+                          Command="{Binding ComplectnessSoftWare}"/>
+            </MenuItem>
+        </Menu>
+        <DataGrid Grid.Row="1" Name="myDataGrid" ItemsSource="{Binding SelectedList}" 
+          SelectedItem="{Binding SelectedProperty}" SelectedValue="{Binding SelectedProperty}" 
+                  IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
+                <DataGridTextColumn Header="Найменування" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Інвентарний номер" Binding="{Binding InventoryNumber}"/>
+                <DataGridTextColumn Header="Номер накладної" Binding="{Binding InvoiceId}"/>
+                <DataGridTextColumn Header="Наказ на введеня в експлуатацію" Binding="{Binding OrderId}"/>
+                <DataGridTextColumn Header="Книга обліку" Binding="{Binding BookId}"/>
+                <DataGridTextColumn Header="Книга закріплень" Binding="{Binding OrderBookId}"/>
+                <DataGridTextColumn Header="Номер формуляру" Binding="{Binding FormId}"/>
+                <DataGridTextColumn Header="Мітка" Binding="{Binding StatusName}"/>
+                <DataGridTextColumn Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
+                <DataGridTextColumn Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
+                <DataGridTextColumn Header="Останній хто коригував" Binding="{Binding FIO_I_STR}"/>
+                <DataGridTextColumn Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center"  >
+            <Button Content="Докладніше" Name="EditBtn" Command="{Binding EditCommand}" 
+            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
+            <Button Content="Додати" x:Name="AddBtn" Command="{Binding AddCommand}" 
+                        Width="200" />
+            <Button Content="Видалити" x:Name="DelBtn" Command="{Binding DelCommand}"
+            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
+            <Button Content="Додати за допомогою ексель" Command="{Binding ExcelCommand}" Width="200"/>
+        </StackPanel>
+    </Grid>
+    
+</UserControl>

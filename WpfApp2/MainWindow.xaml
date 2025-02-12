@@ -1,0 +1,44 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Vuzol"
+        xmlns:viewmodels="clr-namespace:Vuzol.ViewModel"
+        xmlns:views="clr-namespace:Vuzol.View"
+        x:Class="Vuzol.MainWindow"
+        mc:Ignorable="d" 
+        Title="MainWindow" Height="600" Width="815">
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
+                <views:HomeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:AddViewModel}">
+                <views:AddView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:EmployeeViewModel}">
+                <views:EmployeeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:AddEmployeeViewModel}">
+                <views:AddEmployeeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:UnitViewModel}">
+                <views:UnitView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:RankViewModel}">
+                <views:RankView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:PropertyTypeViewModel}">
+                <views:PropertyTypeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:PropertyStatusViewModel}">
+                <views:PropertyStatusView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ComplectnessViewModel}">
+                <views:ComplectnessView/>
+            </DataTemplate>
+        </Grid.Resources>
+        <ContentControl Content="{Binding CurrentViewModel}" />
+    </Grid>
+</Window>

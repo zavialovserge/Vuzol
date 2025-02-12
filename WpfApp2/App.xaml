@@ -1,0 +1,8 @@
+﻿<Application x:Class="Vuzol.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Vuzol"
+             xmlns:views="clr-namespace:Vuzol.View"
+             xmlns:viewmodels="clr-namespace:Vuzol.ViewModel"
+             >
+</Application>
