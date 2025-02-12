@@ -99,7 +99,7 @@
                     
                 </DataGrid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Додати1"  Command="{Binding AddComlectnessCommand}" Width="400" />
+                    <Button Content="Додати"  Command="{Binding AddComlectnessCommand}" Width="400" />
                     <Button Content="Видалити"  Command="{Binding DelComlectnessCommand}" 
                             CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="400"/>
                 </StackPanel>
