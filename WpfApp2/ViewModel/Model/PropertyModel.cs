@@ -17,15 +17,17 @@ namespace Vuzol.ViewModel.Model
         private RelayCommand _editHardwareEquipmentCommand;
         private RelayCommand _delHardwareEquipmentCommand;
         private SoftwareEquipment _softwareEquipment;
-        public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
+        private HardwareEquipment _hardwareEquipment;
+       
         public PropertyModel(int factoryNumber)
         {
             SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
                                     SoftwareEquipmentData.GetAllSoftwareEquipment(factoryNumber));
-            //PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();               
-            //PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
-            //PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name
+            HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
+                                    HardwareEquipmentData.GetAllHardwareEquipment(factoryNumber));
         }
+        public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
+        public ObservableCollection<HardwareEquipment> HardwareEquipmentList { get; set; }
         public SoftwareEquipment SelectedSoftwareEquipment
         {
             get { return _softwareEquipment; }
@@ -33,6 +35,15 @@ namespace Vuzol.ViewModel.Model
             {
                 _softwareEquipment = value;
                 OnPropertyChanged(nameof(_softwareEquipment));
+            }
+        }
+        public HardwareEquipment SelectedHardwareEquipment
+        {
+            get { return _hardwareEquipment; }
+            set
+            {
+                _hardwareEquipment = value;
+                OnPropertyChanged(nameof(_hardwareEquipment));
             }
         }
         public ICommand AddSoftwareEquipmentCommand
@@ -89,10 +100,19 @@ namespace Vuzol.ViewModel.Model
                 return _addHardwareEquipmentCommand ?? (_addHardwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-
+                       HardwareEquipment hardwareEquipmentToAdd = GetHardwareEquipmentFromAdditionalForm();
+                       if (hardwareEquipmentToAdd == null) return;
+                       HardwareEquipmentData.InsertHardwareEquipment(hardwareEquipmentToAdd);
+                       RefreshCollection();
                    }));
             }
         }
+
+        private HardwareEquipment GetHardwareEquipmentFromAdditionalForm()
+        {
+            throw new NotImplementedException();
+        }
+
         public ICommand EditHardwareEquipmentCommand
         {
             get
@@ -100,7 +120,10 @@ namespace Vuzol.ViewModel.Model
                 return _editHardwareEquipmentCommand ?? (_editHardwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-
+                       HardwareEquipment hardwareEquipmentToAdd = GetHardwareEquipmentFromAdditionalForm();
+                       if (hardwareEquipmentToAdd == null) return;
+                       HardwareEquipmentData.EditHardwareEquipment(hardwareEquipmentToAdd,SelectedHardwareEquipment.SubPropertyFactoryNumber);
+                       RefreshCollection();
                    }));
             }
         }
@@ -111,7 +134,13 @@ namespace Vuzol.ViewModel.Model
                 return _delHardwareEquipmentCommand ?? (_delHardwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-
+                       if (MessageBox.Show("Ви дійсно хочете видалити елемент?", "Видалити елемент",
+                         MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                       {
+                           return;
+                       }
+                       SoftwareEquipmentData.DeleteFromDb(SelectedSoftwareEquipment);
+                       SoftwareEquipmentList.Remove(SelectedSoftwareEquipment);
                    }));
             }
         }

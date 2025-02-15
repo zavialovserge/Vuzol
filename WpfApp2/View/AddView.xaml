@@ -93,8 +93,22 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <DataGrid Grid.Row="0">
-                    
+                <DataGrid BorderBrush="Black" Grid.Row="0"  Width="auto"
+                      Name="myDataGrid" ItemsSource="{Binding HardwareEquipmentList}" 
+                      SelectedItem="{Binding SelectedHardwareEquipment}" 
+                      SelectedValue="{Binding SelectedHardwareEquipment}" 
+                      IsReadOnly="True" AutoGenerateColumns="False" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding CountId}"/>
+                        <DataGridTextColumn Width="*" Header="Найменування" Binding="{Binding Description}">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="HorizontalContentAlignment"
+                             Value="Center" />
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button Content="Додати"  Command="{Binding AddHardwareEquipmentCommand}" Width="266" />
