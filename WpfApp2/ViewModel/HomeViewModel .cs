@@ -188,7 +188,10 @@ namespace Vuzol.ViewModel
                                {  "FormNumber", SelectedProperty.FormId },
                                {  "Name", SelectedProperty.Name },
                                {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
-                               {  "AdditionalInfo", SelectedProperty.Additionalnfo }
+                               {  "AdditionalInfo", SelectedProperty.Additionalnfo },
+                               {  "DateD", SelectedProperty.FormDate.Day.ToString() },
+                               {  "DateM", SelectedProperty.FormDate.Month.ToString() },
+                               {  "DateY", SelectedProperty.FormDate.Year.ToString() }
                            };
                        string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
                        PrintWordDoc(items, path);
