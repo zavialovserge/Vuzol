@@ -26,6 +26,7 @@
         public int Status { get; set; }
         public string StatusName { get; set; }
         public double Quantity { get; set; }
+        public double Price { get; set; }
         public Property(int factoryNumber, string? name,
             int inventoryNumber, int invoiceId,  
             int bookId, int orderBookId,string? formId, 

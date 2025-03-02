@@ -78,11 +78,11 @@
             <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding OrderDate,
                                                                  UpdateSourceTrigger=PropertyChanged}"  />
             <Label Grid.Row="4" Grid.Column="3"  Content="Кількість" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Quantity,
-                                                      UpdateSourceTrigger=PropertyChanged}"  />
+            <TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Quantity,Mode=TwoWay,
+                                                      UpdateSourceTrigger=PropertyChanged,StringFormat=N2}"  />
             <Label Grid.Row="4" Grid.Column="4"  Content="Ціна" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="4"  Text="{Binding OrderDate,
-                                                      UpdateSourceTrigger=PropertyChanged}"  />
+            <TextBox Grid.Row="5" Grid.Column="4"  Text="{Binding Price,Mode=TwoWay,
+                                                      UpdateSourceTrigger=PropertyChanged,StringFormat=N2}"  />
             <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Content="Відповідальний" HorizontalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding EmployeeList}" 
           SelectedValue="{Binding FIO_R_STR,UpdateSourceTrigger=PropertyChanged}"  

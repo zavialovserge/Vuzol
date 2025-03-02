@@ -26,5 +26,6 @@
         public int Status { get; set; }
         public string StatusName { get; set; }
         public double Quantity { get; set; }
+        public double Price { get; set; }
     }
 }

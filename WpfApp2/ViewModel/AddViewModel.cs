@@ -41,6 +41,7 @@ namespace Vuzol.ViewModel
                 PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
                 PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
                 Quantity = current.Quantity,
+                Price = current.Price,
                 EmployeeList = EmployeesList
                                             .Select(a=>a.LastName + " " + a.FirstName)
                                             .ToList(),
@@ -78,7 +79,7 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.BookPage,
                                              PropertyAdd.OrderBookPage,
                                              DateTime.Parse(PropertyAdd.OrderDate), status)
-            { Quantity = PropertyAdd.Quantity };
+            { Quantity = PropertyAdd.Quantity,Price=PropertyAdd.Price };
 
             PropertyData.UpdateDb(property);
             return new HomeViewModel(navigationProperty);
@@ -105,7 +106,8 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
                                              DateTime.Parse(PropertyAdd.OrderDate), status)
             {
-                Quantity = PropertyAdd.Quantity
+                Quantity = PropertyAdd.Quantity,
+                Price = PropertyAdd.Price
             };
             PropertyData.InsertIntoDb(property);
             return new HomeViewModel(navigationProperty);

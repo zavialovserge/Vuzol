@@ -12,7 +12,7 @@ namespace Vuzol.Services
                   @"Select pr.FactoryNumber,pr.Name,pr.FactoryNumber,pr.InventoryNumber,
                   InvoiceId,FIO_R,FIO_I,BookId,pr.FormId,pr.OrderId,o.Date_D as OrderDate,
                   OrderBookId,PropertyTypeId,[Status],ps.Name as StatusName,
-                  Additionalnfo,pr.DLM,f.Name as FormName,BookPage,pr.Quantity as quantity
+                  Additionalnfo,pr.DLM,f.Name as FormName,BookPage,pr.Quantity as quantity,pr.Price as price 
                   ,OrderBookPage,f.date_d as FormDate
                   ,e1.LastName + ' ' + e1.FirstName as [FIO_R_STR]
 	              ,e2.LastName + ' ' + e2.FirstName as [FIO_I_STR]
@@ -41,6 +41,7 @@ namespace Vuzol.Services
            ,[Status]
            ,[Additionalnfo]
            ,[Quantity]
+           ,[Price]
            ,[DLM])
             VALUES ";
         private const string UPDATE_PROPERTYS_SQL =
@@ -72,6 +73,7 @@ namespace Vuzol.Services
                                "[BookPage] =" + $"N'{propertyDTO.BookPage}'," +
                                "[OrderBookPage] =" + $"N'{propertyDTO.OrderBookPage}'," +
                                "[Quantity] =" + $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
+                               "[Price] =" + $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
                                "[DLM] = Getdate() " +
                                " WHERE [FactoryNumber] =" + $"{propertyDTO.FactoryNumber}";
             var strUpdate = UPDATE_PROPERTYS_SQL + updateSql;
@@ -97,6 +99,7 @@ namespace Vuzol.Services
                                                                  $"{propertyDTO.Status}," +                                                                 
                                                                  $"N'{propertyDTO.Additionalnfo}'," +
                                                                  $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
+                                                                 $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
                                                                  $"GETDATE())";
             var result = database.Execute(strInsert);
             return result == 1;
@@ -124,6 +127,7 @@ namespace Vuzol.Services
                           $"{propertyDTO.PropertyTypeId}," +
                           $"N'{propertyDTO.Additionalnfo}'," +
                           $"{propertyDTO.Quantity}," +
+                          $"{propertyDTO.Price}," +
                           $"GETDATE())") ;
 
             }
@@ -163,7 +167,8 @@ namespace Vuzol.Services
                                 dto.Status)
                    {
                        StatusName = dto.StatusName,
-                       Quantity = dto.Quantity
+                       Quantity = dto.Quantity,
+                       Price=dto.Price
                    };
         private static PropertyDTO ToDtoProperty(Property prop) =>
                    new PropertyDTO()
@@ -185,7 +190,8 @@ namespace Vuzol.Services
                        OrderBookPage=prop.OrderBookPage,
                        OrderDate=prop.OrderDate,
                        Status = prop.Status,
-                       Quantity=prop.Quantity
+                       Quantity=prop.Quantity,
+                       Price=prop.Price
                    };        
     }
 }

@@ -49,6 +49,7 @@
                 <DataGridTextColumn Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                 <DataGridTextColumn Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
                 <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Кількість" Binding="{Binding Price}"/>
                 <DataGridTextColumn Header="Останній хто коригував" Binding="{Binding FIO_I_STR}"/>
                 <DataGridTextColumn Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
             </DataGrid.Columns>
