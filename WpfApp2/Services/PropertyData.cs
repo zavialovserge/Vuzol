@@ -14,9 +14,9 @@ namespace Vuzol.Services
                   OrderBookId,PropertyTypeId,[Status],ps.Name as StatusName,
                   Additionalnfo,pr.DLM,f.Name as FormName,BookPage,pr.Quantity as quantity,pr.Price as price 
                   ,OrderBookPage,f.date_d as FormDate
-                  ,e1.LastName + ' ' + e1.FirstName as [FIO_R_STR]
+                  ,isnull(e1.LastName + ' ' + e1.FirstName,'') as [FIO_R_STR]
 	              ,e2.LastName + ' ' + e2.FirstName as [FIO_I_STR]
-                  ,u.Name as UnitName
+                  ,isnull(u.Name,'') as UnitName
                   from Property  as pr 
                   left join Form as f on f.FormId = pr.FormId
                   left join [dbo].[Employee] as e1 on e1.Id = pr.FIO_R

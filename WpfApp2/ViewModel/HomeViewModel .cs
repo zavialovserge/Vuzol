@@ -1,8 +1,13 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Vuzol.Navigation;
 using Vuzol.Services;
@@ -21,6 +26,20 @@ namespace Vuzol.ViewModel
         private RelayCommand _printForm;
         private RelayCommand _printAccountingForm;
         private NavigationProperty _navigationProperty;
+        private string _factoryNumberFilter { get; set; }
+        private string _nameFilter { get; set; }
+        private string _inventoryNumberFilter { get; set; }
+        private string _invoiceIdFilter { get; set; }
+        private string _orderIdFilter { get; set; }
+        private string _bookIdFilter { get; set; }
+        private string _orderBookIdFilter { get; set; }
+        private string _formIdFilter { get; set; }
+        private string _statusNameFilter { get; set; }
+        private string _fIO_R_STRFilter { get; set; }
+        private string _unitNameFilter { get; set; }
+        private string _quantityFilter { get; set; }
+        private string _priceFilter { get; set; }
+        private string _additionalnfoFilter { get; set; }
         public HomeViewModel(NavigationProperty NavigationProperty)
         {
             SelectedList = new ObservableCollection<Property>(PropertyData.GetAllProperty());
@@ -39,14 +58,18 @@ namespace Vuzol.ViewModel
                                                () => new PropertyTypeViewModel(NavigationProperty));
             ShowPropertyStatus = new NavigateCommand<PropertyStatusViewModel>(NavigationProperty,
                                                () => new PropertyStatusViewModel(NavigationProperty));
+            SelectedListSource = (CollectionView)CollectionViewSource.GetDefaultView(SelectedList);
+            SelectedListSource.Filter =new Predicate<object>(o=> Filters(o as Property));
         }
         
+        public CollectionView SelectedListSource { get;  set; }
         public Property SelectedProperty
         {
             get { return _selectedProperty; }
             set
             {
                 _selectedProperty = value;
+                
                 OnPropertyChanged(nameof(_selectedProperty));
             }
         }
@@ -108,6 +131,209 @@ namespace Vuzol.ViewModel
                            }
                        }
                    }));
+            }
+        }
+        private bool Filters(Property prop)
+        {
+            if (prop == null) return true;
+            int FactoryNumberFilterInt = 0;
+            int InventoryNumberFilterInt = 0;
+            int InvoiceIdFilterInt = 0;
+            int OrderIdFilterInt = 0;
+            int BookIdFilterInt = 0;
+            int OrderBookIdFilterInt = 0;
+
+            bool canFactoryNumberFilter = int.TryParse(FactoryNumberFilter, out FactoryNumberFilterInt);
+            bool canInventoryNumberFilter = int.TryParse(InventoryNumberFilter, out InventoryNumberFilterInt);
+            bool canInvoiceIdFilter = (int.TryParse(InvoiceIdFilter, out InvoiceIdFilterInt));
+            bool canOrderIdFilter = int.TryParse(OrderIdFilter, out OrderIdFilterInt);
+            bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
+            bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
+            
+            if (!canFactoryNumberFilter
+                && string.IsNullOrEmpty(NameFilter)
+                && !canInventoryNumberFilter
+                && string.IsNullOrEmpty(StatusNameFilter)
+                && !canInvoiceIdFilter
+                && !canOrderIdFilter
+                && !canBookIdFilter
+                && !canOrderBookIdFilter
+                && string.IsNullOrEmpty(FormIdFilter)
+                && string.IsNullOrEmpty(FIO_R_STRFilter)
+                && string.IsNullOrEmpty(UnitNameFilter)
+                )
+                return true;
+
+           if (FactoryNumberFilterInt != 0 || !string.IsNullOrEmpty(NameFilter) 
+                || InventoryNumberFilterInt != 0 || !string.IsNullOrEmpty(StatusNameFilter)
+                || InvoiceIdFilterInt != 0 || OrderIdFilterInt!=0 || BookIdFilterInt!=0 
+                || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
+                || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
+                )
+                return (   (FactoryNumberFilterInt == 0 || FactoryNumberFilterInt == prop.FactoryNumber)
+                        && (NameFilter == null || prop.Name.Contains(NameFilter))
+                        && (InventoryNumberFilterInt == 0 || InventoryNumberFilterInt == prop.InventoryNumber)
+                        && (StatusNameFilter == null || prop.StatusName.Contains(StatusNameFilter))
+                        && (InvoiceIdFilterInt == 0 || InvoiceIdFilterInt == prop.InvoiceId)
+                        && (OrderIdFilterInt == 0 || OrderIdFilterInt == prop.OrderId)
+                        && (BookIdFilterInt == 0 || BookIdFilterInt == prop.BookId)
+                        && (OrderBookIdFilterInt == 0 || OrderBookIdFilterInt == prop.OrderBookId)
+                        && (FormIdFilter == null || prop.FormId.Contains(FormIdFilter))
+                        && (FIO_R_STRFilter == null  || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
+                        && (UnitNameFilter == null || prop.UnitName.Contains(UnitNameFilter))
+                        );
+
+            return FactoryNumberFilterInt == prop.FactoryNumber
+                   || prop.Name.Contains(NameFilter)
+                   || InventoryNumberFilterInt == prop.InventoryNumber
+                   || prop.StatusName.Contains(StatusNameFilter)
+                   || InvoiceIdFilterInt == prop.InvoiceId
+                   || OrderIdFilterInt == prop.OrderId
+                   || BookIdFilterInt == prop.BookId
+                   || OrderBookIdFilterInt == prop.OrderBookId
+                   || prop.FormId.Contains(FormIdFilter)
+                   || prop.FIO_R_STR.Contains(FIO_R_STRFilter)
+                   || prop.FIO_R_STR.Contains(UnitNameFilter)
+                   ;
+        }
+        public string FactoryNumberFilter
+        {
+            get { return _factoryNumberFilter; }
+            set
+            {
+                _factoryNumberFilter = value;                
+                OnPropertyChanged(nameof(_factoryNumberFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string NameFilter
+        {
+            get { return _nameFilter; }
+            set
+            {
+                _nameFilter = value;
+                OnPropertyChanged(nameof(_nameFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string InventoryNumberFilter
+        {
+            get { return _inventoryNumberFilter; }
+            set
+            {
+                _inventoryNumberFilter = value;
+                OnPropertyChanged(nameof(_inventoryNumberFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string StatusNameFilter
+        {
+            get { return _statusNameFilter; }
+            set
+            {
+                _statusNameFilter = value;
+                OnPropertyChanged(nameof(_statusNameFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string InvoiceIdFilter
+        {
+            get { return _invoiceIdFilter; }
+            set
+            {
+                _invoiceIdFilter = value;
+                OnPropertyChanged(nameof(_invoiceIdFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string OrderIdFilter
+        {
+            get { return _orderIdFilter; }
+            set
+            {
+                _orderIdFilter = value;
+                OnPropertyChanged(nameof(_orderIdFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string BookIdFilter
+        {
+            get { return _bookIdFilter; }
+            set
+            {
+                _bookIdFilter = value;
+                OnPropertyChanged(nameof(_bookIdFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string OrderBookIdFilter
+        {
+            get { return _orderBookIdFilter; }
+            set
+            {
+                _orderBookIdFilter = value;
+                OnPropertyChanged(nameof(_orderBookIdFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string FormIdFilter
+        {
+            get { return _formIdFilter; }
+            set
+            {
+                _formIdFilter = value;
+                OnPropertyChanged(nameof(_formIdFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string FIO_R_STRFilter
+        {
+            get { return _fIO_R_STRFilter; }
+            set
+            {
+                _fIO_R_STRFilter = value;
+                OnPropertyChanged(nameof(_fIO_R_STRFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string UnitNameFilter
+        {
+            get { return _unitNameFilter; }
+            set
+            {
+                _unitNameFilter = value;
+                OnPropertyChanged(nameof(_unitNameFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string QuantityFilter
+        {
+            get { return _quantityFilter; }
+            set
+            {
+                _quantityFilter = value;
+                OnPropertyChanged(nameof(_quantityFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string PriceFilter
+        {
+            get { return _priceFilter; }
+            set
+            {
+                _priceFilter = value;
+                OnPropertyChanged(nameof(_priceFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string AdditionalnfoFilter
+        {
+            get { return _additionalnfoFilter; }
+            set
+            {
+                _additionalnfoFilter = value;
+                OnPropertyChanged(nameof(_additionalnfoFilter));
+                SelectedListSource?.Refresh();
             }
         }
         public ICommand ExcelCommand

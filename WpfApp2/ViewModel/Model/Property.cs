@@ -3,12 +3,12 @@
     public class Property 
     {
         public int FactoryNumber { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; }
         public int InventoryNumber { get; set; }
         public int InvoiceId { get; set; }
         public int BookId { get; set; }
         public int OrderBookId { get; set; }        
-        public string? FormId { get; set; }
+        public string FormId { get; set; }
         public string? FormName { get; set; }
         public DateTime FormDate { get; set; }
         public int OrderId { get; set; }
