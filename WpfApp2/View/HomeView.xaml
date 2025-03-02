@@ -27,11 +27,6 @@
                 <MenuItem Header="Мітка" Command="{Binding ShowPropertyType}" />
                 <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}" />
             </MenuItem>
-            <MenuItem Header="Комплектність">
-                <MenuItem Header="Комплектність(Hardware)" Command="{Binding Complectness}"/>
-                <MenuItem Header="Комплектність програмне забезбечення" 
-                          Command="{Binding ComplectnessSoftWare}"/>
-            </MenuItem>
         </Menu>
         <DataGrid Grid.Row="1" Name="myDataGrid" ItemsSource="{Binding SelectedList}" 
           SelectedItem="{Binding SelectedProperty}" SelectedValue="{Binding SelectedProperty}" 
@@ -49,8 +44,7 @@
                 <DataGridTextColumn Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                 <DataGridTextColumn Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
                 <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}"/>
-                <DataGridTextColumn Header="Кількість" Binding="{Binding Price}"/>
-                <DataGridTextColumn Header="Останній хто коригував" Binding="{Binding FIO_I_STR}"/>
+                <DataGridTextColumn Header="Ціна" Binding="{Binding Price}"/>
                 <DataGridTextColumn Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
             </DataGrid.Columns>
         </DataGrid>
