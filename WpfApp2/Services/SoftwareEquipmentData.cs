@@ -10,15 +10,15 @@ namespace Vuzol.Services
     {
         private const string GET_ALL_SOFTWAREEQUIPMENT_SQL =
                    @"SELECT  [ID],[MainPropertyFactoryNumber]
-                            ,[Description]
+                            ,[Description],[Quantity]
                             FROM [dbo].[SoftwareEquipment]";
 
         private const string UPDATE_SOFTWAREEQUIPMENT_SQL =
-                   @"UPDATE [dbo].[SoftwareEquipment] SET [Description] =";
+                   @"UPDATE [dbo].[SoftwareEquipment] SET ";
         private const string INSERT_SOFTWAREEQUIPMENT_SQL =
                   @"INSERT INTO [dbo].[SoftwareEquipment]
                             ([MainPropertyFactoryNumber],
-                             [Description])
+                             [Description],[Quantity])
                              VALUES ";
         private const string DELETE_SOFTWAREEQUIPMENT_SQL =
                   @"DELETE FROM [dbo].[SoftwareEquipment]";
@@ -55,7 +55,8 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var strUpdate = UPDATE_SOFTWAREEQUIPMENT_SQL + $"N'{softwareEquipmentDTO.Description}' " +
+            var strUpdate = UPDATE_SOFTWAREEQUIPMENT_SQL + $"[Description] = N'{softwareEquipmentDTO.Description}', " +
+                                                           $"[Quantity] ={softwareEquipmentDTO.Quantity.ToString().Replace(',','.')} " +
                 " WHERE [Id] =" + $"{softwareEquipmentDTO.Id}";
             var result = database.Execute(strUpdate);
             return result == 1;
@@ -66,16 +67,18 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
             var strInsert = INSERT_SOFTWAREEQUIPMENT_SQL +  $"({softwareEquipmentDTO.MainPropertyFactoryNumber},"+
-                                                               $"N'{softwareEquipmentDTO.Description}')";
+                                                               $"N'{softwareEquipmentDTO.Description}'," +
+                                                               $"{softwareEquipmentDTO.Quantity.ToString().Replace(',', '.')})";
             var result = database.Execute(strInsert);
             return result == 1;
         }
         private static SoftwareEquipment ToSoftwareEquipment(SoftwareEquipmentDTO dto) =>
-         new SoftwareEquipment(dto.Id, dto.MainPropertyFactoryNumber, dto.Description);
+         new SoftwareEquipment(dto.Id, dto.MainPropertyFactoryNumber, dto.Description,dto.Quantity);
         private static SoftwareEquipmentDTO ToSoftwareEquipmentDTO(SoftwareEquipment dto) =>
          new SoftwareEquipmentDTO() { Id = dto.Id, 
                                       MainPropertyFactoryNumber = dto.MainPropertyFactoryNumber, 
-                                      Description = dto.Description };
+                                      Description = dto.Description,
+         Quantity = dto.Quantity};
 
     }
 }

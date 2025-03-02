@@ -22,9 +22,11 @@
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="30" />
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -72,23 +74,28 @@
             <Label Grid.Row="4" Grid.Column="0" Content="Наказ на експлуатацію" HorizontalAlignment="Center"/>
             <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding OrderId,
                                                                  UpdateSourceTrigger=PropertyChanged}" />
-            <Label Grid.Row="4" Grid.Column="1" Content="Дата наказу в експлуатацію" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="1"  Text="{Binding OrderDate,
+            <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="Дата наказу в експлуатацію" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding OrderDate,
                                                                  UpdateSourceTrigger=PropertyChanged}"  />
-            <Label Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Content="Відповідальний" HorizontalAlignment="Center"/>
+            <Label Grid.Row="4" Grid.Column="3"  Content="Кількість" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Quantity,
+                                                      UpdateSourceTrigger=PropertyChanged}"  />
+            <Label Grid.Row="4" Grid.Column="4"  Content="Ціна" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="5" Grid.Column="4"  Text="{Binding OrderDate,
+                                                      UpdateSourceTrigger=PropertyChanged}"  />
+            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Content="Відповідальний" HorizontalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding EmployeeList}" 
           SelectedValue="{Binding FIO_R_STR,UpdateSourceTrigger=PropertyChanged}"  
-          Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2"/>
-            <Label Grid.Row="4" Grid.Column="4" Content="Статус" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="4" />
+          Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"/>
+            <Label Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" Content="Статус" HorizontalAlignment="Center"/>            
             <ComboBox ItemsSource="{Binding PropertyStatusNameList}" 
             SelectedValue="{Binding PropertyStatusName,UpdateSourceTrigger=PropertyChanged}"  
-            Grid.Row="5" Grid.Column="4" />
-            <Label Grid.Row="6" Grid.ColumnSpan="5" Content="Додаткова інформація" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="7" Grid.ColumnSpan="5" 
+            Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" />
+            <Label Grid.Row="8" Grid.ColumnSpan="5" Content="Додаткова інформація" HorizontalAlignment="Center"/>
+            <TextBox Grid.Row="9" Grid.ColumnSpan="5" 
              Text="{Binding Additionalnfo}"/>
-            <Label Grid.Row="8" Grid.ColumnSpan="5" Content="Комплектність(залізо)" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="9" Grid.ColumnSpan="5" >
+            <Label Grid.Row="10" Grid.ColumnSpan="5" Content="Комплектність(залізо)" HorizontalAlignment="Center"/>
+            <Grid Grid.Row="11" Grid.ColumnSpan="5" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
@@ -118,8 +125,8 @@
                              Width="267"/>
                 </StackPanel>
             </Grid>
-            <Label Grid.Row="10" Grid.ColumnSpan="5" Content="Комплектність(програмне забазпечення)" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="11" Grid.ColumnSpan="5">
+            <Label Grid.Row="12" Grid.ColumnSpan="5" Content="Комплектність(програмне забазпечення)" HorizontalAlignment="Center"/>
+            <Grid Grid.Row="13" Grid.ColumnSpan="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
@@ -139,6 +146,7 @@
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Width="60" Header="Кількість" Binding="{Binding Quantity}"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel  Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

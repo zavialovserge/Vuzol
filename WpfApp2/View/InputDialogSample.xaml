@@ -14,10 +14,12 @@
         <Grid.RowDefinitions>            
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Name="lblQuestion" Grid.Column="1">Question:</Label>
         <TextBox Name="txtAnswer" Grid.Column="1" Grid.Row="0" MinWidth="250">Answer</TextBox>
-        <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
+        <TextBox Name="txtQuantity" Grid.Column="1" Grid.Row="1" MinWidth="250">0</TextBox>
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
             <Button IsDefault="True" Name="btnDialogOk" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
             <Button IsCancel="True" MinWidth="60">_Cancel</Button>
         </WrapPanel>

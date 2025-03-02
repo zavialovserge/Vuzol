@@ -48,6 +48,7 @@
                 <DataGridTextColumn Header="Мітка" Binding="{Binding StatusName}"/>
                 <DataGridTextColumn Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                 <DataGridTextColumn Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
+                <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}"/>
                 <DataGridTextColumn Header="Останній хто коригував" Binding="{Binding FIO_I_STR}"/>
                 <DataGridTextColumn Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
             </DataGrid.Columns>
@@ -55,8 +56,7 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center"  >
             <Button Content="Докладніше" Name="EditBtn" Command="{Binding EditCommand}" 
             CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
-            <Button Content="Додати" x:Name="AddBtn" Command="{Binding AddCommand}" 
-                        Width="200" />
+            <Button Content="Додати" x:Name="AddBtn" Command="{Binding AddCommand}" Width="200" />
             <Button Content="Видалити" x:Name="DelBtn" Command="{Binding DelCommand}"
             CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
             <Button Content="Додати за допомогою ексель" Command="{Binding ExcelCommand}" Width="200"/>

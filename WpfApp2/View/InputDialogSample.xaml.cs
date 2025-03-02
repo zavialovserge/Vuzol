@@ -19,11 +19,12 @@ namespace Vuzol.View
     /// </summary>
     public partial class InputDialogSample : Window
     {
-        public InputDialogSample(string question, string defaultAnswer = "")
+        public InputDialogSample(string question, string defaultAnswer = "",double quantity  =0)
         {
             InitializeComponent();
             lblQuestion.Content = question;
-            txtAnswer.Text = defaultAnswer;
+            txtAnswer.Text = defaultAnswer; 
+            txtQuantity.Text = quantity.ToString();
         }
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
@@ -39,6 +40,10 @@ namespace Vuzol.View
         public string Answer
         {
             get { return txtAnswer.Text; }
+        }
+        public double Quantity
+        {
+            get { return Double.Parse(txtQuantity.Text.ToString().Replace('.', ',')); }
         }
     }
 }

@@ -44,9 +44,9 @@ namespace Vuzol.ViewModel.Model
                 return _addSoftwareEquipmentCommand ?? (_addSoftwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-                       string description = GetSoftwareEquipmentDescription(string.Empty);
-                       if (string.IsNullOrEmpty(description)) return;
-                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0,FactoryNumber, description);
+                       var descr = GetSoftwareEquipmentDescription(string.Empty,0);
+                       if (descr == null) return;
+                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0,FactoryNumber, descr.Item1, descr.Item2);
                        SoftwareEquipmentData.InsertSoftwareEquipment(softwareEquipment);
                        RefreshSoftwareEquipment();
                    }));
@@ -59,9 +59,10 @@ namespace Vuzol.ViewModel.Model
                 return _editSoftwareEquipmentCommand ?? (_editSoftwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-                       string description = GetSoftwareEquipmentDescription(SelectedSoftwareEquipment.Description);
-                       if (string.IsNullOrEmpty(description)) return;
-                       SelectedSoftwareEquipment.Description = description;
+                       var descr = GetSoftwareEquipmentDescription(SelectedSoftwareEquipment.Description, SelectedSoftwareEquipment.Quantity);
+                       if (descr == null) return;
+                       SelectedSoftwareEquipment.Description = descr.Item1;
+                       SelectedSoftwareEquipment.Quantity = descr.Item2;
                        SoftwareEquipmentData.EditSoftwareEquipment(SelectedSoftwareEquipment);
                        RefreshSoftwareEquipment();
                    }));
@@ -127,6 +128,8 @@ namespace Vuzol.ViewModel.Model
         private int _bookPage { get; set; }
         private int _orderBookPage { get; set; }
         private int _status { get; set; }
+        private double _quantity { get; set; }
+        
         private List<string> _employeeList { get; set; }
 
         public int Status
@@ -354,6 +357,15 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_unitName));
             }
         }
+        public double Quantity
+        {
+            get { return _quantity; }
+            set
+            {
+                _quantity = value;
+                OnPropertyChanged(nameof(_quantity));
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
@@ -369,14 +381,14 @@ namespace Vuzol.ViewModel.Model
                 SoftwareEquipmentList.Add(softwareEquipment);
             }
         }
-        private string GetSoftwareEquipmentDescription(string name)
+        private Tuple<string, double> GetSoftwareEquipmentDescription(string name, double quantity)
         {
             InputDialogSample inputDialog =
-                       new InputDialogSample("Введіть опис", name);
+                       new InputDialogSample("Введіть опис", name, quantity);
             if (inputDialog.ShowDialog() == false
-                || string.IsNullOrEmpty(inputDialog.Answer)) return string.Empty;
+                || string.IsNullOrEmpty(inputDialog.Answer)) return null;
 
-            return inputDialog.Answer;
+            return new Tuple<string, double>(inputDialog.Answer,inputDialog.Quantity);
         }
     }
 }

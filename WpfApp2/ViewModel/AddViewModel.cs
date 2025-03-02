@@ -40,6 +40,7 @@ namespace Vuzol.ViewModel
                 PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
                 PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
                 PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
+                Quantity = current.Quantity,
                 EmployeeList = EmployeesList
                                             .Select(a=>a.LastName + " " + a.FirstName)
                                             .ToList(),
@@ -65,7 +66,7 @@ namespace Vuzol.ViewModel
                                  .First().Id;
             Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
                                              PropertyAdd.InventoryNumberStr,
-                                             PropertyAdd.InvoiceId, PropertyAdd.BookId, 
+                                             PropertyAdd.InvoiceId, PropertyAdd.BookId,
                                              PropertyAdd.OrderBookId,
                                              PropertyAdd.FormId,
                                              string.Empty, DateTime.Now,
@@ -74,9 +75,10 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.FIO_R, PropertyAdd.FIO_I,
                                              PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR,
                                              PropertyAdd.UnitName,
-                                             PropertyAdd.BookPage, 
-                                             PropertyAdd.OrderBookPage, 
-                                             DateTime.Parse(PropertyAdd.OrderDate), status);
+                                             PropertyAdd.BookPage,
+                                             PropertyAdd.OrderBookPage,
+                                             DateTime.Parse(PropertyAdd.OrderDate), status)
+            { Quantity = PropertyAdd.Quantity };
 
             PropertyData.UpdateDb(property);
             return new HomeViewModel(navigationProperty);
@@ -91,17 +93,20 @@ namespace Vuzol.ViewModel
                                  .First().Id;
             Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
                                              PropertyAdd.InventoryNumberStr,
-                                             PropertyAdd.InvoiceId, 
+                                             PropertyAdd.InvoiceId,
                                              PropertyAdd.BookId, PropertyAdd.OrderBookId,
                                              PropertyAdd.FormId,
                                              string.Empty, DateTime.Now,
                                              PropertyAdd.OrderId, propertyTypeId,
-                                             PropertyAdd.Additionalnfo, DateTime.Now, 
+                                             PropertyAdd.Additionalnfo, DateTime.Now,
                                              PropertyAdd.FIO_R, PropertyAdd.FIO_I,
-                                             PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR, 
-                                             PropertyAdd.UnitName, 
+                                             PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR,
+                                             PropertyAdd.UnitName,
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
-                                             DateTime.Parse(PropertyAdd.OrderDate), status);
+                                             DateTime.Parse(PropertyAdd.OrderDate), status)
+            {
+                Quantity = PropertyAdd.Quantity
+            };
             PropertyData.InsertIntoDb(property);
             return new HomeViewModel(navigationProperty);
         }
