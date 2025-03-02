@@ -39,10 +39,6 @@ namespace Vuzol.ViewModel
                                                () => new PropertyTypeViewModel(NavigationProperty));
             ShowPropertyStatus = new NavigateCommand<PropertyStatusViewModel>(NavigationProperty,
                                                () => new PropertyStatusViewModel(NavigationProperty));
-            Complectness = new NavigateCommand<ComplectnessViewModel>(NavigationProperty,
-                                               () => new ComplectnessViewModel(NavigationProperty));
-            ComplectnessSoftWare = new NavigateCommand<ComplectnessViewModel>(NavigationProperty,
-                                               () => new ComplectnessViewModel(NavigationProperty,false));
         }
         
         public Property SelectedProperty

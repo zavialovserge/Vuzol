@@ -17,8 +17,7 @@ namespace Vuzol.ViewModel
             PropertyTypeList = PropertyTypeData.GetAllPropertyType().ToList();
             PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();
             EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
-            
-            PropertyAdd = new PropertyModel(current.FactoryNumber)
+            PropertyAdd = new PropertyModel()
             {
                 InventoryNumberStr = current.InventoryNumber,
                 FactoryNumber = current.FactoryNumber,
@@ -44,10 +43,17 @@ namespace Vuzol.ViewModel
                 EmployeeList = EmployeesList
                                             .Select(a=>a.LastName + " " + a.FirstName)
                                             .ToList(),
+                SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
+                                    SoftwareEquipmentData.GetAllSoftwareEquipment(current.FactoryNumber)),
+                HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
+                                    HardwareEquipmentData.GetAllHardwareEquipment(current.FactoryNumber)),
+                AddHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
+                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
+                EditHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
+                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd,true)),
             };
             ButtonName = isEdit ? "Коригувати" : "Додати";
-
-
+            
         }
         private HomeViewModel EditNewPropertyFunc(NavigationProperty navigationProperty)
         {
@@ -75,7 +81,6 @@ namespace Vuzol.ViewModel
             PropertyData.UpdateDb(property);
             return new HomeViewModel(navigationProperty);
         }
-
         private HomeViewModel AddNewPropertyFunc(NavigationProperty navigationProperty)
         {
             int propertyTypeId = PropertyTypeList
@@ -102,7 +107,6 @@ namespace Vuzol.ViewModel
         }
         public ICommand HomeCommand { get; }
         public ICommand AddPropertyCommand { get; }
-       
         public ObservableCollection<Employee> EmployeesList { get; set; }
         public PropertyModel PropertyAdd { get; set; }      
         public List<PropertyType> PropertyTypeList { get; set; }

@@ -19,7 +19,7 @@ namespace Vuzol.Services
                    @"UPDATE [dbo].[HardwareEquipment] SET ";
         private const string INSERT_HARDWAREEQUIPMENT_SQL =
                   @"INSERT INTO [dbo].[HardwareEquipment]
-                            (MainPropertyFactoryNumber]
+                            ([MainPropertyFactoryNumber]
            ,[SubPropertyFactoryNumber]
            ,[Quantity]
            ,[Description])
@@ -64,7 +64,7 @@ namespace Vuzol.Services
                                                          + "[Quantity]= " + $"N'{HardwareEquipmentDTO.Quantity}'," 
                                                          + "[Description]= " + $"N'{HardwareEquipmentDTO.Description}' " +
                 " WHERE [MainPropertyFactoryNumber] = " + $"{HardwareEquipmentDTO.MainPropertyFactoryNumber} " +
-                $" and SubPropertyFactoryNumber = {HardwareEquipmentDTO.SubPropertyFactoryNumber}";
+                $" and SubPropertyFactoryNumber = {previousSubPropertyFactoryNumber}";
             var result = database.Execute(strUpdate);
             return result == 1;
         }
@@ -74,7 +74,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
             var strInsert = INSERT_HARDWAREEQUIPMENT_SQL + $"({HardwareEquipmentDTO.MainPropertyFactoryNumber}," +
-                                                               $"{HardwareEquipmentDTO.MainPropertyFactoryNumber}," +
+                                                               $"{HardwareEquipmentDTO.SubPropertyFactoryNumber}," +
                                                                $"{HardwareEquipmentDTO.Quantity}," +
                                                                $"N'{HardwareEquipmentDTO.Description}')";
             var result = database.Execute(strInsert);

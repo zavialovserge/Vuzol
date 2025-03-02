@@ -108,6 +108,7 @@
                                 </Style>
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -124,7 +125,7 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <DataGrid BorderBrush="Black" Grid.Row="0"  Width="auto"
-                                     Name="myDataGrid" ItemsSource="{Binding SoftwareEquipmentList}" 
+                                     ItemsSource="{Binding SoftwareEquipmentList}" 
                                      SelectedItem="{Binding SelectedSoftwareEquipment}" 
                                      SelectedValue="{Binding SelectedSoftwareEquipment}" 
                                      IsReadOnly="True" AutoGenerateColumns="False" >

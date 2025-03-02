@@ -35,8 +35,8 @@
             <DataTemplate DataType="{x:Type viewmodels:PropertyStatusViewModel}">
                 <views:PropertyStatusView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:ComplectnessViewModel}">
-                <views:ComplectnessView/>
+            <DataTemplate DataType="{x:Type viewmodels:HardwareEquipmentViewModel}">
+                <views:HardwareEquipmentView/>
             </DataTemplate>
         </Grid.Resources>
         <ContentControl Content="{Binding CurrentViewModel}" />

@@ -12,6 +12,7 @@
             this.SubPropertyFactoryNumber = subPropertyFactoryNumber;
             this.MainPropertyFactoryNumber = mainPropertyFactoryNumber;
             this.Description = description;
+            this.Quantity = quantity;
         }
     }
 }

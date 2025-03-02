@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Office.Interop.Excel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -13,22 +14,12 @@ namespace Vuzol.ViewModel.Model
         private RelayCommand _addSoftwareEquipmentCommand;
         private RelayCommand _editSoftwareEquipmentCommand;
         private RelayCommand _delSoftwareEquipmentCommand;
-        private RelayCommand _addHardwareEquipmentCommand;
-        private RelayCommand _editHardwareEquipmentCommand;
         private RelayCommand _delHardwareEquipmentCommand;
         private SoftwareEquipment _softwareEquipment;
-        private HardwareEquipment _hardwareEquipment;
-       
-        public PropertyModel(int factoryNumber)
-        {
-            SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
-                                    SoftwareEquipmentData.GetAllSoftwareEquipment(factoryNumber));
-            HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
-                                    HardwareEquipmentData.GetAllHardwareEquipment(factoryNumber));
-        }
+        private HardwareEquipment _hardwareEquipment;    
         public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
         public ObservableCollection<HardwareEquipment> HardwareEquipmentList { get; set; }
-        public SoftwareEquipment SelectedSoftwareEquipment
+        public SoftwareEquipment SelectedSoftwareEquipment 
         {
             get { return _softwareEquipment; }
             set
@@ -57,7 +48,7 @@ namespace Vuzol.ViewModel.Model
                        if (string.IsNullOrEmpty(description)) return;
                        SoftwareEquipment softwareEquipment = new SoftwareEquipment(0,FactoryNumber, description);
                        SoftwareEquipmentData.InsertSoftwareEquipment(softwareEquipment);
-                       RefreshCollection();
+                       RefreshSoftwareEquipment();
                    }));
             }
         }
@@ -72,7 +63,7 @@ namespace Vuzol.ViewModel.Model
                        if (string.IsNullOrEmpty(description)) return;
                        SelectedSoftwareEquipment.Description = description;
                        SoftwareEquipmentData.EditSoftwareEquipment(SelectedSoftwareEquipment);
-                       RefreshCollection();
+                       RefreshSoftwareEquipment();
                    }));
             }
         }
@@ -93,40 +84,8 @@ namespace Vuzol.ViewModel.Model
                    }));
             }
         }
-        public ICommand AddHardwareEquipmentCommand
-        {
-            get
-            {
-                return _addHardwareEquipmentCommand ?? (_addHardwareEquipmentCommand = new RelayCommand(
-                   property =>
-                   {
-                       HardwareEquipment hardwareEquipmentToAdd = GetHardwareEquipmentFromAdditionalForm();
-                       if (hardwareEquipmentToAdd == null) return;
-                       HardwareEquipmentData.InsertHardwareEquipment(hardwareEquipmentToAdd);
-                       RefreshCollection();
-                   }));
-            }
-        }
-
-        private HardwareEquipment GetHardwareEquipmentFromAdditionalForm()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICommand EditHardwareEquipmentCommand
-        {
-            get
-            {
-                return _editHardwareEquipmentCommand ?? (_editHardwareEquipmentCommand = new RelayCommand(
-                   property =>
-                   {
-                       HardwareEquipment hardwareEquipmentToAdd = GetHardwareEquipmentFromAdditionalForm();
-                       if (hardwareEquipmentToAdd == null) return;
-                       HardwareEquipmentData.EditHardwareEquipment(hardwareEquipmentToAdd,SelectedHardwareEquipment.SubPropertyFactoryNumber);
-                       RefreshCollection();
-                   }));
-            }
-        }
+        public ICommand AddHardwareEquipmentCommand { get; set; }       
+        public ICommand EditHardwareEquipmentCommand { get; set; }       
         public ICommand DelHardwareEquipmentCommand
         {
             get
@@ -139,8 +98,8 @@ namespace Vuzol.ViewModel.Model
                        {
                            return;
                        }
-                       SoftwareEquipmentData.DeleteFromDb(SelectedSoftwareEquipment);
-                       SoftwareEquipmentList.Remove(SelectedSoftwareEquipment);
+                       HardwareEquipmentData.DeleteFromDb(SelectedHardwareEquipment);
+                       HardwareEquipmentList.Remove(SelectedHardwareEquipment);
                    }));
             }
         }
@@ -401,7 +360,7 @@ namespace Vuzol.ViewModel.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        private void RefreshCollection()
+        private void RefreshSoftwareEquipment()
         {
             SoftwareEquipmentList.Clear();
             var softwareEquipmentData = SoftwareEquipmentData.GetAllSoftwareEquipment(FactoryNumber);
@@ -410,7 +369,6 @@ namespace Vuzol.ViewModel.Model
                 SoftwareEquipmentList.Add(softwareEquipment);
             }
         }
-
         private string GetSoftwareEquipmentDescription(string name)
         {
             InputDialogSample inputDialog =
