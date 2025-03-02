@@ -142,6 +142,9 @@ namespace Vuzol.ViewModel
             int OrderIdFilterInt = 0;
             int BookIdFilterInt = 0;
             int OrderBookIdFilterInt = 0;
+            double QuantityFilterDouble = 0;
+            double PriceFilterDouble = 0;
+
 
             bool canFactoryNumberFilter = int.TryParse(FactoryNumberFilter, out FactoryNumberFilterInt);
             bool canInventoryNumberFilter = int.TryParse(InventoryNumberFilter, out InventoryNumberFilterInt);
@@ -149,6 +152,8 @@ namespace Vuzol.ViewModel
             bool canOrderIdFilter = int.TryParse(OrderIdFilter, out OrderIdFilterInt);
             bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
             bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
+            bool canQuantityFilter = double.TryParse(QuantityFilter, out QuantityFilterDouble);
+            bool canPriceFilter = double.TryParse(PriceFilter, out PriceFilterDouble);
             
             if (!canFactoryNumberFilter
                 && string.IsNullOrEmpty(NameFilter)
@@ -161,6 +166,9 @@ namespace Vuzol.ViewModel
                 && string.IsNullOrEmpty(FormIdFilter)
                 && string.IsNullOrEmpty(FIO_R_STRFilter)
                 && string.IsNullOrEmpty(UnitNameFilter)
+                && string.IsNullOrEmpty(AdditionalnfoFilter)
+                && !canQuantityFilter
+                && !canPriceFilter
                 )
                 return true;
 
@@ -168,7 +176,9 @@ namespace Vuzol.ViewModel
                 || InventoryNumberFilterInt != 0 || !string.IsNullOrEmpty(StatusNameFilter)
                 || InvoiceIdFilterInt != 0 || OrderIdFilterInt!=0 || BookIdFilterInt!=0 
                 || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
-                || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
+                || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter) 
+                || !string.IsNullOrEmpty(AdditionalnfoFilter)
+                || QuantityFilterDouble!=0 || PriceFilterDouble != 0
                 )
                 return (   (FactoryNumberFilterInt == 0 || FactoryNumberFilterInt == prop.FactoryNumber)
                         && (NameFilter == null || prop.Name.Contains(NameFilter))
@@ -181,6 +191,9 @@ namespace Vuzol.ViewModel
                         && (FormIdFilter == null || prop.FormId.Contains(FormIdFilter))
                         && (FIO_R_STRFilter == null  || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
                         && (UnitNameFilter == null || prop.UnitName.Contains(UnitNameFilter))
+                        && (AdditionalnfoFilter == null || prop.Additionalnfo.Contains(AdditionalnfoFilter))
+                        && (QuantityFilterDouble == 0 || QuantityFilterDouble == prop.Quantity)
+                        && (PriceFilterDouble == 0 || PriceFilterDouble == prop.Price)
                         );
 
             return FactoryNumberFilterInt == prop.FactoryNumber
@@ -193,7 +206,10 @@ namespace Vuzol.ViewModel
                    || OrderBookIdFilterInt == prop.OrderBookId
                    || prop.FormId.Contains(FormIdFilter)
                    || prop.FIO_R_STR.Contains(FIO_R_STRFilter)
-                   || prop.FIO_R_STR.Contains(UnitNameFilter)
+                   || prop.UnitName.Contains(UnitNameFilter)
+                   || prop.Additionalnfo.Contains(AdditionalnfoFilter)
+                   || QuantityFilterDouble == prop.Quantity
+                   || PriceFilterDouble == prop.Price
                    ;
         }
         public string FactoryNumberFilter

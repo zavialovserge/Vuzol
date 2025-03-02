@@ -12,7 +12,8 @@ namespace Vuzol.Services
                   @"Select pr.FactoryNumber,pr.Name,pr.FactoryNumber,pr.InventoryNumber,
                   InvoiceId,FIO_R,FIO_I,BookId,pr.FormId,pr.OrderId,o.Date_D as OrderDate,
                   OrderBookId,PropertyTypeId,[Status],ps.Name as StatusName,
-                  Additionalnfo,pr.DLM,f.Name as FormName,BookPage,pr.Quantity as quantity,pr.Price as price 
+                  isnull(pr.Additionalnfo,'') as Additionalnfo,pr.DLM,f.Name as FormName,
+                   BookPage,pr.Quantity as quantity,pr.Price as price 
                   ,OrderBookPage,f.date_d as FormDate
                   ,isnull(e1.LastName + ' ' + e1.FirstName,'') as [FIO_R_STR]
 	              ,e2.LastName + ' ' + e2.FirstName as [FIO_I_STR]
