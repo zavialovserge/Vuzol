@@ -190,7 +190,7 @@ namespace Vuzol.ViewModel
                                {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
                                {  "AdditionalInfo", SelectedProperty.Additionalnfo }
                            };
-                       string path = "C:\\Users\\szavia\\source\\repos\\WpfApp2\\WpfApp2\\Form for print\\Form.docx";
+                       string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
                        PrintWordDoc(items, path);
                        
                    }));
@@ -205,9 +205,9 @@ namespace Vuzol.ViewModel
             try
             {
                 string fileName = file.FullName;
-                app = new Microsoft.Office.Interop.Word.Application { Visible = false };
+                app = new Microsoft.Office.Interop.Word.Application { Visible = true };
                 Microsoft.Office.Interop.Word.Document aDoc =
-                    app.Documents.Open(fileName, ReadOnly: false, Visible: false);
+                    app.Documents.Open(fileName, ReadOnly: false, Visible: true);
                 aDoc.Activate();
 
                 foreach (var item in items)
@@ -218,7 +218,7 @@ namespace Vuzol.ViewModel
                 string newFileName =
                 Path.Combine(file.DirectoryName, DateTime.Now.ToString("yyyyMMdd HHmmss ") + file.Name);
                 app.ActiveDocument.SaveAs2(newFileName);
-
+                
             }
             catch (Exception)
             {
@@ -227,10 +227,7 @@ namespace Vuzol.ViewModel
             }
             finally
             {
-                app.ActiveDocument.Close();
-                app.Quit();
-
-                Marshal.ReleaseComObject(app);
+                
             }
         }
         private void FindAndReplace(Microsoft.Office.Interop.Word.Application doc, object findText, object replaceWithText)
@@ -255,6 +252,7 @@ namespace Vuzol.ViewModel
             doc.Selection.Find.Execute(ref findText, ref matchCase, ref matchWholeWord,
                 ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref replaceWithText, ref replace,
                 ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
+
         }
         public ICommand PrintAccountingForm
         {
@@ -275,7 +273,7 @@ namespace Vuzol.ViewModel
                                {  "PageOrderBook", SelectedProperty.OrderBookPage.ToString() }
 
                            };
-                       string path = "C:\\Users\\szavia\\source\\repos\\WpfApp2\\WpfApp2\\Form for print\\RegistraionCard.docx";
+                       string path = Directory.GetCurrentDirectory() + "\\Form for print\\RegistraionCard.docx";
                        PrintWordDoc(items, path);
                    }));
             }

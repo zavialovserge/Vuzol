@@ -40,4 +40,13 @@
     <Folder Include="Form for print\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Form for print\Form.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Form for print\RegistraionCard.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
