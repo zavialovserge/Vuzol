@@ -60,8 +60,7 @@ namespace Vuzol.ViewModel
                                                () => new PropertyStatusViewModel(NavigationProperty));
             SelectedListSource = (CollectionView)CollectionViewSource.GetDefaultView(SelectedList);
             SelectedListSource.Filter =new Predicate<object>(o=> Filters(o as Property));
-        }
-        
+        }        
         public CollectionView SelectedListSource { get;  set; }
         public Property SelectedProperty
         {
@@ -73,8 +72,7 @@ namespace Vuzol.ViewModel
                 OnPropertyChanged(nameof(_selectedProperty));
             }
         }
-        public ObservableCollection<Property> SelectedList { get; set; }
-       
+        public ObservableCollection<Property> SelectedList { get; set; }       
         public ICommand Complectness { get; }
         public ICommand ComplectnessSoftWare { get; }
         public ICommand ShowEmployees { get; }
@@ -358,20 +356,47 @@ namespace Vuzol.ViewModel
                            {
                                int factoryNumber = Convert.ToInt32((xlRange.Cells[rCnt, 1] as Excel.Range).Value);
                                string? Name = Convert.ToString((xlRange.Cells[rCnt, 2] as Excel.Range).Value);
-                               int InventoryNumber = Convert.ToInt32((xlRange.Cells[rCnt, 3] as Excel.Range).Value);
-                               int InvoiceId = Convert.ToInt32((xlRange.Cells[rCnt, 4] as Excel.Range).Value); ;
-                               int BookId = Convert.ToInt32((xlRange.Cells[rCnt, 5] as Excel.Range).Value); ;
-                               string? FormId =  Convert.ToString((xlRange.Cells[rCnt, 6] as Excel.Range).Value);
-                               int OrderId = Convert.ToInt32((xlRange.Cells[rCnt, 7] as Excel.Range).Value); ;
-                               int PropertyTypeId =  Convert.ToInt32((xlRange.Cells[rCnt, 8] as Excel.Range).Value);
-                               string? Additionalnfo =  Convert.ToString((xlRange.Cells[rCnt, 9] as Excel.Range).Value);
-                               Property property = new Property(factoryNumber, Name,
-                                             InventoryNumber,
-                                             InvoiceId, BookId, BookId, FormId,
-                                             string.Empty, DateTime.Now,
-                                             OrderId, PropertyTypeId,
-                                             Additionalnfo, 
-                                             DateTime.Now,0,0,"","","",0,0,DateTime.Now,0);
+                               int inventoryNumber = Convert.ToInt32((xlRange.Cells[rCnt, 3] as Excel.Range).Value);
+                               int invoiceId = Convert.ToInt32((xlRange.Cells[rCnt, 4] as Excel.Range).Value); 
+                               string invoiceDate = Convert.ToString((xlRange.Cells[rCnt, 5] as Excel.Range).Value);
+                               int bookId = Convert.ToInt32((xlRange.Cells[rCnt, 6] as Excel.Range).Value);
+                               int bookPage = Convert.ToInt32((xlRange.Cells[rCnt, 7] as Excel.Range).Value);
+                               int orderBookId = Convert.ToInt32((xlRange.Cells[rCnt, 8] as Excel.Range).Value);                               
+                               int orderBookPage = Convert.ToInt32((xlRange.Cells[rCnt, 9] as Excel.Range).Value);
+                               string? formId =  Convert.ToString((xlRange.Cells[rCnt, 10] as Excel.Range).Value);
+                               int orderId = Convert.ToInt32((xlRange.Cells[rCnt, 11] as Excel.Range).Value);
+                               string orderDate = Convert.ToString((xlRange.Cells[rCnt, 12] as Excel.Range).Value);
+                               string statusName = Convert.ToString((xlRange.Cells[rCnt, 13] as Excel.Range).Value);                               
+                               string? additionalnfo =  Convert.ToString((xlRange.Cells[rCnt, 14] as Excel.Range).Value);
+                               string propertyTypeName = Convert.ToString((xlRange.Cells[rCnt, 15] as Excel.Range).Value);
+                               double price = Convert.ToDouble((xlRange.Cells[rCnt, 16] as Excel.Range).Value);
+                               double quantity = Convert.ToDouble((xlRange.Cells[rCnt, 17] as Excel.Range).Value);
+                               DateTime OrderDateD = DateTime.Now;
+                               DateTime.TryParse(orderDate, out OrderDateD);
+                               DateTime invoiceDateD = DateTime.Now;
+                               DateTime.TryParse(invoiceDate, out invoiceDateD);
+                               Property property = new Property()
+                               {
+                                   FactoryNumber = factoryNumber,
+                                   Name = Name,
+                                   InventoryNumber = inventoryNumber,
+                                   InvoiceId = invoiceId,
+                                   InvoiceDate = invoiceDateD,
+                                   BookId = bookId,
+                                   BookPage=bookPage,
+                                   OrderBookId = orderBookId,
+                                   OrderBookPage = orderBookPage,
+                                   FormId = formId,
+                                   OrderId = orderId,
+                                   OrderDate= OrderDateD,                                  
+                                   Additionalnfo = additionalnfo,
+                                   Status =-1,
+                                   StatusName = statusName,
+                                   PropertyTypeId =-1,
+                                   PropertyTypeName = propertyTypeName,
+                                   Price = price,
+                                   Quantity = quantity
+                               };
                                properties.Add(property);
                            }
 
@@ -389,9 +414,12 @@ namespace Vuzol.ViewModel
                        }
                        foreach (var property in properties)
                        {
-                           if(PropertyData.InsertIntoDb(property)) SelectedList.Add(property);
-
+                           if (PropertyData.InsertIntoDb(property))
+                           {
+                               SelectedList.Add(property);
+                           }                           
                        }
+                       SelectedListSource.Refresh();
                    }));
             }
         }        
@@ -422,9 +450,7 @@ namespace Vuzol.ViewModel
         private void PrintWordDoc(Dictionary<string, string> items, string path)
         {
             Word.Application app = null;
-
             FileInfo file = new FileInfo(path);
-
             try
             {
                 string fileName = file.FullName;

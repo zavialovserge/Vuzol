@@ -24,7 +24,7 @@ namespace Vuzol.Services
                   left join [dbo].[Employee] as e2 on e2.Id = pr.Fio_I
                   left join [dbo].Unit as u on u.Id = e2.UnitId
                   left join [dbo].[Order] as o on o.OrderId = pr.OrderId
-                   left join [dbo].[PropertyStatus] as ps on ps.Id = pr.Status";
+                  left join [dbo].[PropertyStatus] as ps on ps.Id = pr.Status";
 
         private const string INSERT_PROPERTYS_SQL =
                   @"INSERT INTO [dbo].[Property]
@@ -86,22 +86,69 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            var strInsert = INSERT_PROPERTYS_SQL + $"({propertyDTO.FactoryNumber}," +
-                                                                 $"{propertyDTO.InventoryNumber}," +
-                                                                 $"N'{propertyDTO.Name}'," +
-                                                                 $"{propertyDTO.InvoiceId}," +
-                                                                 $"{propertyDTO.BookId}," +
-                                                                 $"{propertyDTO.BookPage}," +
-                                                                 $"{propertyDTO.FormId}," +
-                                                                 $"{propertyDTO.OrderId}," +
-                                                                 $"{propertyDTO.OrderBookId}," +
-                                                                 $"{propertyDTO.OrderBookPage}," +
-                                                                 $"{propertyDTO.PropertyTypeId}," +
-                                                                 $"{propertyDTO.Status}," +                                                                 
-                                                                 $"N'{propertyDTO.Additionalnfo}'," +
-                                                                 $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
-                                                                 $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
-                                                                 $"GETDATE())";
+            var strInsert = $"Declare @statusNew int = {propertyDTO.Status} " +
+                            $"Declare @PropertyTypeIdNew int = {propertyDTO.PropertyTypeId} " +
+                            $"if not exists( select 1 from Invoice where InvoiceID = {propertyDTO.InvoiceId})" +
+                            $"begin " +
+                            $"Insert into [dbo].[Invoice]   ([InvoiceID] ,[Date_From])  " +
+                            $"values ( {propertyDTO.InvoiceId},N'{propertyDTO.InvoiceDate}') " +
+                            $"end " +
+                            $"if not exists( select 1 from OrderBook where OrderBookID = {propertyDTO.OrderBookId})" +
+                            $"begin " +
+                            $"Insert into [dbo].[OrderBook]    ([OrderBookID] ,[Date_D])  " +
+                            $"values ( {propertyDTO.OrderBookId},N'{DateTime.Now}') " +
+                            $"end " +
+                            $"if not exists( select 1 from OrderBook where OrderBookID = {propertyDTO.BookId})" +
+                            $"begin " +
+                            $"Insert into [dbo].[OrderBook]   ([OrderBookID] ,[Date_D])  " +
+                            $"values ( {propertyDTO.BookId},N'{DateTime.Now}') " +
+                            $"end " +
+                            $"if not exists( select 1 from [dbo].[Form]  where [FormId] = {propertyDTO.FormId})" +
+                            $"begin " +
+                            $"Insert into [dbo].[Form]   ([FormId] ,[Date_D])  " +
+                            $"values ( {propertyDTO.FormId},N'{DateTime.Now}') " +
+                            $"end " +
+                            $"if not exists( select 1 from [dbo].[Order]  where [OrderId] = {propertyDTO.OrderId})" +
+                            $"begin " +
+                            $"Insert into [dbo].[Order]   ([OrderId] ,[Date_D])  " +
+                            $"values ( {propertyDTO.OrderId},N'{propertyDTO.OrderDate}') " +
+                            $"end " +
+                            $"if not exists (SELECT TOP 1 id FROM PropertyStatus AS ps WHERE ps.[Name] = N'{propertyDTO.StatusName}') " +
+                            "begin " +
+                            "INSERT INTO [dbo].[PropertyStatus] (Name) " +
+                            $"VALUES(N'{propertyDTO.StatusName}') " +
+                            $"set @statusNew = (SELECT top 1 id  from PropertyStatus as ps where ps.[Name] =N'{propertyDTO.StatusName}' ); " +
+                            "end " +
+                            "else " +
+                            "SET @statusNew =(SELECT TOP 1 id " +
+                            " FROM PropertyStatus AS ps " +
+                            $"WHERE ps.[Name] = N'{propertyDTO.StatusName}') " +
+                             $"if not exists (SELECT TOP 1 id FROM [dbo].[PropertyType] AS pt WHERE pt.[Name] = N'{propertyDTO.PropertyTypeName}') " +
+                            "begin " +
+                            "INSERT INTO [dbo].[PropertyType] (Name) " +
+                            $"VALUES(N'{propertyDTO.PropertyTypeName}') " +
+                            $"set @PropertyTypeIdNew = (SELECT top 1 id  from PropertyType as pt where pt.[Name] =N'{propertyDTO.PropertyTypeName}' ); " +
+                            "end " +
+                            "else " +
+                            "SET @PropertyTypeIdNew =(SELECT TOP 1 id " +
+                            " FROM PropertyType AS pt " +
+                            $"WHERE pt.[Name] = N'{propertyDTO.PropertyTypeName}') " +
+                            INSERT_PROPERTYS_SQL + $"({propertyDTO.FactoryNumber}," +
+                                                    $"{propertyDTO.InventoryNumber}," +
+                                                    $"N'{propertyDTO.Name}'," +
+                                                    $"{propertyDTO.InvoiceId}," +
+                                                    $"{propertyDTO.BookId}," +
+                                                    $"{propertyDTO.BookPage}," +
+                                                    $"{propertyDTO.FormId}," +
+                                                    $"{propertyDTO.OrderId}," +
+                                                    $"{propertyDTO.OrderBookId}," +
+                                                    $"{propertyDTO.OrderBookPage}," +
+                                                    $"@PropertyTypeIdNew," +
+                                                    $"@statusNew," +                                                                 
+                                                    $"N'{propertyDTO.Additionalnfo}'," +
+                                                    $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
+                                                    $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
+                                                    $"GETDATE())";
             var result = database.Execute(strInsert);
             return result == 1;
         }
@@ -180,6 +227,7 @@ namespace Vuzol.Services
                        Name=prop.Name,
                        InventoryNumber=prop.InventoryNumber,
                        InvoiceId=prop.InvoiceId,
+                       InvoiceDate=prop.InvoiceDate,
                        BookId=prop.BookId,
                        OrderBookId=prop.OrderBookId,
                        FormId=prop.FormId,
@@ -187,13 +235,20 @@ namespace Vuzol.Services
                        FormDate=prop.FormDate,
                        OrderId=prop.OrderId,
                        PropertyTypeId=prop.PropertyTypeId,
-                       Additionalnfo=prop.Additionalnfo,
+                       PropertyTypeName = prop.PropertyTypeName.Contains("\'")
+                                              ? prop.PropertyTypeName.Replace("\'", "''")
+                                              : prop.PropertyTypeName,
+                       Additionalnfo =prop.Additionalnfo.Contains("\'") 
+                                              ? prop.Additionalnfo.Replace("\'", "''")
+                                              : prop.Additionalnfo,
                        FIO_I=prop.FIO_I,
                        FIO_R=prop.FIO_R,
                        BookPage=prop.BookPage,
                        OrderBookPage=prop.OrderBookPage,
                        OrderDate=prop.OrderDate,
                        Status = prop.Status,
+                       StatusName=prop.StatusName.Contains("\'") ? prop.StatusName.Replace("\'", "''") 
+                                                                 : prop.StatusName,
                        Quantity=prop.Quantity,
                        Price=prop.Price
                    };        

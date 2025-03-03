@@ -57,7 +57,7 @@
                 <DataGridTextColumn Width="80" Header="Книга обліку" Binding="{Binding BookId}"/>
                 <DataGridTextColumn Width="80" Header="Книга закріплень" Binding="{Binding OrderBookId}"/>
                 <DataGridTextColumn Width="80" Header="Номер формуляру" Binding="{Binding FormId}"/>
-                <DataGridTextColumn Width="80" Header="Мітка" Binding="{Binding StatusName}"/>
+                <DataGridTextColumn Width="80" Header="Статус" Binding="{Binding StatusName}"/>
                 <DataGridTextColumn Width="80" Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                 <DataGridTextColumn Width="80" Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
                 <DataGridTextColumn Width="80" Header="Кількість" Binding="{Binding Quantity}"/>

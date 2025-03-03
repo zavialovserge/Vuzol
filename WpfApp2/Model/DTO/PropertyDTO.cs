@@ -6,6 +6,7 @@
         public string? Name { get; set; }
         public int InventoryNumber { get; set; }
         public int InvoiceId { get; set; }
+        public DateTime InvoiceDate { get; set; }
         public int BookId { get; set; }
         public int BookPage { get; set; }
         public int OrderBookId { get; set; }
@@ -15,6 +16,7 @@
         public DateTime FormDate { get; set; }
         public int OrderId { get; set; }
         public int PropertyTypeId { get; set; }
+        public string PropertyTypeName { get; set; }
         public string? Additionalnfo { get; set; }
         public DateTime DLM { get; set; }
         public int FIO_R { get; set; }
