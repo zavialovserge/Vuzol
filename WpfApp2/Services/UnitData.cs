@@ -42,7 +42,7 @@ namespace Vuzol.Services
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
-            UnitDTO unitDTO = ToUnitDTO(unit);
+            UnitDTO unitDTO = ToUnitDTO(unit);            
             var strInsert = UPDATE_UNIT_SQL + $"N'{unitDTO.Name}' " +
                 " WHERE [Id] =" + $"{unitDTO.Id}";
             var result = database.Execute(strInsert);
@@ -64,7 +64,9 @@ namespace Vuzol.Services
          new UnitDTO()
          {
              Id = unit.Id,
-             Name = unit.Name,
+             Name = unit.Name.Contains('\'')
+                    ? unit.Name = unit.Name.Replace("'", "''") 
+                    : unit.Name,            
          };
     }
 }
