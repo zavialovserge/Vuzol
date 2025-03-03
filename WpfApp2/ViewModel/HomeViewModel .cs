@@ -433,7 +433,8 @@ namespace Vuzol.ViewModel
                                {  "AdditionalInfo", SelectedProperty.Additionalnfo },
                                {  "DateD", SelectedProperty.FormDate.Day.ToString() },
                                {  "DateM", SelectedProperty.FormDate.Month.ToString() },
-                               {  "DateY", SelectedProperty.FormDate.Year.ToString() }
+                               {  "DateY", SelectedProperty.FormDate.Year.ToString() },
+                               {  "DateForm", SelectedProperty.FormDate.ToString("d") }
                            };
                        string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
                        PrintWordDoc(items, path);
