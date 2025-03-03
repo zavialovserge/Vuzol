@@ -414,10 +414,13 @@ namespace Vuzol.ViewModel
                        }
                        foreach (var property in properties)
                        {
-                           if (PropertyData.InsertIntoDb(property))
-                           {
-                               SelectedList.Add(property);
-                           }                           
+                           PropertyData.InsertIntoDb(property);                                                  
+                       }
+                       SelectedList.Clear();
+                       List<Property> newList = PropertyData.GetAllProperty();
+                       foreach (var prop in newList)
+                       {
+                           SelectedList.Add(prop);
                        }
                        SelectedListSource.Refresh();
                    }));
