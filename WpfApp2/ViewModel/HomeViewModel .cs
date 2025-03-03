@@ -81,31 +81,7 @@ namespace Vuzol.ViewModel
         public ICommand ShowUnits { get; }
         public ICommand ShowPropertyType { get; }
         public ICommand ShowRanks { get; }
-        public ICommand ShowPropertyStatus { get; }
-        public ICommand AddNewProperty
-        {
-            get
-            {
-                return _addNewProperty ?? (_addNewProperty = new RelayCommand(
-                   property =>
-                   {
-                       if (MessageBox.Show("Ви дійсно хочете додати елемент?", "Додати елемент",
-                           MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                       {
-                           return;
-                       }
-                       Property prop = property as Property;
-                       if (prop == null) return;
-                       SelectedList.Clear();
-                       if (!PropertyData.InsertIntoDb(prop)) return;
-                       List<Property> allPropertyFromDb = PropertyData.GetAllProperty();
-                       foreach (var propertyFromDb in allPropertyFromDb)
-                       {
-                           SelectedList.Add(propertyFromDb);
-                       }
-                   }));
-            }
-        }
+        public ICommand ShowPropertyStatus { get; }        
         public ICommand AddCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DelCommand
@@ -129,6 +105,7 @@ namespace Vuzol.ViewModel
                            {
                                SelectedList.Add(propertyFromDb);
                            }
+                           SelectedListSource.Refresh();
                        }
                    }));
             }
