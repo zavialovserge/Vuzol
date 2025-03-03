@@ -45,7 +45,7 @@
             <TextBox Width="80" Text="{Binding PriceFilter}"/>
             <TextBox Width="80" Text="{Binding AdditionalnfoFilter}"/>
         </WrapPanel>
-        <DataGrid Grid.Row="2" Name="myDataGrid" ItemsSource="{Binding SelectedList }" 
+        <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedList }" 
           SelectedItem="{Binding SelectedProperty}" SelectedValue="{Binding SelectedProperty}" 
                   IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>

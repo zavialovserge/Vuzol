@@ -8,7 +8,7 @@
         xmlns:views="clr-namespace:Vuzol.View"
         x:Class="Vuzol.MainWindow"
         mc:Ignorable="d" 
-        Title="MainWindow" Height="600" Width="815">
+        Title="MainWindow" Height="800" Width="815">
     <Grid>
         <Grid.Resources>
             <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
