@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Vuzol.View"
+             xmlns:local="clr-namespace:Vuzol.View" xmlns:local1="clr-namespace:Vuzol.Converteres"
              mc:Ignorable="d" 
              d:Height="450" d:Width="800" Background="White">
+    
+    <UserControl.Resources>
+        <local1:TextWidthConverter x:Key="TextWidthConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -29,40 +34,40 @@
                 <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}" />
             </MenuItem>
         </Menu>
-        <WrapPanel Grid.Row="1">
-            <TextBox Width="80" Text="{Binding FactoryNumberFilter, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Width="80" Text="{Binding NameFilter}"/>
-            <TextBox Width="80" Text="{Binding InventoryNumberFilter}"/>
-            <TextBox Width="80" Text="{Binding InvoiceIdFilter}"/>
-            <TextBox Width="80" Text="{Binding OrderIdFilter}"/>
-            <TextBox Width="80" Text="{Binding BookIdFilter}"/>
-            <TextBox Width="80" Text="{Binding OrderBookIdFilter}"/>
-            <TextBox Width="80" Text="{Binding FormIdFilter}"/>
-            <TextBox Width="80" Text="{Binding StatusNameFilter}"/>
-            <TextBox Width="80" Text="{Binding FIO_R_STRFilter}"/>
-            <TextBox Width="80" Text="{Binding UnitNameFilter}"/>
-            <TextBox Width="80" Text="{Binding QuantityFilter}"/>
-            <TextBox Width="80" Text="{Binding PriceFilter}"/>
-            <TextBox Width="80" Text="{Binding AdditionalnfoFilter}"/>
-        </WrapPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBox Width="{Binding ActualWidth, ElementName=FactoryNumberColumn}" Text="{Binding FactoryNumberFilter, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=NameColumn}" Text="{Binding NameFilter,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding NameColumnFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=InvoiceIdColumn}" Text="{Binding InvoiceIdFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=OrderIdColumn}" Text="{Binding OrderIdFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=BookIdColumn}" Text="{Binding BookIdFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=OrderBookIdColumn}" Text="{Binding OrderBookIdFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=FormIdColumn}" Text="{Binding FormIdFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=StatusNameColumn}" Text="{Binding StatusNameFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=FIO_R_STRColumn}" Text="{Binding FIO_R_STRFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=UnitNameColumn}" Text="{Binding UnitNameFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=QuantityColumn}" Text="{Binding QuantityFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=PriceColumn}" Text="{Binding PriceFilter}"/>
+            <TextBox Width="{Binding ActualWidth, ElementName=AdditionalnfoColumn}" Text="{Binding AdditionalnfoFilter}"/>
+        </StackPanel>
         <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedList }" 
           SelectedItem="{Binding SelectedProperty}" SelectedValue="{Binding SelectedProperty}" 
                   IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="80" Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
-                <DataGridTextColumn Width="80" Header="Найменування" Binding="{Binding Name}"/>
-                <DataGridTextColumn Width="80" Header="Інвентарний номер" Binding="{Binding InventoryNumber}"/>
-                <DataGridTextColumn Width="80" Header="Номер накладної" Binding="{Binding InvoiceId}"/>
-                <DataGridTextColumn Width="80" Header="Наказ на введеня в експлуатацію" Binding="{Binding OrderId}"/>
-                <DataGridTextColumn Width="80" Header="Книга обліку" Binding="{Binding BookId}"/>
-                <DataGridTextColumn Width="80" Header="Книга закріплень" Binding="{Binding OrderBookId}"/>
-                <DataGridTextColumn Width="80" Header="Номер формуляру" Binding="{Binding FormId}"/>
-                <DataGridTextColumn Width="80" Header="Статус" Binding="{Binding StatusName}"/>
-                <DataGridTextColumn Width="80" Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
-                <DataGridTextColumn Width="80" Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
-                <DataGridTextColumn Width="80" Header="Кількість" Binding="{Binding Quantity}"/>
-                <DataGridTextColumn Width="80" Header="Ціна" Binding="{Binding Price}"/>
-                <DataGridTextColumn Width="80" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
+                <DataGridTextColumn x:Name="FactoryNumberColumn" Width="Auto" Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
+                <DataGridTextColumn x:Name="NameColumn" Width="Auto" Header="Найменування" Binding="{Binding Name}"/>
+                <DataGridTextColumn x:Name="InventoryNumberColumn" Width="Auto" Header="Інвентарний номер" Binding="{Binding InventoryNumber}"/>
+                <DataGridTextColumn x:Name="InvoiceIdColumn" Width="Auto" Header="Номер накладної" Binding="{Binding InvoiceId}"/>
+                <DataGridTextColumn x:Name="OrderIdColumn" Width="Auto" Header="Наказ на введеня в експлуатацію" Binding="{Binding OrderId}"/>
+                <DataGridTextColumn x:Name="BookIdColumn" Width="Auto" Header="Книга обліку" Binding="{Binding BookId}"/>
+                <DataGridTextColumn x:Name="OrderBookIdColumn" Width="Auto" Header="Книга закріплень" Binding="{Binding OrderBookId}"/>
+                <DataGridTextColumn x:Name="FormIdColumn" Width="Auto" Header="Номер формуляру" Binding="{Binding FormId}"/>
+                <DataGridTextColumn x:Name="StatusNameColumn" Width="Auto" Header="Статус" Binding="{Binding StatusName}"/>
+                <DataGridTextColumn x:Name="FIO_R_STRColumn" Width="Auto" Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
+                <DataGridTextColumn x:Name="UnitNameColumn" Width="Auto" Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
+                <DataGridTextColumn x:Name="QuantityColumn" Width="Auto" Header="Кількість" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn x:Name="PriceColumn" Width="Auto" Header="Ціна" Binding="{Binding Price}"/>
+                <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center"  >
