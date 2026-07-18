@@ -6,161 +6,218 @@
              xmlns:local="clr-namespace:Vuzol.View"
              xmlns:convertor="clr-namespace:Vuzol.Converteres"
              mc:Ignorable="d" 
-             d:DesignHeight="600"  Background="White" >
-    
+             d:DesignHeight="1000" Background="#FAFAFA">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid DataContext="{Binding PropertyAdd}" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="170"/>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="160"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="0"  Grid.Column="0" Content="Інвентарний номер" HorizontalAlignment="Center" />
-            <TextBox  Grid.Row="1" Grid.Column="0" Name="InventoryNubmer"  
-        Text="{Binding InventoryNumberStr,
-        UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="0" Grid.Column="1" Content="Найменування"  HorizontalAlignment="Center" />
-            <TextBox Grid.Row="1" Grid.Column="1"  Text="{Binding Name}"/>
-            <Label Grid.Row="0" Grid.Column="2" Content="Заводський номер" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="2" 
-             Text="{Binding FactoryNumber,
-             UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="0" Grid.Column="3" BorderBrush="Black" BorderThickness="1" 
-                   Content="Формуляр" HorizontalAlignment="Center" Width="160"/>
-            <TextBox Grid.Row="1" Grid.Column="3"  Text="{Binding FormId,
-                                                                UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="0" Grid.Column="4" Content="Накладна" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="4"  Text="{Binding InvoiceId,
-                                                                   UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="2"  Grid.Column="0" Content="Книга закріплень" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="0"  Text="{Binding BookId,
-                                                               UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="2" Grid.Column="1" Content="Сторінка в книзі закріплень" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding BookPage,
-                                                                 UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="2" Grid.Column="2" Content="Книга обліку"  HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="2"  Text="{Binding OrderBookId,
-                                                                 UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="2" Grid.Column="3" Content="Сторінка в книзі обліку" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="3" Grid.Column="3"  Text="{Binding OrderBookPage,
-                                                                 UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Row="2" Grid.Column="4" Content="Мітка" HorizontalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding PropertyTypeNameList}" 
-                      SelectedValue="{Binding PropertyTypeName,UpdateSourceTrigger=PropertyChanged}"  
-                      Grid.Row="3" Grid.Column="4" />
-            <Label Grid.Row="4" Grid.Column="0" Content="Наказ на експлуатацію" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="0" Text="{Binding OrderId,
-                                                                 UpdateSourceTrigger=PropertyChanged}" />
-            <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="Дата наказу в експлуатацію" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding OrderDate,
-                                                                 UpdateSourceTrigger=PropertyChanged}"  />
-            <Label Grid.Row="4" Grid.Column="3"  Content="Кількість" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="3"  Text="{Binding Quantity,Mode=TwoWay,
-                                                      UpdateSourceTrigger=PropertyChanged,StringFormat=N2}"  />
-            <Label Grid.Row="4" Grid.Column="4"  Content="Ціна" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="5" Grid.Column="4"  Text="{Binding Price,Mode=TwoWay,
-                                                      UpdateSourceTrigger=PropertyChanged,StringFormat=N2}"  />
-            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Content="Відповідальний" HorizontalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding EmployeeList}" 
-          SelectedValue="{Binding FIO_R_STR,UpdateSourceTrigger=PropertyChanged}"  
-          Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"/>
-            <Label Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" Content="Статус" HorizontalAlignment="Center"/>            
-            <ComboBox ItemsSource="{Binding PropertyStatusNameList}" 
-            SelectedValue="{Binding PropertyStatusName,UpdateSourceTrigger=PropertyChanged}"  
-            Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" />
-            <Label Grid.Row="8" Grid.ColumnSpan="5" Content="Додаткова інформація" HorizontalAlignment="Center"/>
-            <TextBox Grid.Row="9" Grid.ColumnSpan="5" 
-             Text="{Binding Additionalnfo}"/>
-            <Label Grid.Row="10" Grid.ColumnSpan="5" Content="Комплектність(залізо)" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="11" Grid.ColumnSpan="5" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <DataGrid BorderBrush="Black" Grid.Row="0"  Width="auto"
-                      Name="myDataGrid" ItemsSource="{Binding HardwareEquipmentList}" 
-                      SelectedItem="{Binding SelectedHardwareEquipment}" 
-                      SelectedValue="{Binding SelectedHardwareEquipment}" 
-                      IsReadOnly="True" AutoGenerateColumns="False" >
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Номер" Binding="{Binding CountId}"/>
-                        <DataGridTextColumn Width="*" Header="Найменування" Binding="{Binding Description}">
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment"
-                             Value="Center" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Додати"  Command="{Binding AddHardwareEquipmentCommand}" Width="266" />
-                    <Button Content="Змінити"  Command="{Binding EditHardwareEquipmentCommand}" Width="266" />
-                    <Button Content="Видалити"  Command="{Binding DelHardwareEquipmentCommand}" 
-                             Width="267"/>
-                </StackPanel>
-            </Grid>
-            <Label Grid.Row="12" Grid.ColumnSpan="5" Content="Комплектність(програмне забазпечення)" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="13" Grid.ColumnSpan="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <DataGrid BorderBrush="Black" Grid.Row="0"  Width="auto"
-                                     ItemsSource="{Binding SoftwareEquipmentList}" 
-                                     SelectedItem="{Binding SelectedSoftwareEquipment}" 
-                                     SelectedValue="{Binding SelectedSoftwareEquipment}" 
-                                     IsReadOnly="True" AutoGenerateColumns="False" >
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Номер" Binding="{Binding CountId}"/>
-                        <DataGridTextColumn Width="*" Header="Найменування" Binding="{Binding Description}">
-                            <DataGridTextColumn.HeaderStyle>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="HorizontalContentAlignment"
-                                            Value="Center" />
-                                </Style>
-                            </DataGridTextColumn.HeaderStyle>
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Width="60" Header="Кількість" Binding="{Binding Quantity}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <StackPanel  Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Додати"  Command="{Binding AddSoftwareEquipmentCommand}" Width="266" />
-                    <Button Content="Змінити"  Command="{Binding EditSoftwareEquipmentCommand}" Width="266" />
-                    <Button Content="Видалити"  Command="{Binding DelSoftwareEquipmentCommand}" 
-                            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="267"/>
-                </StackPanel>
-            </Grid>
-        </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="{Binding ButtonName}"   Command="{Binding AddPropertyCommand}"  Width="200"/>
-            <Button Content="Повернутись назад" Command="{Binding HomeCommand}" Name="EditBtn"  Width="200"/>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="20">
+            <StackPanel>
+                <!-- Osnovni parametri -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Основні параметри"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Інвентарний номер"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.InventoryNumberStr, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Найменування"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.Name}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Заводський номер"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.FactoryNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Dokumenty -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Документи"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Формуляр"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.FormId, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Накладна"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.InvoiceId, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Мітка"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding PropertyAdd.PropertyTypeNameList}" 
+                                          SelectedValue="{Binding PropertyAdd.PropertyTypeName, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Knugy obliku -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Книга обліку"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Книга закріплень"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.BookId, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Сторінка"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.BookPage, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Книга обліку"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderBookId, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Сторінка"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderBookPage, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Finansovie dani -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Фінансовиі характеристики"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Наказ на експлуатацію"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderId, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Дата наказу"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderDate, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Кількість"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Ціна"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Vidpovidalnist -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Відповідальність і статус"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Відповідальний"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding PropertyAdd.EmployeeList}" 
+                                          SelectedValue="{Binding PropertyAdd.FIO_R_STR, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Статус"/>
+                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding PropertyAdd.PropertyStatusNameList}" 
+                                          SelectedValue="{Binding PropertyAdd.PropertyStatusName, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Style="{StaticResource LabelStyle}" Text="Додаткова інформація" Margin="0,15,0,5"/>
+                        <TextBox Style="{StaticResource InputTextBoxStyle}" Height="80" TextWrapping="Wrap" 
+                                 Text="{Binding PropertyAdd.Additionalnfo}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Komplektnist zalizo -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектность - залізо"/>
+                        <DataGrid Style="{StaticResource ModernDataGridStyle}" Height="200"
+                                  ItemsSource="{Binding PropertyAdd.HardwareEquipmentList}" 
+                                  SelectedItem="{Binding PropertyAdd.SelectedHardwareEquipment}" 
+                                  IsReadOnly="True" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding CountId}" Width="80"/>
+                                <DataGridTextColumn Header="Найменування" Binding="{Binding Description}" Width="*"/>
+                                <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button Style="{StaticResource AddButtonStyle}" Content="Додати" Command="{Binding PropertyAdd.AddHardwareEquipmentCommand}" Width="100"/>
+                            <Button Style="{StaticResource EditButtonStyle}" Content="Змінити" Command="{Binding PropertyAdd.EditHardwareEquipmentCommand}" Width="100"/>
+                            <Button Style="{StaticResource DeleteButtonStyle}" Content="Видалити" Command="{Binding PropertyAdd.DelHardwareEquipmentCommand}" Width="100"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Komplektnist prohramne zabezpechennya -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектність - програмне забезпечення"/>
+                        <DataGrid Style="{StaticResource ModernDataGridStyle}" Height="200"
+                                  ItemsSource="{Binding PropertyAdd.SoftwareEquipmentList}" 
+                                  SelectedItem="{Binding PropertyAdd.SelectedSoftwareEquipment}" 
+                                  IsReadOnly="True" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding CountId}" Width="80"/>
+                                <DataGridTextColumn Header="Найменування" Binding="{Binding Description}" Width="*"/>
+                                <DataGridTextColumn Header="Кількість" Binding="{Binding Quantity}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button Style="{StaticResource AddButtonStyle}" Content="Додати" Command="{Binding PropertyAdd.AddSoftwareEquipmentCommand}" Width="100"/>
+                            <Button Style="{StaticResource EditButtonStyle}" Content="Змінити" Command="{Binding PropertyAdd.EditSoftwareEquipmentCommand}" Width="100"/>
+                            <Button Style="{StaticResource DeleteButtonStyle}" Content="Видалити" Command="{Binding PropertyAdd.DelSoftwareEquipmentCommand}" Width="100"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Knopky diyi -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" >
+            <Button Style="{StaticResource PrimaryButtonStyle}" Content="{Binding ButtonName}" Command="{Binding AddPropertyCommand}" Width="150"/>
+            <Button Style="{StaticResource SecondaryButtonStyle}" Content="Повернутись назад" Command="{Binding HomeCommand}" Width="150"/>
         </StackPanel>
-        
     </Grid>
 </UserControl>
