@@ -14,25 +14,25 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="Друк">
-                <MenuItem Header="Формуляр" Command="{Binding PrintForm}" />
+                <MenuItem Header="Формуляр" Command="{Binding PrintForm}"/>
                 <Separator />
                 <MenuItem Header="Карта обліку" Command="{Binding PrintAccountingForm}"/>
             </MenuItem>
             <MenuItem Header="Персонал">
-                <MenuItem Header="Довідник" Command="{Binding ShowEmployees}" />
+                <MenuItem Header="Довідник" Command="{Binding ShowEmployees}"/>
                 <MenuItem Header="Підрозділи" Command="{Binding ShowUnits}"/>
                 <MenuItem Header="Звання" Command="{Binding ShowRanks}"/>
             </MenuItem>
             <MenuItem Header="Довідники">
-                <MenuItem Header="Мітка" Command="{Binding ShowPropertyType}" />
-                <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}" />
+                <MenuItem Header="Мітка" Command="{Binding ShowPropertyType}"/>
+                <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}"/>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Horizontal" Grid.Row="1">
