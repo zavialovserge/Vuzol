@@ -51,9 +51,15 @@
             <TextBox Width="{Binding ActualWidth, ElementName=PriceColumn}" Text="{Binding PriceFilter}"/>
             <TextBox Width="{Binding ActualWidth, ElementName=AdditionalnfoColumn}" Text="{Binding AdditionalnfoFilter}"/>
         </StackPanel>
-        <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedList }" 
-          SelectedItem="{Binding SelectedProperty}" SelectedValue="{Binding SelectedProperty}" 
-                  IsReadOnly="True" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedList}" 
+                  SelectedItem="{Binding SelectedProperty}" 
+                  SelectedValue="{Binding SelectedProperty}" 
+                  IsReadOnly="True" 
+                  AutoGenerateColumns="False"
+                  Style="{StaticResource ModernDataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                  CellStyle="{StaticResource DataGridCellStyle}"
+                  RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="FactoryNumberColumn" Width="Auto" Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
                 <DataGridTextColumn x:Name="NameColumn" Width="Auto" Header="Найменування" Binding="{Binding Name}"/>
@@ -78,7 +84,7 @@
             <Button Style="{StaticResource DeleteButtonStyle}" Content="Видалити" Command="{Binding DelCommand}"
                     CommandParameter="{Binding SelectedProperty}" Width="150"/>
             <Button Style="{StaticResource EditButtonStyle}" Content="Імпорт Excel" Command="{Binding ExcelCommand}" Width="150"/>
-        </StackPanel>
+        </StackPanel> 
     </Grid>
     
 </UserControl>
