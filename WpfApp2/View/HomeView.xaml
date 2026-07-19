@@ -43,7 +43,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FactoryNumberColumn}" Text="{Binding FactoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Заводський номер"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=NameColumn}" Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Найменування"/>
-                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding NameColumnFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Інвентарний номер"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding InventoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Інвентарний номер"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InvoiceIdColumn}" Text="{Binding InvoiceIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Номер накладної"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=OrderIdColumn}" Text="{Binding OrderIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Наказ на введення в експлуатацію"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=BookIdColumn}" Text="{Binding BookIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Книга обліку"/>
