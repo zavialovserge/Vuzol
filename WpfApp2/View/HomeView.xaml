@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Vuzol.View" xmlns:local1="clr-namespace:Vuzol.Converteres"
+             xmlns:local="clr-namespace:Vuzol.View" 
+             xmlns:local1="clr-namespace:Vuzol.Converteres"
              mc:Ignorable="d" 
              d:Height="450" d:Width="800" Background="White">
     
@@ -70,13 +71,13 @@
                 <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center"  >
-            <Button Content="Докладніше" Name="EditBtn" Command="{Binding EditCommand}" 
-            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
-            <Button Content="Додати" x:Name="AddBtn" Command="{Binding AddCommand}" Width="200" />
-            <Button Content="Видалити" x:Name="DelBtn" Command="{Binding DelCommand}"
-            CommandParameter="{Binding SelectedItem, ElementName=myDataGrid}" Width="200"/>
-            <Button Content="Додати за допомогою ексель" Command="{Binding ExcelCommand}" Width="200"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+            <Button Style="{StaticResource AddButtonStyle}" Content="Докладніше" Command="{Binding EditCommand}" 
+                    CommandParameter="{Binding SelectedProperty}" Width="150"/>
+            <Button Style="{StaticResource PrimaryButtonStyle}" Content="Додати" Command="{Binding AddCommand}" Width="150"/>
+            <Button Style="{StaticResource DeleteButtonStyle}" Content="Видалити" Command="{Binding DelCommand}"
+                    CommandParameter="{Binding SelectedProperty}" Width="150"/>
+            <Button Style="{StaticResource EditButtonStyle}" Content="Імпорт Excel" Command="{Binding ExcelCommand}" Width="150"/>
         </StackPanel>
     </Grid>
     
