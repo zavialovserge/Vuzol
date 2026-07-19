@@ -23,7 +23,23 @@ namespace Vuzol.View
         public HomeView()
         {
             InitializeComponent();
-
+            
+            // Синхронізація горизонтального скролу між фільтрами та DataGrid
+            DataGridScrollViewer.ScrollChanged += (s, e) =>
+            {
+                if (e.HorizontalChange != 0)
+                {
+                    FilterScrollViewer.ScrollToHorizontalOffset(DataGridScrollViewer.HorizontalOffset);
+                }
+            };
+            
+            FilterScrollViewer.ScrollChanged += (s, e) =>
+            {
+                if (e.HorizontalChange != 0)
+                {
+                    DataGridScrollViewer.ScrollToHorizontalOffset(FilterScrollViewer.HorizontalOffset);
+                }
+            };
         }
     }
 }
