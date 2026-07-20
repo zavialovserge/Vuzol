@@ -104,6 +104,17 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
+        <!-- Global ExcelExport Button Style (green) -->
+        <Style x:Key="ExcelExportButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#27AE60"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
         <!-- Global Delete Button Style (Red) -->
         <Style x:Key="DeleteButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#DC3545"/>

@@ -23,6 +23,7 @@ namespace Vuzol.ViewModel
         private RelayCommand _delCommand;
         private Property _selectedProperty;
         private RelayCommand _excelCommand;
+        private RelayCommand _excelExportCommand;
         private RelayCommand _printForm;
         private RelayCommand _printAccountingForm;
         private NavigationProperty _navigationProperty;
@@ -432,7 +433,29 @@ namespace Vuzol.ViewModel
                        }
                    }));
             }
-        }        
+        }
+        public ICommand ExcelExportCommand
+        {
+            get
+            {
+                return _excelExportCommand ?? (_excelExportCommand = new RelayCommand(
+                   x =>
+                   {
+                       try
+                       {
+                           // Конвертуємо ObservableCollection в List
+                           var dataToExport = SelectedList.ToList();
+                           var exportCommand = new ExcelExportCommand(dataToExport);
+                           exportCommand.Execute(null);
+                       }
+                       catch (Exception ex)
+                       {
+                           MessageBox.Show($"Помилка при експорті: {ex.Message}", "Помилка",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+                       }
+                   }));
+            }
+        }
         public ICommand PrintForm
         {
             get
@@ -537,7 +560,6 @@ namespace Vuzol.ViewModel
                    }));
             }
         }
-
         /// <summary>
         /// Валідує та парсить один рядок з Excel
         /// </summary>
