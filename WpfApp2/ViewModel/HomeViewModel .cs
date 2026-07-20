@@ -337,92 +337,99 @@ namespace Vuzol.ViewModel
                        OpenFileDialog fileDialog = new OpenFileDialog();
                        fileDialog.Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx";
                        if (fileDialog.ShowDialog() != true) return;
-                       Excel.Application xlApp = new Excel.Application();
-                       Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(fileDialog.FileName);
-                       Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
-                       Excel.Range xlRange = xlWorksheet.UsedRange;
-                      
-                       int rCnt;
-                       int rw = 0;
-                       int cl = 0;
-                       List<Property> properties = new List<Property>();
 
-                       rw = xlRange.Rows.Count;
-                       cl = xlRange.Columns.Count;
+                       Excel.Application xlApp = null;
+                       Excel.Workbook xlWorkbook = null;
                        try
-                       {                
-                           
-                           for (rCnt = 2; rCnt <= rw; rCnt++)
+                       {
+                           xlApp = new Excel.Application();
+                           xlWorkbook = xlApp.Workbooks.Open(fileDialog.FileName);
+                           Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
+                           Excel.Range xlRange = xlWorksheet.UsedRange;
+
+                           int rw = xlRange.Rows.Count;
+                           int cl = xlRange.Columns.Count;
+                           List<Property> properties = new List<Property>();
+                           List<string> validationErrors = new List<string>();
+
+                           // Перевірка мінімальної кількості колонок
+                           if (cl < 17)
                            {
-                               int factoryNumber = Convert.ToInt32((xlRange.Cells[rCnt, 1] as Excel.Range).Value);
-                               string? Name = Convert.ToString((xlRange.Cells[rCnt, 2] as Excel.Range).Value);
-                               int inventoryNumber = Convert.ToInt32((xlRange.Cells[rCnt, 3] as Excel.Range).Value);
-                               int invoiceId = Convert.ToInt32((xlRange.Cells[rCnt, 4] as Excel.Range).Value); 
-                               string invoiceDate = Convert.ToString((xlRange.Cells[rCnt, 5] as Excel.Range).Value);
-                               int bookId = Convert.ToInt32((xlRange.Cells[rCnt, 6] as Excel.Range).Value);
-                               int bookPage = Convert.ToInt32((xlRange.Cells[rCnt, 7] as Excel.Range).Value);
-                               int orderBookId = Convert.ToInt32((xlRange.Cells[rCnt, 8] as Excel.Range).Value);                               
-                               int orderBookPage = Convert.ToInt32((xlRange.Cells[rCnt, 9] as Excel.Range).Value);
-                               string? formId =  Convert.ToString((xlRange.Cells[rCnt, 10] as Excel.Range).Value);
-                               int orderId = Convert.ToInt32((xlRange.Cells[rCnt, 11] as Excel.Range).Value);
-                               string orderDate = Convert.ToString((xlRange.Cells[rCnt, 12] as Excel.Range).Value);
-                               string statusName = Convert.ToString((xlRange.Cells[rCnt, 13] as Excel.Range).Value);                               
-                               string? additionalnfo =  Convert.ToString((xlRange.Cells[rCnt, 14] as Excel.Range).Value);
-                               string propertyTypeName = Convert.ToString((xlRange.Cells[rCnt, 15] as Excel.Range).Value);
-                               double price = Convert.ToDouble((xlRange.Cells[rCnt, 16] as Excel.Range).Value);
-                               double quantity = Convert.ToDouble((xlRange.Cells[rCnt, 17] as Excel.Range).Value);
-                               DateTime OrderDateD = DateTime.Now;
-                               DateTime.TryParse(orderDate, out OrderDateD);
-                               DateTime invoiceDateD = DateTime.Now;
-                               DateTime.TryParse(invoiceDate, out invoiceDateD);
-                               Property property = new Property()
-                               {
-                                   FactoryNumber = factoryNumber,
-                                   Name = Name,
-                                   InventoryNumber = inventoryNumber,
-                                   InvoiceId = invoiceId,
-                                   InvoiceDate = invoiceDateD,
-                                   BookId = bookId,
-                                   BookPage=bookPage,
-                                   OrderBookId = orderBookId,
-                                   OrderBookPage = orderBookPage,
-                                   FormId = formId,
-                                   OrderId = orderId,
-                                   OrderDate= OrderDateD,                                  
-                                   Additionalnfo = additionalnfo,
-                                   Status =-1,
-                                   StatusName = statusName,
-                                   PropertyTypeId =-1,
-                                   PropertyTypeName = propertyTypeName,
-                                   Price = price,
-                                   Quantity = quantity
-                               };
-                               properties.Add(property);
+                               MessageBox.Show("Помилка: Excel файл повинен мати як мінімум 17 колонок.", 
+                                   "Неправильний формат файлу", MessageBoxButton.OK, MessageBoxImage.Error);
+                               return;
                            }
 
+                           for (int rCnt = 2; rCnt <= rw; rCnt++)
+                           {
+                               try
+                               {
+                                   var rowErrors = ValidateAndParseExcelRow(xlRange, rCnt);
+                                   
+                                   if (rowErrors.Item1 != null)
+                                   {
+                                       properties.Add(rowErrors.Item1);
+                                   }
+                                   else
+                                   {
+                                       validationErrors.AddRange(rowErrors.Item2);
+                                   }
+                               }
+                               catch (Exception ex)
+                               {
+                                   validationErrors.Add($"Рядок {rCnt}: {ex.Message}");
+                               }
+                           }
 
+                           // Показати помилки валідації якщо вони є
+                           if (validationErrors.Count > 0)
+                           {
+                               string errorMessage = string.Join("\n", validationErrors.Take(10));
+                               if (validationErrors.Count > 10)
+                                   errorMessage += $"\n... та ще {validationErrors.Count - 10} помилок";
+
+                               MessageBox.Show(errorMessage, "Помилки при завантаженні даних", 
+                                   MessageBoxButton.OK, MessageBoxImage.Warning);
+                           }
+
+                           // Вставити у БД
+                           if (properties.Count > 0)
+                           {
+                               foreach (var property in properties)
+                               {
+                                   PropertyData.InsertIntoDb(property);
+                               }
+
+                               SelectedList.Clear();
+                               var newList = PropertyData.GetAllProperty();
+                               foreach (var prop in newList)
+                               {
+                                   SelectedList.Add(prop);
+                               }
+                               SelectedListSource.Refresh();
+
+                               MessageBox.Show($"Успішно завантажено {properties.Count} записів.", 
+                                   "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+                           }
                        }
-                       catch { }
+                       catch (Exception ex)
+                       {
+                           MessageBox.Show($"Помилка при читанні Excel файлу: {ex.Message}", 
+                               "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                       }
                        finally
                        {
-                           xlWorkbook.Close(true, null, null);
-                           xlApp.Quit();
-
-                           Marshal.ReleaseComObject(xlWorkbook);
-                           Marshal.ReleaseComObject(xlWorksheet);
-                           Marshal.ReleaseComObject(xlApp);
+                           if (xlWorkbook != null)
+                           {
+                               xlWorkbook.Close(true, null, null);
+                               Marshal.ReleaseComObject(xlWorkbook);
+                           }
+                           if (xlApp != null)
+                           {
+                               xlApp.Quit();
+                               Marshal.ReleaseComObject(xlApp);
+                           }
                        }
-                       foreach (var property in properties)
-                       {
-                           PropertyData.InsertIntoDb(property);                                                  
-                       }
-                       SelectedList.Clear();
-                       List<Property> newList = PropertyData.GetAllProperty();
-                       foreach (var prop in newList)
-                       {
-                           SelectedList.Add(prop);
-                       }
-                       SelectedListSource.Refresh();
                    }));
             }
         }        
@@ -531,5 +538,187 @@ namespace Vuzol.ViewModel
             }
         }
 
+        /// <summary>
+        /// Валідує та парсить один рядок з Excel
+        /// </summary>
+        private (Property property, List<string> errors) ValidateAndParseExcelRow(Excel.Range xlRange, int rowNumber)
+        {
+            var errors = new List<string>();
+            
+            try
+            {
+                // Допоміжна функція для безпечного читання значення
+                object GetCellValue(int row, int col) => (xlRange.Cells[row, col] as Excel.Range).Value;
+                
+                string? GetStringValue(int row, int col)
+                {
+                    var value = GetCellValue(row, col);
+                    return value?.ToString();
+                }
+
+                bool TryParseInt(int row, int col, string fieldName, out int result)
+                {
+                    result = 0;
+                    var value = GetCellValue(row, col);
+                    
+                    if (value == null)
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): значення пусте");
+                        return false;
+                    }
+
+                    if (!int.TryParse(value.ToString(), out result))
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): '{value}' не є цілим числом");
+                        return false;
+                    }
+
+                    if (result < 0)
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): число не може бути від'ємним ({result})");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                bool TryParseDouble(int row, int col, string fieldName, out double result)
+                {
+                    result = 0;
+                    var value = GetCellValue(row, col);
+                    
+                    if (value == null)
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): значення пусте");
+                        return false;
+                    }
+
+                    if (!double.TryParse(value.ToString(), out result))
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): '{value}' не є числом");
+                        return false;
+                    }
+
+                    if (result < 0)
+                    {
+                        errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): число не може бути від'ємним ({result})");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                bool TryParseDate(string dateStr, string fieldName, out DateTime result)
+                {
+                    result = DateTime.Now;
+                    
+                    if (string.IsNullOrWhiteSpace(dateStr))
+                    {
+                        return true; // Дозволяємо пусті дати (встановимо DateTime.Now)
+                    }
+
+                    if (!DateTime.TryParse(dateStr, out result))
+                    {
+                        errors.Add($"Рядок {rowNumber}: '{dateStr}' ({fieldName}) має неправильний формат дати");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                // Парсимо кожне поле з валідацією
+                if (!TryParseInt(rowNumber, 1, "Заводський номер", out int factoryNumber)) 
+                    return (null, errors);
+                
+                string name = GetStringValue(rowNumber, 2);
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    errors.Add($"Рядок {rowNumber}, колонка 2 (Найменування): значення не може бути пусте");
+                    return (null, errors);
+                }
+
+                if (!TryParseInt(rowNumber, 3, "Інвентарний номер", out int inventoryNumber)) 
+                    return (null, errors);
+                
+                if (!TryParseInt(rowNumber, 4, "Номер накладної", out int invoiceId)) 
+                    return (null, errors);
+                
+                string invoiceDate = GetStringValue(rowNumber, 5);
+                if (!TryParseDate(invoiceDate, "Дата накладної", out DateTime invoiceDateD)) 
+                    return (null, errors);
+
+                if (!TryParseInt(rowNumber, 6, "Книга обліку", out int bookId)) 
+                    return (null, errors);
+                
+                if (!TryParseInt(rowNumber, 7, "Сторінка книги", out int bookPage)) 
+                    return (null, errors);
+                
+                if (!TryParseInt(rowNumber, 8, "Книга закріплень", out int orderBookId)) 
+                    return (null, errors);
+                
+                if (!TryParseInt(rowNumber, 9, "Сторінка закріплень", out int orderBookPage)) 
+                    return (null, errors);
+                
+                string formId = GetStringValue(rowNumber, 10);
+                if (!TryParseInt(rowNumber, 11, "Наказ на введення", out int orderId)) 
+                    return (null, errors);
+                
+                string orderDate = GetStringValue(rowNumber, 12);
+                if (!TryParseDate(orderDate, "Дата наказу", out DateTime orderDateD)) 
+                    return (null, errors);
+
+                string statusName = GetStringValue(rowNumber, 13);
+                if (string.IsNullOrWhiteSpace(statusName))
+                {
+                    errors.Add($"Рядок {rowNumber}, колонка 13 (Статус): значення не може бути пусте");
+                    return (null, errors);
+                }
+
+                string additionalInfo = GetStringValue(rowNumber, 14) ?? string.Empty;
+                string propertyTypeName = GetStringValue(rowNumber, 15);
+                
+                if (!TryParseDouble(rowNumber, 16, "Ціна", out double price)) 
+                    return (null, errors);
+                
+                if (!TryParseDouble(rowNumber, 17, "Кількість", out double quantity)) 
+                    return (null, errors);
+
+                // Якщо помилок немає, повертаємо Property
+                if (errors.Count == 0)
+                {
+                    var property = new Property
+                    {
+                        FactoryNumber = factoryNumber,
+                        Name = name,
+                        InventoryNumber = inventoryNumber,
+                        InvoiceId = invoiceId,
+                        InvoiceDate = invoiceDateD,
+                        BookId = bookId,
+                        BookPage = bookPage,
+                        OrderBookId = orderBookId,
+                        OrderBookPage = orderBookPage,
+                        FormId = formId,
+                        OrderId = orderId,
+                        OrderDate = orderDateD,
+                        Additionalnfo = additionalInfo,
+                        Status = -1,
+                        StatusName = statusName,
+                        PropertyTypeId = -1,
+                        PropertyTypeName = propertyTypeName,
+                        Price = price,
+                        Quantity = quantity
+                    };
+
+                    return (property, errors);
+                }
+
+                return (null, errors);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Рядок {rowNumber}: Непередбачена помилка - {ex.Message}");
+                return (null, errors);
+            }
+        }
     }
 }

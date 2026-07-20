@@ -95,7 +95,7 @@
             <Button Style="{StaticResource PrimaryButtonStyle}" Content="Додати" Command="{Binding AddCommand}" Width="150"/>
             <Button Style="{StaticResource DeleteButtonStyle}" Content="Видалити" Command="{Binding DelCommand}"
                     CommandParameter="{Binding SelectedProperty}" Width="150"/>
-            <Button Style="{StaticResource EditButtonStyle}" Content="Імпорт Excel" Command="{Binding ExcelCommand}" Width="150"/>
+            <Button Style="{StaticResource EditButtonStyle}" Content="Імпорт Excel" Command="{Binding ExcelCommand}" Width="150" />
         </StackPanel> 
     </Grid>
     
