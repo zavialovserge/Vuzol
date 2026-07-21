@@ -9,9 +9,8 @@ namespace Vuzol.Services
     public class SoftwareEquipmentData
     {
         private const string GET_ALL_SOFTWAREEQUIPMENT_SQL =
-                   @"SELECT  [ID],[MainPropertyFactoryNumber]
-                            ,[Description],[Quantity]
-                            FROM [dbo].[SoftwareEquipment]";
+                   @"SELECT ""Id"",""MainPropertyFactoryNumber"",""Description"",""Quantity""
+                     FROM ""SoftwareEquipment"" ";
 
         private const string UPDATE_SOFTWAREEQUIPMENT_SQL =
                    @"UPDATE [dbo].[SoftwareEquipment] SET ";
@@ -28,7 +27,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             IEnumerable<SoftwareEquipmentDTO> softwareEquipmentDTOs =
                 database.Query<SoftwareEquipmentDTO>(GET_ALL_SOFTWAREEQUIPMENT_SQL 
-                                                    + $"where MainPropertyFactoryNumber = {factoryNumber}");
+                                                    + $"where \"MainPropertyFactoryNumber\" = {factoryNumber}");
             var softwareEquipmentList = softwareEquipmentDTOs.Select(ToSoftwareEquipment).ToList();
             int i = 1;
             foreach (var softwareEquipment in softwareEquipmentList)

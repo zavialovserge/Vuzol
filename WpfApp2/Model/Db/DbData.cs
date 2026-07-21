@@ -1,11 +1,13 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
+using Npgsql;
+
 namespace Vuzol.Model.Db
 {
     public class DbData
     {
         private readonly string _connectionString;
-        public DbData()
+
+        public DbData() 
         {
             _connectionString = SqlConnectionDb.ConnectionString;
         }
@@ -14,9 +16,10 @@ namespace Vuzol.Model.Db
         {
             _connectionString = connectionString;
         }
+
         public IDbConnection Connect()
         {
-            return new SqlConnection(_connectionString);
-        }       
+            return new NpgsqlConnection(_connectionString);
+        }
     }
 }

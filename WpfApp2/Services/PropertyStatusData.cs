@@ -9,17 +9,17 @@ namespace Vuzol.Services
     public class PropertyStatusData
     {
         private const string GET_ALL_PROPERTYSTATUS_SQL =
-                   @"SELECT  [ID]
-                            ,[Name]
-                            FROM [dbo].[PropertyStatus]";
+                   @"SELECT ""Id"", ""Name"" FROM ""PropertyStatus""";
+
         private const string UPDATE_PROPERTYSTATUS_SQL =
-                   @"UPDATE [dbo].[PropertyStatus] SET [Name] =";
+                   @"UPDATE ""PropertyStatus"" SET ""Name"" = ";
+
         private const string INSERT_PROPERTYSTATUS_SQL =
-                  @"INSERT INTO [dbo].[PropertyStatus]
-                            ([Name])
-                            VALUES ";
+                  @"INSERT INTO ""PropertyStatus"" (""Name"") VALUES ";
+
         private const string DELETE_PROPERTYSTATUS_SQL =
-                  @"DELETE FROM [dbo].[PropertyStatus] ";
+                  @"DELETE FROM ""PropertyStatus"" WHERE ""Id"" = ";
+
         public static IEnumerable<PropertyStatus> GetAllPropertyStatus()
         {
             DbData dbData = new DbData();

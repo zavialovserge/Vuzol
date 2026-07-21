@@ -9,18 +9,19 @@ namespace Vuzol.Services
     public class EmployeeData
     {
         private const string GET_ALL_EMPLOYEES_SQL =
-                  @"SELECT   em.[Id]
-                            ,[FirstName]
-                            ,[LastName]
-                            ,[FatherName]
-                            ,[Rank]
-                            ,em.[Position]
-                            ,r.[Description] as RankDescription
-                            ,em.[UnitId]
-                            ,u.[Name] as UnitName
-                            FROM [dbo].[Employee] as em
-                            left join [dbo].[Rank] as r on r.ID = em.[Rank]
-                            left join [dbo].[Unit] as u on u.ID = em.[UnitId]";
+                  @"SELECT em.""Id"",
+                           em.""FirstName"",
+                           em.""LastName"",
+                           em.""FatherName"",
+                           em.""Rank"",
+                           em.""Position"",
+                           r.""Description"" as ""RankDescription"",
+                           em.""UnitId"",
+                           u.""Name"" as ""UnitName""
+                    FROM ""Employee"" as em
+                    LEFT JOIN ""Rank"" as r ON r.""ID"" = em.""Rank""
+                    LEFT JOIN ""Unit"" as u ON u.""Id"" = em.""UnitId""";
+
         private const string Insert_EMPLOYEE_SQL =
                   @"INSERT INTO [dbo].[Employee]
                                 (

@@ -1,0 +1,17 @@
+|table_name       |
+|-----------------|
+|Rank             |
+|Employee         |
+|Unit             |
+|Form             |
+|Property         |
+|Invoice          |
+|Order            |
+|OrderBook        |
+|PropertyStatus   |
+|PropertyType     |
+|HardwareEquipment|
+|SoftwareEquipment|
+|PropertyToStatus |
+|ID               |
+|Description      |

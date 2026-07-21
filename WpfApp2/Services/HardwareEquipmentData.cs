@@ -9,7 +9,7 @@ namespace Vuzol.Services
     public class HardwareEquipmentData
     {
         private const string GET_ALL_HARDWAREEQUIPMENT_SQL =
-                   @"SELECT  [MainPropertyFactoryNumber]
+                   @"SELECT  MainPropertyFactoryNumber
                              ,SubPropertyFactoryNumber
                              ,Quantity
                              ,[Description]

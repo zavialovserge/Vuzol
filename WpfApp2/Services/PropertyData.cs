@@ -9,42 +9,31 @@ namespace Vuzol.Services
     public class PropertyData
     {
         private const string GET_ALL_PROPERTYS_SQL =
-                  @"Select pr.FactoryNumber,pr.Name,pr.FactoryNumber,pr.InventoryNumber,
-                  InvoiceId,FIO_R,FIO_I,BookId,pr.FormId,pr.OrderId,o.Date_D as OrderDate,
-                  OrderBookId,PropertyTypeId,[Status],ps.Name as StatusName,
-                  isnull(pr.Additionalnfo,'') as Additionalnfo,pr.DLM,f.Name as FormName,
-                   BookPage,pr.Quantity as quantity,pr.Price as price 
-                  ,OrderBookPage,f.date_d as FormDate
-                  ,isnull(e1.LastName + ' ' + e1.FirstName,'') as [FIO_R_STR]
-	              ,e2.LastName + ' ' + e2.FirstName as [FIO_I_STR]
-                  ,isnull(u.Name,'') as UnitName
-                  from Property  as pr 
-                  left join Form as f on f.FormId = pr.FormId
-                  left join [dbo].[Employee] as e1 on e1.Id = pr.FIO_R
-                  left join [dbo].[Employee] as e2 on e2.Id = pr.Fio_I
-                  left join [dbo].Unit as u on u.Id = e2.UnitId
-                  left join [dbo].[Order] as o on o.OrderId = pr.OrderId
-                  left join [dbo].[PropertyStatus] as ps on ps.Id = pr.Status";
+                  @"SELECT pr.""FactoryNumber"", pr.""Name"", pr.""InventoryNumber"",
+                          pr.""InvoiceId"", pr.""FIO_R"", pr.""Fio_I"", pr.""BookId"", pr.""FormId"", 
+                          pr.""OrderId"", o.""Date_D"" as ""OrderDate"",
+                          pr.""OrderBookId"", pr.""PropertyTypeId"", pr.""Status"", ps.""Name"" as ""StatusName"",
+                          COALESCE(pr.""Additionalnfo"", '') as ""Additionalnfo"", pr.""DLM"", f.""Name"" as ""FormName"",
+                          pr.""BookPage"", pr.""Quantity"" as ""quantity"", pr.""Price"" as ""price"",
+                          pr.""OrderBookPage"", f.""Date_D"" as ""FormDate"",
+                          COALESCE(e1.""LastName"" || ' ' || e1.""FirstName"", '') as ""FIO_R_STR"",
+                          COALESCE(e2.""LastName"" || ' ' || e2.""FirstName"", '') as ""FIO_I_STR"",
+                          COALESCE(u.""Name"", '') as ""UnitName""
+                   FROM ""Property"" as pr
+                   LEFT JOIN ""Form"" as f ON f.""FormId"" = pr.""FormId""
+                   LEFT JOIN ""Employee"" as e1 ON e1.""Id"" = pr.""FIO_R""
+                   LEFT JOIN ""Employee"" as e2 ON e2.""Id"" = pr.""Fio_I""
+                   LEFT JOIN ""Unit"" as u ON u.""Id"" = e2.""UnitId""
+                   LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
+                   LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
 
         private const string INSERT_PROPERTYS_SQL =
-                  @"INSERT INTO [dbo].[Property]
-           ([FactoryNumber]
-           ,[InventoryNumber]
-           ,[Name]
-           ,[InvoiceId]
-           ,[BookId]
-           ,[BookPage]
-           ,[FormId]
-           ,[OrderId]
-           ,[OrderBookId]
-           ,[OrderBookPage]
-           ,[PropertyTypeId]
-           ,[Status]
-           ,[Additionalnfo]
-           ,[Quantity]
-           ,[Price]
-           ,[DLM])
-            VALUES ";
+                  @"INSERT INTO ""Property""
+                   (""FactoryNumber"", ""InventoryNumber"", ""Name"", ""InvoiceId"", ""BookId"", 
+                    ""BookPage"", ""FormId"", ""OrderId"", ""OrderBookId"", ""OrderBookPage"", 
+                    ""PropertyTypeId"", ""Status"", ""Additionalnfo"", ""Quantity"", ""Price"", ""DLM"")
+                   VALUES";
+
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE [dbo].[Property]";
         private const string DELETE_PROPERTYS_SQL =
