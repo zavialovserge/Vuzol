@@ -393,7 +393,7 @@ namespace Vuzol.ViewModel.Model
         private Tuple<string, double> GetSoftwareEquipmentDescription(string name, double quantity)
         {
             InputDialogSample inputDialog =
-                       new InputDialogSample("Введіть опис", name, quantity);
+                       new InputDialogSample("Введіть опис", name, true, quantity);
             if (inputDialog.ShowDialog() == false
                 || string.IsNullOrEmpty(inputDialog.Answer)) return null;
 

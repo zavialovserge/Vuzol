@@ -19,13 +19,16 @@ namespace Vuzol.View
     /// </summary>
     public partial class InputDialogSample : Window
     {
-        public InputDialogSample(string question, string defaultAnswer = "",double quantity  =0)
+        public InputDialogSample(string question, string defaultAnswer = "",bool IsQuantityvisible = false , double quantity  =0)
         {
             InitializeComponent();
             lblQuestion.Content = question;
             txtAnswer.Text = defaultAnswer; 
             txtQuantity.Text = quantity.ToString();
+            txtQuantity.IsEnabled = IsQuantityvisible;
+            txtQuantity.Visibility = IsQuantityvisible ? Visibility.Visible : Visibility.Collapsed;
         }
+        
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;

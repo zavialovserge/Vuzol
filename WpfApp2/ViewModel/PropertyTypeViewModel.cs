@@ -5,6 +5,7 @@ using Vuzol.Navigation;
 using Vuzol.Services;
 using Vuzol.View;
 using Vuzol.ViewModel.Command;
+using Vuzol.ViewModel.Helper;
 using Vuzol.ViewModel.Model;
 
 namespace Vuzol.ViewModel
@@ -50,7 +51,7 @@ namespace Vuzol.ViewModel
                 return _addCommand ?? (_addCommand = new RelayCommand(
                    x =>
                    {
-                       string name = GetProprertyName(string.Empty);
+                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву мітки:");
                        if (string.IsNullOrEmpty(name)) return;
                        PropertyType propertyType = new PropertyType(0, name);
                        PropertyTypeData.InsertPropertyType(propertyType);
@@ -66,23 +67,15 @@ namespace Vuzol.ViewModel
                 return _editCommand ?? (_editCommand = new RelayCommand(
                    x =>
                    {
-                       string name = GetProprertyName(SelectedPropertyType.Name);
+                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву мітки:",
+                           SelectedPropertyType.Name);                       
                        if (string.IsNullOrEmpty(name)) return;
                        SelectedPropertyType.Name = name;
                        PropertyTypeData.EditPropertyType(SelectedPropertyType);
                        RefreshCollection();
                    }));
             }
-        }      
-        private string GetProprertyName(string name)
-        {
-            InputDialogSample inputDialog =
-                       new InputDialogSample("Введіть назву мітки:", name);
-            if (inputDialog.ShowDialog() == false
-                || string.IsNullOrEmpty(inputDialog.Answer)) return string.Empty;
-
-            return inputDialog.Answer;
-        }
+        }          
         private void RefreshCollection()
         {
             PropertyTypeList.Clear();

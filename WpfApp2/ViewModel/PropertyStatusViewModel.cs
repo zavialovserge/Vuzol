@@ -5,6 +5,7 @@ using Vuzol.Navigation;
 using Vuzol.Services;
 using Vuzol.View;
 using Vuzol.ViewModel.Command;
+using Vuzol.ViewModel.Helper;
 using Vuzol.ViewModel.Model;
 
 namespace Vuzol.ViewModel
@@ -50,7 +51,7 @@ namespace Vuzol.ViewModel
                 return _addCommand ?? (_addCommand = new RelayCommand(
                    x =>
                    {
-                       string name = GetProprertyName(string.Empty);
+                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву статуса:");
                        if (string.IsNullOrEmpty(name)) return;
                        PropertyStatus propertyStatus = new PropertyStatus(0, name);
                        PropertyStatusData.InsertPropertyType(propertyStatus);
@@ -66,7 +67,8 @@ namespace Vuzol.ViewModel
                 return _editCommand ?? (_editCommand = new RelayCommand(
                    x =>
                    {
-                       string name = GetProprertyName(SelectedPropertyStatus.Name);
+                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву статуса:", 
+                                                        SelectedPropertyStatus.Name);
                        if (string.IsNullOrEmpty(name)) return;
                        SelectedPropertyStatus.Name = name;
                        PropertyStatusData.EditPropertyType(SelectedPropertyStatus);
@@ -74,15 +76,7 @@ namespace Vuzol.ViewModel
                    }));
             }
         }
-        private string GetProprertyName(string name)
-        {
-            InputDialogSample inputDialog =
-                       new InputDialogSample("Введіть назву статус:", name);
-            if (inputDialog.ShowDialog() == false
-                || string.IsNullOrEmpty(inputDialog.Answer)) return string.Empty;
-
-            return inputDialog.Answer;
-        }
+        
         private void RefreshCollection()
         {
             PropertyStatusList.Clear();
