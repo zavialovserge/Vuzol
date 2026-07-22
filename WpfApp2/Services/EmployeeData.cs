@@ -23,19 +23,19 @@ namespace Vuzol.Services
                     LEFT JOIN ""Unit"" as u ON u.""Id"" = em.""UnitId""";
 
         private const string Insert_EMPLOYEE_SQL =
-                  @"INSERT INTO [dbo].[Employee]
+                  @"INSERT INTO ""Employee""
                                 (
-                                  [FirstName]
-                                ,[LastName]
-                                ,[FatherName]
-                                ,[Rank]
-                                ,[UnitId]
-                                ,[Position])
+                                  ""FirstName""
+                                ,""LastName""
+                                ,""FatherName""
+                                ,""Rank""
+                                ,""UnitId""
+                                ,""Position"")
                                 VALUES";
         private const string UPDATE_EMPLOYEE_SQL =
-              @"UPDATE [dbo].[Employee] Set";
+              @"UPDATE ""Employee"" Set";
         private const string DELETE_EMPLOYEE_SQL =
-              @"DELETE FROM [dbo].[Employee]";
+              @"DELETE FROM ""Employee""";
         public static List<Employee> GetAllEmployees()
         {
             DbData dbData = new DbData();
@@ -49,12 +49,12 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             EmployeeDTO employeeDTO = ToEmployeeDTO(employee);
-            var strInsert = Insert_EMPLOYEE_SQL + $"(N'{employeeDTO.FirstName}'," +
-                                                                 $"N'{employeeDTO.LastName}'," +
-                                                                 $"N'{employeeDTO.FatherName}'," +
+            var strInsert = Insert_EMPLOYEE_SQL + $"('{employeeDTO.FirstName}'," +
+                                                                 $"'{employeeDTO.LastName}'," +
+                                                                 $"'{employeeDTO.FatherName}'," +
                                                                  $"{employeeDTO.Rank}," +
                                                                  $"{employeeDTO.UnitId}," +
-                                                                 $"N'{employeeDTO.Position}')";
+                                                                 $"'{employeeDTO.Position}')";
             var result = database.Execute(strInsert);
             return result == 1;
         }    
@@ -65,13 +65,13 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             EmployeeDTO EmployeeDTO = ToEmployeeDTO(employee);
             var strUpdate = UPDATE_EMPLOYEE_SQL + 
-            $"  [FirstName] =" + $"N'{EmployeeDTO.FirstName}'," +
-                $"[LastName] =" + $"N'{EmployeeDTO.LastName}'," +
-                $"[FatherName] = " + $"N'{EmployeeDTO.FatherName}'," +
-                $"[Rank] = " + $"{EmployeeDTO.Rank}," +
-                $"[Position] = " + $"N'{EmployeeDTO.Position}', " +
-                $"[UnitId] = " + $"'{EmployeeDTO.UnitId}' " +
-                " WHERE [Id] =" + $"{EmployeeDTO.Id}";
+            $"  \"FirstName\" =" + $"'{EmployeeDTO.FirstName}'," +
+                $"\"LastName\" =" + $"'{EmployeeDTO.LastName}'," +
+                $"\"FatherName\" = " + $"'{EmployeeDTO.FatherName}'," +
+                $"\"Rank\" = " + $"{EmployeeDTO.Rank}," +
+                $"\"Position\" = " + $"'{EmployeeDTO.Position}', " +
+                $"\"UnitId\" = " + $"'{EmployeeDTO.UnitId}' " +
+                " WHERE \"Id\" =" + $"{EmployeeDTO.Id}";
             var result = database.Execute(strUpdate);
             return result == 1;
         }
@@ -81,7 +81,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             EmployeeDTO EmployeeDTO = ToEmployeeDTO(employee);
             var strUpdate = DELETE_EMPLOYEE_SQL  +
-                " WHERE [Id] =" + $"{EmployeeDTO.Id}";
+                " WHERE \"Id\" =" + $"{EmployeeDTO.Id}";
             var result = database.Execute(strUpdate);
             return result == 1;
         }

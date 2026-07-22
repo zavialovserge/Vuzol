@@ -164,7 +164,7 @@ namespace Vuzol.Services
             var result = database.Execute(strInsert);
             return result == 1;
         }
-        public static bool DeletefFromDb(Property selectedProperty)
+        public static void DeletefFromDb(Property selectedProperty)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
@@ -172,11 +172,10 @@ namespace Vuzol.Services
                 "IF EXISTS (SELECT 1 FROM \"HardwareEquipment\" " +
                 $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber}) " +
                 "THEN\r\n        DELETE FROM \"HardwareEquipment\" " +
-                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber};\r\n   " +
+                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber};\r\n \r\nEND IF;  " +
                 $"DELETE FROM \"Property\" WHERE \"FactoryNumber\" = {selectedProperty.FactoryNumber};" +
-                "\r\nEND IF;\r\nEND $$;";         
-            var result = database.Execute(strDelete);
-            return result == 1;
+                "\r\nEND $$;";         
+            database.Execute(strDelete);            
         }
         private static Property ToProperty(PropertyDTO dto) =>
                    new Property(dto.FactoryNumber,
