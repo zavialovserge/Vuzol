@@ -1,6 +1,12 @@
 ﻿using Dapper;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.SqlServer.Server;
 using System.Data;
+using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Net;
 using System.Text;
+using System.Windows.Controls.Primitives;
 using Vuzol.Model.Db;
 using Vuzol.ViewModel.Model;
 
@@ -35,9 +41,9 @@ namespace Vuzol.Services
                    VALUES";
 
         private const string UPDATE_PROPERTYS_SQL =
-                  @"UPDATE [dbo].[Property]";
+                  @"UPDATE ""Property""";
         private const string DELETE_PROPERTYS_SQL =
-                  @" delete from  [dbo].[Property] where [FactoryNumber] =  ";
+                  @" delete from  ""Property"" where ""FactoryNumber"" =  ";
         public static List<Property> GetAllProperty()
         {
             DbData dbData = new DbData();
@@ -51,21 +57,21 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            string updateSql = $" SET [InventoryNumber] = "+ $"{propertyDTO.InventoryNumber}," +
-                               "[Name] = "+ $"N'{propertyDTO.Name}'," +
-                               "[InvoiceId] =" + $"{propertyDTO.InvoiceId}," +
-                               "[BookId] =" + $"{propertyDTO.BookId}," +
-                               "[OrderBookId] =" + $"{propertyDTO.OrderBookId}," +
-                               "[OrderId] =" + $"{propertyDTO.OrderId}," +                               
-                               "[PropertyTypeId] =" + $"{propertyDTO.PropertyTypeId}," +
-                               "[Status] =" + $"{propertyDTO.Status}," +
-                               "[Additionalnfo] =" + $"N'{propertyDTO.Additionalnfo}'," +
-                               "[BookPage] =" + $"N'{propertyDTO.BookPage}'," +
-                               "[OrderBookPage] =" + $"N'{propertyDTO.OrderBookPage}'," +
-                               "[Quantity] =" + $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
-                               "[Price] =" + $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
-                               "[DLM] = Getdate() " +
-                               " WHERE [FactoryNumber] =" + $"{propertyDTO.FactoryNumber}";
+            string updateSql = $" SET \"InventoryNumber\" = " + $"{propertyDTO.InventoryNumber}," +
+                               "\"Name\" = " + $"N'{propertyDTO.Name}'," +
+                               "\"InvoiceId\" = " + $"{propertyDTO.InvoiceId}," +
+                               "\"BookId\" = " + $"{propertyDTO.BookId}," +
+                               "\"OrderBookId\" = " + $"{propertyDTO.OrderBookId}," +
+                               "\"OrderId\" =" + $"{propertyDTO.OrderId}," +
+                               "\"PropertyTypeId\" =" + $"{propertyDTO.PropertyTypeId}," +
+                               "\"Status\" =" + $"{propertyDTO.Status}," +
+                               "\"Additionalnfo\" =" + $"N'{propertyDTO.Additionalnfo}'," +
+                               "\"BookPage\" =" + $"{propertyDTO.BookPage}," +
+                               "\"OrderBookPage\" =" + $"{propertyDTO.OrderBookPage}," +
+                               "\"Quantity\" =" + $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
+                               "\"Price\" =" + $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
+                               "\"DLM\" = Now() " +
+                               " WHERE \"FactoryNumber\" =" + $"{propertyDTO.FactoryNumber}";
             var strUpdate = UPDATE_PROPERTYS_SQL + updateSql;
             var result = database.Execute(strUpdate);
             return result == 1;
@@ -75,69 +81,55 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            var strInsert = $"Declare @statusNew int = {propertyDTO.Status} " +
-                            $"Declare @PropertyTypeIdNew int = {propertyDTO.PropertyTypeId} " +
-                            $"if not exists( select 1 from Invoice where InvoiceID = {propertyDTO.InvoiceId})" +
-                            $"begin " +
-                            $"Insert into [dbo].[Invoice]   ([InvoiceID] ,[Date_From])  " +
-                            $"values ( {propertyDTO.InvoiceId},N'{propertyDTO.InvoiceDate}') " +
-                            $"end " +
-                            $"if not exists( select 1 from OrderBook where OrderBookID = {propertyDTO.OrderBookId})" +
-                            $"begin " +
-                            $"Insert into [dbo].[OrderBook]    ([OrderBookID] ,[Date_D])  " +
-                            $"values ( {propertyDTO.OrderBookId},N'{DateTime.Now}') " +
-                            $"end " +
-                            $"if not exists( select 1 from OrderBook where OrderBookID = {propertyDTO.BookId})" +
-                            $"begin " +
-                            $"Insert into [dbo].[OrderBook]   ([OrderBookID] ,[Date_D])  " +
-                            $"values ( {propertyDTO.BookId},N'{DateTime.Now}') " +
-                            $"end " +
-                            $"if not exists( select 1 from [dbo].[Form]  where [FormId] = {propertyDTO.FormId})" +
-                            $"begin " +
-                            $"Insert into [dbo].[Form]   ([FormId] ,[Date_D])  " +
-                            $"values ( {propertyDTO.FormId},N'{DateTime.Now}') " +
-                            $"end " +
-                            $"if not exists( select 1 from [dbo].[Order]  where [OrderId] = {propertyDTO.OrderId})" +
-                            $"begin " +
-                            $"Insert into [dbo].[Order]   ([OrderId] ,[Date_D])  " +
-                            $"values ( {propertyDTO.OrderId},N'{propertyDTO.OrderDate}') " +
-                            $"end " +
-                            $"if not exists (SELECT TOP 1 id FROM PropertyStatus AS ps WHERE ps.[Name] = N'{propertyDTO.StatusName}') " +
-                            "begin " +
-                            "INSERT INTO [dbo].[PropertyStatus] (Name) " +
-                            $"VALUES(N'{propertyDTO.StatusName}') " +
-                            $"set @statusNew = (SELECT top 1 id  from PropertyStatus as ps where ps.[Name] =N'{propertyDTO.StatusName}' ); " +
-                            "end " +
-                            "else " +
-                            "SET @statusNew =(SELECT TOP 1 id " +
-                            " FROM PropertyStatus AS ps " +
-                            $"WHERE ps.[Name] = N'{propertyDTO.StatusName}') " +
-                             $"if not exists (SELECT TOP 1 id FROM [dbo].[PropertyType] AS pt WHERE pt.[Name] = N'{propertyDTO.PropertyTypeName}') " +
-                            "begin " +
-                            "INSERT INTO [dbo].[PropertyType] (Name) " +
-                            $"VALUES(N'{propertyDTO.PropertyTypeName}') " +
-                            $"set @PropertyTypeIdNew = (SELECT top 1 id  from PropertyType as pt where pt.[Name] =N'{propertyDTO.PropertyTypeName}' ); " +
-                            "end " +
-                            "else " +
-                            "SET @PropertyTypeIdNew =(SELECT TOP 1 id " +
-                            " FROM PropertyType AS pt " +
-                            $"WHERE pt.[Name] = N'{propertyDTO.PropertyTypeName}') " +
-                            INSERT_PROPERTYS_SQL + $"({propertyDTO.FactoryNumber}," +
-                                                    $"{propertyDTO.InventoryNumber}," +
-                                                    $"N'{propertyDTO.Name}'," +
-                                                    $"{propertyDTO.InvoiceId}," +
-                                                    $"{propertyDTO.BookId}," +
-                                                    $"{propertyDTO.BookPage}," +
-                                                    $"{propertyDTO.FormId}," +
-                                                    $"{propertyDTO.OrderId}," +
-                                                    $"{propertyDTO.OrderBookId}," +
-                                                    $"{propertyDTO.OrderBookPage}," +
-                                                    $"@PropertyTypeIdNew," +
-                                                    $"@statusNew," +                                                                 
-                                                    $"N'{propertyDTO.Additionalnfo}'," +
-                                                    $"{propertyDTO.Quantity.ToString().Replace(',', '.')}," +
-                                                    $"{propertyDTO.Price.ToString().Replace(',', '.')}," +
-                                                    $"GETDATE())";
+            var strInsert = @"DO $$"+
+            "DECLARE\n" +
+            $"statusNew integer:= { propertyDTO.PropertyTypeId};\n" +
+            $"PropertyTypeIdNew integer := { propertyDTO.InvoiceId};\n"+
+            $"BEGIN "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"Invoice\" WHERE \"InvoiceID\" = {propertyDTO.InvoiceId}) THEN "+
+            $"INSERT INTO \"Invoice\"(\"InvoiceID\", \"Date_From\") "+
+            $"VALUES({propertyDTO.InvoiceId},NOW()); " +
+            $"END IF; "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"OrderBook\" WHERE \"OrderBookID\" = {propertyDTO.OrderBookId}) THEN "+
+            $"    INSERT INTO \"Orderbook\"(\"OrderBookID\", \"Date_D\") "+
+            $"VALUES({ propertyDTO.OrderBookId}, NOW()); " +
+            $"END IF; "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"Form\" WHERE \"FormId\" = {propertyDTO.FormId}) THEN "+
+            $"INSERT INTO \"Form\"(\"FormId\", \"Date_D\") "+
+            $"VALUES( {propertyDTO.FormId}, NOW()); "+
+            $"END IF; "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"Order\" WHERE \"OrderId\" = {propertyDTO.OrderId}) THEN "+
+            $"  INSERT INTO \"Order\"(\"Orderid\", \"Date_D\") "+
+            $"VALUES({ propertyDTO.OrderId}, NOW()); " +
+            $"END IF; "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"PropertyStatus\" ps WHERE ps.\"Name\" = '{propertyDTO.StatusName}') THEN "+
+            $"INSERT INTO \"PropertyStatus\"(\"Name\") VALUES('{propertyDTO.StatusName}'); "+
+            $"END IF; "+
+            $"statusNew:= (SELECT \"Id\" FROM \"PropertyStatus\" ps WHERE ps.\"Name\" = '{propertyDTO.StatusName}' "+
+            $"LIMIT 1); "+
+            $"IF NOT EXISTS(SELECT 1 FROM \"PropertyType\" pt WHERE pt.\"Name\" = '{propertyDTO.PropertyTypeName}') THEN "+
+            $"    INSERT INTO \"PropertyType\"(\"Name\") VALUES('{propertyDTO.PropertyTypeName}'); "+
+            $"END IF; "+
+            $"PropertyTypeIdNew:= (SELECT \"Id\" FROM \"PropertyType\" pt WHERE pt.\"Name\" = '{propertyDTO.PropertyTypeName}'"+
+            $"LIMIT 1); "+
+            INSERT_PROPERTYS_SQL +   
+                                $"({propertyDTO.FactoryNumber}," +
+                                $"{propertyDTO.InventoryNumber}," +
+                                $"'{propertyDTO.Name}'," +
+                                $"{propertyDTO.InvoiceId}," +
+                                $"{propertyDTO.BookId}," +
+                                $"{propertyDTO.BookPage}," +
+                                $"{propertyDTO.FormId}," +
+                                $"{propertyDTO.OrderId}," +
+                                $"{propertyDTO.OrderBookId}," +
+                                $"{propertyDTO.OrderBookPage}," +
+                                $"PropertyTypeIdNew," +
+                                $"statusNew," +
+                                $"'{propertyDTO.Additionalnfo}'," +
+                                $"'{propertyDTO.Quantity.ToString().Replace(',', '.')}'," +
+                                $"'{propertyDTO.Price.ToString().Replace(',', '.')}'," +
+                                $"NOW());" +
+                                "END $$;";  
             var result = database.Execute(strInsert);
             return result == 1;
         }
@@ -176,9 +168,13 @@ namespace Vuzol.Services
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
-            string strDelete = $"if exists(Select * from dbo.HardwareEquipment where SubPropertyFactoryNumber = {selectedProperty.FactoryNumber}) "+
-                               $" delete from  dbo.HardwareEquipment where SubPropertyFactoryNumber = {selectedProperty.FactoryNumber}" +
-                               DELETE_PROPERTYS_SQL + $"{selectedProperty.FactoryNumber}";
+            string strDelete = "DO $$\r\nBEGIN\r\n    " +
+                "IF EXISTS (SELECT 1 FROM \"HardwareEquipment\" " +
+                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber}) " +
+                "THEN\r\n        DELETE FROM \"HardwareEquipment\" " +
+                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber};\r\n   " +
+                $"DELETE FROM \"Property\" WHERE \"FactoryNumber\" = {selectedProperty.FactoryNumber};" +
+                "\r\nEND IF;\r\nEND $$;";         
             var result = database.Execute(strDelete);
             return result == 1;
         }

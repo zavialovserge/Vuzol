@@ -9,14 +9,14 @@ namespace Vuzol.Services
     public class HardwareEquipmentData
     {
         private const string GET_ALL_HARDWAREEQUIPMENT_SQL =
-                   @"SELECT  MainPropertyFactoryNumber
-                             ,SubPropertyFactoryNumber
-                             ,Quantity
-                             ,[Description]
-                             FROM [dbo].[HardwareEquipment]";
+                   @"SELECT  ""MainPropertyFactoryNumber""
+                             ,""SubPropertyFactoryNumber""
+                             ,""Quantity""
+                             ,""Description""
+                             FROM ""HardwareEquipment""";
 
         private const string UPDATE_HARDWAREEQUIPMENT_SQL =
-                   @"UPDATE [dbo].[HardwareEquipment] SET ";
+                   @"UPDATE [HardwareEquipment] SET ";
         private const string INSERT_HARDWAREEQUIPMENT_SQL =
                   @"INSERT INTO [dbo].[HardwareEquipment]
                             ([MainPropertyFactoryNumber]
@@ -32,7 +32,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             IEnumerable<HardwareEquipmentDTO> HardwareEquipmentDTOs =
                 database.Query<HardwareEquipmentDTO>(GET_ALL_HARDWAREEQUIPMENT_SQL
-                                                    + $"where MainPropertyFactoryNumber = {factoryNumber}");
+                                                    + $"where \"MainPropertyFactoryNumber\" = {factoryNumber}");
             var HardwareEquipmentList = HardwareEquipmentDTOs.Select(ToHardwareEquipment).ToList();
             int i = 1;
             foreach (var hardwareEquipment in HardwareEquipmentList)

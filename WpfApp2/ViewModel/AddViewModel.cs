@@ -79,7 +79,12 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.BookPage,
                                              PropertyAdd.OrderBookPage,
                                              DateTime.Parse(PropertyAdd.OrderDate), status)
-            { Quantity = PropertyAdd.Quantity,Price=PropertyAdd.Price };
+            { Quantity = PropertyAdd.Quantity,
+                Price=PropertyAdd.Price,
+                PropertyTypeName = string.IsNullOrEmpty(PropertyAdd.PropertyTypeName) ? string.Empty : PropertyAdd.PropertyTypeName,
+                StatusName = string.IsNullOrEmpty(PropertyAdd.PropertyStatusName) ? string.Empty : PropertyAdd.PropertyStatusName,
+                
+            };
 
             PropertyData.UpdateDb(property);
             return new HomeViewModel(navigationProperty);
@@ -107,7 +112,9 @@ namespace Vuzol.ViewModel
                                              DateTime.Parse(PropertyAdd.OrderDate), status)
             {
                 Quantity = PropertyAdd.Quantity,
-                Price = PropertyAdd.Price
+                Price = PropertyAdd.Price,
+                PropertyTypeName = string.IsNullOrEmpty(PropertyAdd.PropertyTypeName) ? string.Empty : PropertyAdd.PropertyTypeName,
+                StatusName = string.IsNullOrEmpty(PropertyAdd.PropertyStatusName) ? string.Empty : PropertyAdd.PropertyStatusName,
             };
             PropertyData.InsertIntoDb(property);
             return new HomeViewModel(navigationProperty);
