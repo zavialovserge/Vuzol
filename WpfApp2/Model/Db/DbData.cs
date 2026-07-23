@@ -1,5 +1,5 @@
-﻿using System.Data;
-using Npgsql;
+﻿using Npgsql;
+using System.Data;
 
 namespace Vuzol.Model.Db
 {
@@ -7,7 +7,7 @@ namespace Vuzol.Model.Db
     {
         private readonly string _connectionString;
 
-        public DbData() 
+        public DbData()
         {
             _connectionString = SqlConnectionDb.ConnectionString;
         }

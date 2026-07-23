@@ -9,7 +9,7 @@ using Vuzol.ViewModel.Model;
 
 namespace Vuzol.ViewModel
 {
-    public class RankViewModel:BaseViewModel
+    public class RankViewModel : BaseViewModel
     {
         public ObservableCollection<Rank> RankList { get; set; }
         public Rank SelectedRank { get; set; }

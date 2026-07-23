@@ -19,7 +19,7 @@ namespace Vuzol.ViewModel.Command
 
         private void InsertDataIntoDb()
         {
-            
+
         }
 
         private void GetDataFromExcel(string path)

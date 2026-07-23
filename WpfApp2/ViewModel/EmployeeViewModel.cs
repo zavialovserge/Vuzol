@@ -20,24 +20,24 @@ namespace Vuzol.ViewModel
         public EmployeeViewModel(NavigationProperty NavigationProperty)
         {
             EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
-            SelectedEmployee = EmployeesList.First();            
+            SelectedEmployee = EmployeesList.First();
             AddEmployeeCommand = new NavigateCommand<AddEmployeeViewModel>(NavigationProperty,
-                                                () => new AddEmployeeViewModel(NavigationProperty, 
+                                                () => new AddEmployeeViewModel(NavigationProperty,
                                                 SelectedEmployee));
             EditEmployeeyCommand = new NavigateCommand<AddEmployeeViewModel>(NavigationProperty,
-                                                () => new AddEmployeeViewModel(NavigationProperty, 
+                                                () => new AddEmployeeViewModel(NavigationProperty,
                                                 SelectedEmployee, true));
-            
+
             HomeCommand = new NavigateCommand<HomeViewModel>(NavigationProperty,
                () => new HomeViewModel(NavigationProperty));
-           
+
         }
 
         public ICommand DelEmployeeCommand
         {
             get
             {
-                return _delEmployeeCommand ?? (  _delEmployeeCommand = new RelayCommand(
+                return _delEmployeeCommand ?? (_delEmployeeCommand = new RelayCommand(
                    x =>
                    {
                        if (MessageBox.Show("Ви дійсно хочете видалити елемент?", "Видалити елемент",
@@ -48,7 +48,7 @@ namespace Vuzol.ViewModel
                        if (SelectedEmployee != null)
                        {
                            if (!EmployeeData.DeleteFromDb(SelectedEmployee)) return;
-                           EmployeesList.Remove(SelectedEmployee);                           
+                           EmployeesList.Remove(SelectedEmployee);
                        }
                    }));
             }

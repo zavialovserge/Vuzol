@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace Vuzol.View
 {
@@ -19,16 +7,16 @@ namespace Vuzol.View
     /// </summary>
     public partial class InputDialogSample : Window
     {
-        public InputDialogSample(string question, string defaultAnswer = "",bool IsQuantityvisible = false , double quantity  =0)
+        public InputDialogSample(string question, string defaultAnswer = "", bool IsQuantityvisible = false, double quantity = 0)
         {
             InitializeComponent();
             lblQuestion.Content = question;
-            txtAnswer.Text = defaultAnswer; 
+            txtAnswer.Text = defaultAnswer;
             txtQuantity.Text = quantity.ToString();
             txtQuantity.IsEnabled = IsQuantityvisible;
             txtQuantity.Visibility = IsQuantityvisible ? Visibility.Visible : Visibility.Collapsed;
         }
-        
+
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;

@@ -44,7 +44,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             RankDTO rankDTO = ToRankDTO(rank);
             var escapedDesc = EscapePostgresString(rankDTO.Description);
-            var result = database.Execute(UPDATE_RANK_SQL, new { Description = escapedDesc, ID= rankDTO.Id });
+            var result = database.Execute(UPDATE_RANK_SQL, new { Description = escapedDesc, ID = rankDTO.Id });
             return result == 1;
         }
 

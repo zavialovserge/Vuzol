@@ -11,6 +11,6 @@ namespace Vuzol.ViewModel.Command
         {
         }
 
-        
+
     }
 }

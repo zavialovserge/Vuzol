@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using Vuzol.Navigation;
 using Vuzol.Services;
-using Vuzol.View;
 using Vuzol.ViewModel.Command;
 using Vuzol.ViewModel.Helper;
 using Vuzol.ViewModel.Model;
@@ -24,7 +23,7 @@ namespace Vuzol.ViewModel
             SelectedPropertyType = PropertyTypeList.First();
         }
         public PropertyType SelectedPropertyType { get; set; }
-        public ObservableCollection<PropertyType> PropertyTypeList  { get; set; }
+        public ObservableCollection<PropertyType> PropertyTypeList { get; set; }
         public ICommand HomeCommand { get; }
         public ICommand DelCommand
         {
@@ -68,14 +67,14 @@ namespace Vuzol.ViewModel
                    x =>
                    {
                        string name = InputDialogHelper.GetDialogAnswer("Введіть назву мітки:",
-                           SelectedPropertyType.Name);                       
+                           SelectedPropertyType.Name);
                        if (string.IsNullOrEmpty(name)) return;
                        SelectedPropertyType.Name = name;
                        PropertyTypeData.EditPropertyType(SelectedPropertyType);
                        RefreshCollection();
                    }));
             }
-        }          
+        }
         private void RefreshCollection()
         {
             PropertyTypeList.Clear();

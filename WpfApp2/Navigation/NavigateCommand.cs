@@ -17,7 +17,7 @@ namespace Vuzol.Navigation
         {
             _navigationStore.CurrentViewModel = _createViewModel();
         }
-        
+
 
     }
 }

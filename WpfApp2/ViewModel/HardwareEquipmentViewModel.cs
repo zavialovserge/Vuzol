@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Vuzol.Navigation;
 using Vuzol.Services;
@@ -7,7 +6,7 @@ using Vuzol.ViewModel.Model;
 
 namespace Vuzol.ViewModel
 {
-    public class HardwareEquipmentViewModel:BaseViewModel
+    public class HardwareEquipmentViewModel : BaseViewModel
     {
         private string _subPropertyFactoryNumber;
         private string _description;
@@ -16,20 +15,20 @@ namespace Vuzol.ViewModel
         public HardwareEquipmentViewModel(NavigationProperty NavigationProperty, Property current, PropertyModel propertyModel, bool isEdit = false)
         {
             HomeCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
-               () => new AddViewModel(NavigationProperty,current));
+               () => new AddViewModel(NavigationProperty, current));
             ChangeHardwareEquipmentCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
-                () => isEdit ? EditHardwareEquipmentFunc(NavigationProperty,current) : AddHardwareEquipmentFunc(NavigationProperty,current));
+                () => isEdit ? EditHardwareEquipmentFunc(NavigationProperty, current) : AddHardwareEquipmentFunc(NavigationProperty, current));
             List<Property> subPropertyFactoryNumberList = PropertyData.GetAllProperty();
             _previousSubFactoryNumber = isEdit ? propertyModel.SelectedHardwareEquipment.SubPropertyFactoryNumber : 0;
-            SubPropertyFactoryNumberList = new ObservableCollection<string>(subPropertyFactoryNumberList.Select(a=>"Заводський номер:"+ a.FactoryNumber));
-            SubPropertyFactoryNumber = isEdit ? subPropertyFactoryNumberList.Where(a=>a.FactoryNumber == _previousSubFactoryNumber)
+            SubPropertyFactoryNumberList = new ObservableCollection<string>(subPropertyFactoryNumberList.Select(a => "Заводський номер:" + a.FactoryNumber));
+            SubPropertyFactoryNumber = isEdit ? subPropertyFactoryNumberList.Where(a => a.FactoryNumber == _previousSubFactoryNumber)
                                                                             .Select(a => "Заводський номер:" + a.FactoryNumber)
-                                                                            .First() 
-                                               :  SubPropertyFactoryNumberList.First();
+                                                                            .First()
+                                               : SubPropertyFactoryNumberList.First();
             ButtonName = isEdit ? "Коригувати" : "Додати";
-            _description = isEdit ? propertyModel.SelectedHardwareEquipment.Description: "";
-            _quantity = isEdit ?  propertyModel.SelectedHardwareEquipment.Quantity:0;
-           
+            _description = isEdit ? propertyModel.SelectedHardwareEquipment.Description : "";
+            _quantity = isEdit ? propertyModel.SelectedHardwareEquipment.Quantity : 0;
+
         }
         private AddViewModel AddHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop)
         {
@@ -39,8 +38,8 @@ namespace Vuzol.ViewModel
         }
         private AddViewModel EditHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop)
         {
-            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.FactoryNumber); 
-            HardwareEquipmentData.EditHardwareEquipment(hardwareEquipment,_previousSubFactoryNumber);
+            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.FactoryNumber);
+            HardwareEquipmentData.EditHardwareEquipment(hardwareEquipment, _previousSubFactoryNumber);
             return new AddViewModel(navigationProperty, prop);
         }
         private HardwareEquipment GerNewHardwareEquipment(int factoryNumber)
@@ -52,7 +51,7 @@ namespace Vuzol.ViewModel
         }
         public ICommand HomeCommand { get; }
         public ICommand ChangeHardwareEquipmentCommand { get; }
-        public ObservableCollection<string> SubPropertyFactoryNumberList { get; set; }        
+        public ObservableCollection<string> SubPropertyFactoryNumberList { get; set; }
         public string SubPropertyFactoryNumber
         {
             get { return _subPropertyFactoryNumber; }

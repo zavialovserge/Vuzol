@@ -1,7 +1,4 @@
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Vuzol.ViewModel.Model;
@@ -25,7 +22,7 @@ namespace Vuzol.ViewModel.Command
         {
             if (_dataSource.Count == 0)
             {
-                MessageBox.Show("Немає даних для експорту.", "Увага", 
+                MessageBox.Show("Немає даних для експорту.", "Увага",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -145,17 +142,17 @@ namespace Vuzol.ViewModel.Command
                     worksheet.Cells[excelRow, 2] = property.Name ?? string.Empty;
                     worksheet.Cells[excelRow, 3] = property.InventoryNumber;
                     worksheet.Cells[excelRow, 4] = property.InvoiceId;
-                    worksheet.Cells[excelRow, 5] = property.InvoiceDate == DateTime.MinValue ? 
+                    worksheet.Cells[excelRow, 5] = property.InvoiceDate == DateTime.MinValue ?
                         string.Empty : property.InvoiceDate.ToString("dd.MM.yyyy");
                     worksheet.Cells[excelRow, 6] = property.BookId;
                     worksheet.Cells[excelRow, 7] = property.BookPage;
                     worksheet.Cells[excelRow, 8] = property.OrderBookId;
                     worksheet.Cells[excelRow, 9] = property.OrderBookPage;
                     worksheet.Cells[excelRow, 10] = property.FormId ?? string.Empty;
-                    worksheet.Cells[excelRow, 11] = property.FormDate == DateTime.MinValue ? 
+                    worksheet.Cells[excelRow, 11] = property.FormDate == DateTime.MinValue ?
                         string.Empty : property.FormDate.ToString("dd.MM.yyyy");
                     worksheet.Cells[excelRow, 12] = property.OrderId;
-                    worksheet.Cells[excelRow, 13] = property.OrderDate == DateTime.MinValue ? 
+                    worksheet.Cells[excelRow, 13] = property.OrderDate == DateTime.MinValue ?
                         string.Empty : property.OrderDate.ToString("dd.MM.yyyy");
                     worksheet.Cells[excelRow, 14] = property.PropertyTypeName ?? string.Empty;
                     worksheet.Cells[excelRow, 15] = property.StatusName ?? string.Empty;
@@ -213,4 +210,4 @@ namespace Vuzol.ViewModel.Command
             }
         }
     }
-}   
+}

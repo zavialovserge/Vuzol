@@ -1,6 +1,5 @@
 ﻿
 using System.Windows;
-using Vuzol.ViewModel;
 
 namespace Vuzol
 {

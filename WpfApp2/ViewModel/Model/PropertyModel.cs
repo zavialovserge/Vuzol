@@ -1,5 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -10,16 +9,16 @@ using Vuzol.ViewModel.Command;
 namespace Vuzol.ViewModel.Model
 {
     public class PropertyModel : INotifyPropertyChanged
-    {    
+    {
         private RelayCommand _addSoftwareEquipmentCommand;
         private RelayCommand _editSoftwareEquipmentCommand;
         private RelayCommand _delSoftwareEquipmentCommand;
         private RelayCommand _delHardwareEquipmentCommand;
         private SoftwareEquipment _softwareEquipment;
-        private HardwareEquipment _hardwareEquipment;    
+        private HardwareEquipment _hardwareEquipment;
         public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
         public ObservableCollection<HardwareEquipment> HardwareEquipmentList { get; set; }
-        public SoftwareEquipment SelectedSoftwareEquipment 
+        public SoftwareEquipment SelectedSoftwareEquipment
         {
             get { return _softwareEquipment; }
             set
@@ -44,9 +43,9 @@ namespace Vuzol.ViewModel.Model
                 return _addSoftwareEquipmentCommand ?? (_addSoftwareEquipmentCommand = new RelayCommand(
                    property =>
                    {
-                       var descr = GetSoftwareEquipmentDescription(string.Empty,0);
+                       var descr = GetSoftwareEquipmentDescription(string.Empty, 0);
                        if (descr == null) return;
-                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0,FactoryNumber, descr.Item1, descr.Item2);
+                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0, FactoryNumber, descr.Item1, descr.Item2);
                        SoftwareEquipmentData.InsertSoftwareEquipment(softwareEquipment);
                        RefreshSoftwareEquipment();
                    }));
@@ -85,8 +84,8 @@ namespace Vuzol.ViewModel.Model
                    }));
             }
         }
-        public ICommand AddHardwareEquipmentCommand { get; set; }       
-        public ICommand EditHardwareEquipmentCommand { get; set; }       
+        public ICommand AddHardwareEquipmentCommand { get; set; }
+        public ICommand EditHardwareEquipmentCommand { get; set; }
         public ICommand DelHardwareEquipmentCommand
         {
             get
@@ -397,7 +396,7 @@ namespace Vuzol.ViewModel.Model
             if (inputDialog.ShowDialog() == false
                 || string.IsNullOrEmpty(inputDialog.Answer)) return null;
 
-            return new Tuple<string, double>(inputDialog.Answer,inputDialog.Quantity);
+            return new Tuple<string, double>(inputDialog.Answer, inputDialog.Quantity);
         }
     }
 }

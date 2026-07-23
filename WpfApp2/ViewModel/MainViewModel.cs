@@ -1,14 +1,13 @@
 ﻿using Vuzol.Navigation;
-using Vuzol.ViewModel;
 
 namespace Vuzol.ViewModel
 {
-    public class MainViewModel:BaseViewModel
+    public class MainViewModel : BaseViewModel
     {
         private NavigationProperty _navigationProperty;
-        public BaseViewModel CurrentViewModel => _navigationProperty.CurrentViewModel;   
+        public BaseViewModel CurrentViewModel => _navigationProperty.CurrentViewModel;
         public MainViewModel(NavigationProperty NavigationProperty)
-        { 
+        {
             _navigationProperty = NavigationProperty;
             _navigationProperty.CurrentViewModelChanged += OnCurrentPropertyChanged;
         }

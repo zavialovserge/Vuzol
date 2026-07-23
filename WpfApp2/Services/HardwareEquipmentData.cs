@@ -54,23 +54,28 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var result = database.Execute(DELETE_HARDWAREEQUIPMENT_SQL, 
-                                        new { HardwareEquipmentDTO.MainPropertyFactoryNumber, 
-                                            HardwareEquipmentDTO.SubPropertyFactoryNumber });
+            var result = database.Execute(DELETE_HARDWAREEQUIPMENT_SQL,
+                                        new
+                                        {
+                                            HardwareEquipmentDTO.MainPropertyFactoryNumber,
+                                            HardwareEquipmentDTO.SubPropertyFactoryNumber
+                                        });
             return result == 1;
         }
 
-        public static bool EditHardwareEquipment(HardwareEquipment HardwareEquipment,int previousSubPropertyFactoryNumber)
+        public static bool EditHardwareEquipment(HardwareEquipment HardwareEquipment, int previousSubPropertyFactoryNumber)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var result = database.Execute(UPDATE_HARDWAREEQUIPMENT_SQL, new { 
-                                                          HardwareEquipmentDTO.SubPropertyFactoryNumber, 
-                                                          HardwareEquipmentDTO.Quantity, 
-                                                          HardwareEquipmentDTO.Description, 
-                                                          HardwareEquipmentDTO.MainPropertyFactoryNumber, 
-                                                          PreviousSubPropertyFactoryNumber = previousSubPropertyFactoryNumber });
+            var result = database.Execute(UPDATE_HARDWAREEQUIPMENT_SQL, new
+            {
+                HardwareEquipmentDTO.SubPropertyFactoryNumber,
+                HardwareEquipmentDTO.Quantity,
+                HardwareEquipmentDTO.Description,
+                HardwareEquipmentDTO.MainPropertyFactoryNumber,
+                PreviousSubPropertyFactoryNumber = previousSubPropertyFactoryNumber
+            });
             return result == 1;
         }
         public static bool InsertHardwareEquipment(HardwareEquipment HardwareEquipment)
@@ -78,7 +83,8 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var result = database.Execute(INSERT_HARDWAREEQUIPMENT_SQL, new {
+            var result = database.Execute(INSERT_HARDWAREEQUIPMENT_SQL, new
+            {
                 HardwareEquipmentDTO.SubPropertyFactoryNumber,
                 HardwareEquipmentDTO.Quantity,
                 HardwareEquipmentDTO.Description,
@@ -87,7 +93,7 @@ namespace Vuzol.Services
             return result == 1;
         }
         private static HardwareEquipment ToHardwareEquipment(HardwareEquipmentDTO dto) =>
-         new HardwareEquipment(dto.MainPropertyFactoryNumber,dto.SubPropertyFactoryNumber,dto.Quantity, dto.Description);
+         new HardwareEquipment(dto.MainPropertyFactoryNumber, dto.SubPropertyFactoryNumber, dto.Quantity, dto.Description);
         private static HardwareEquipmentDTO ToHardwareEquipmentDTO(HardwareEquipment equipment) =>
          new HardwareEquipmentDTO()
          {

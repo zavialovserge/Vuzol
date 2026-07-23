@@ -2,14 +2,14 @@
 {
     public class Employee
     {
-        public Employee(int id, string firstName, string lastName, 
+        public Employee(int id, string firstName, string lastName,
                         string fatherName, int rank, string position,
-                        string RankDescription,int unit, string UnitName)
+                        string RankDescription, int unit, string UnitName)
         {
             this.Id = id;
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.FatherName = fatherName;           
+            this.FatherName = fatherName;
             this.Rank = rank;
             this.Position = position;
             this.RankDescription = RankDescription;

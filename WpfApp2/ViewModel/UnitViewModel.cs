@@ -10,7 +10,7 @@ using Vuzol.ViewModel.Model;
 namespace Vuzol.ViewModel
 {
     public class UnitViewModel : BaseViewModel
-    {        
+    {
         public ObservableCollection<Unit> UnitList { get; set; }
         public Unit SelectedUnit { get; set; }
         public ICommand HomeCommand { get; }
@@ -39,7 +39,7 @@ namespace Vuzol.ViewModel
                        }
                        UnitData.DeleteFromDb(SelectedUnit);
                        UnitList.Remove(SelectedUnit);
-                       
+
                    }));
             }
         }
@@ -52,7 +52,7 @@ namespace Vuzol.ViewModel
                    {
                        string name = GetUnitName(string.Empty);
                        if (string.IsNullOrEmpty(name)) return;
-                       Unit unit = new Unit(0,name);
+                       Unit unit = new Unit(0, name);
                        UnitData.InsertUnit(unit);
                        RefreshCollection();
 
@@ -70,7 +70,7 @@ namespace Vuzol.ViewModel
                        if (string.IsNullOrEmpty(name)) return;
                        SelectedUnit.Name = name;
                        UnitData.EditIUnit(SelectedUnit);
-                       RefreshCollection();                      
+                       RefreshCollection();
                    }));
             }
         }

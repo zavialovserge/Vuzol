@@ -34,7 +34,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyTypeDTO propertyTypeDTO = ToPropetyTypeDTO(propertyType);
-            var result = database.Execute(INSERT_PROPERTYTYPE_SQL,new { Name = EscapePostgresString(propertyTypeDTO.Name) });
+            var result = database.Execute(INSERT_PROPERTYTYPE_SQL, new { Name = EscapePostgresString(propertyTypeDTO.Name) });
             return result == 1;
         }
 
@@ -43,8 +43,8 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyTypeDTO propertyTypeDTO = ToPropetyTypeDTO(propertyType);
-            var escapedName = EscapePostgresString(propertyTypeDTO.Name);    
-            var result = database.Execute(UPDATE_PROPERTYTYPE_SQL, new { Name = escapedName , Id = propertyTypeDTO.Id });
+            var escapedName = EscapePostgresString(propertyTypeDTO.Name);
+            var result = database.Execute(UPDATE_PROPERTYTYPE_SQL, new { Name = escapedName, Id = propertyTypeDTO.Id });
             return result == 1;
         }
 

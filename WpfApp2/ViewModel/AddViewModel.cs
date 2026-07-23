@@ -6,11 +6,11 @@ using Vuzol.ViewModel.Model;
 
 namespace Vuzol.ViewModel
 {
-    public class AddViewModel:BaseViewModel 
+    public class AddViewModel : BaseViewModel
     {
-        public AddViewModel(NavigationProperty NavigationProperty,Property current,bool isEdit=false)
+        public AddViewModel(NavigationProperty NavigationProperty, Property current, bool isEdit = false)
         {
-            HomeCommand = new NavigateCommand<HomeViewModel>(NavigationProperty, 
+            HomeCommand = new NavigateCommand<HomeViewModel>(NavigationProperty,
                 () => new HomeViewModel(NavigationProperty));
             AddPropertyCommand = new NavigateCommand<HomeViewModel>(NavigationProperty,
                 () => isEdit ? EditNewPropertyFunc(NavigationProperty) : AddNewPropertyFunc(NavigationProperty));
@@ -43,7 +43,7 @@ namespace Vuzol.ViewModel
                 Quantity = current.Quantity,
                 Price = current.Price,
                 EmployeeList = EmployeesList
-                                            .Select(a=>a.LastName + " " + a.FirstName)
+                                            .Select(a => a.LastName + " " + a.FirstName)
                                             .ToList(),
                 SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
                                     SoftwareEquipmentData.GetAllSoftwareEquipment(current.FactoryNumber)),
@@ -52,10 +52,10 @@ namespace Vuzol.ViewModel
                 AddHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
                 () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
                 EditHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
-                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd,true)),
+                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd, true)),
             };
             ButtonName = isEdit ? "Коригувати" : "Додати";
-            
+
         }
         private HomeViewModel EditNewPropertyFunc(NavigationProperty navigationProperty)
         {
@@ -79,11 +79,12 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.BookPage,
                                              PropertyAdd.OrderBookPage,
                                              DateTime.Parse(PropertyAdd.OrderDate), status)
-            { Quantity = PropertyAdd.Quantity,
-                Price=PropertyAdd.Price,
+            {
+                Quantity = PropertyAdd.Quantity,
+                Price = PropertyAdd.Price,
                 PropertyTypeName = string.IsNullOrEmpty(PropertyAdd.PropertyTypeName) ? string.Empty : PropertyAdd.PropertyTypeName,
                 StatusName = string.IsNullOrEmpty(PropertyAdd.PropertyStatusName) ? string.Empty : PropertyAdd.PropertyStatusName,
-                
+
             };
 
             PropertyData.UpdateDb(property);
@@ -122,10 +123,10 @@ namespace Vuzol.ViewModel
         public ICommand HomeCommand { get; }
         public ICommand AddPropertyCommand { get; }
         public ObservableCollection<Employee> EmployeesList { get; set; }
-        public PropertyModel PropertyAdd { get; set; }      
+        public PropertyModel PropertyAdd { get; set; }
         public List<PropertyType> PropertyTypeList { get; set; }
         public List<PropertyStatus> PropertyStatusList { get; set; }
         public string ButtonName { get; set; }
-        
+
     }
 }

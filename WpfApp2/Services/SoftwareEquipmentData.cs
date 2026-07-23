@@ -51,9 +51,12 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var result = database.Execute(UPDATE_SOFTWAREEQUIPMENT_SQL, new { softwareEquipmentDTO.Description, 
-                softwareEquipmentDTO.Quantity,  
-                softwareEquipmentDTO.Id });
+            var result = database.Execute(UPDATE_SOFTWAREEQUIPMENT_SQL, new
+            {
+                softwareEquipmentDTO.Description,
+                softwareEquipmentDTO.Quantity,
+                softwareEquipmentDTO.Id
+            });
             return result == 1;
         }
         public static bool InsertSoftwareEquipment(SoftwareEquipment softwareEquipment)
@@ -61,18 +64,24 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var result = database.Execute(INSERT_SOFTWAREEQUIPMENT_SQL, new { softwareEquipmentDTO.MainPropertyFactoryNumber, 
-                softwareEquipmentDTO.Description, 
-                softwareEquipmentDTO.Quantity });
+            var result = database.Execute(INSERT_SOFTWAREEQUIPMENT_SQL, new
+            {
+                softwareEquipmentDTO.MainPropertyFactoryNumber,
+                softwareEquipmentDTO.Description,
+                softwareEquipmentDTO.Quantity
+            });
             return result == 1;
         }
         private static SoftwareEquipment ToSoftwareEquipment(SoftwareEquipmentDTO dto) =>
-         new SoftwareEquipment(dto.Id, dto.MainPropertyFactoryNumber, dto.Description,dto.Quantity);
+         new SoftwareEquipment(dto.Id, dto.MainPropertyFactoryNumber, dto.Description, dto.Quantity);
         private static SoftwareEquipmentDTO ToSoftwareEquipmentDTO(SoftwareEquipment dto) =>
-         new SoftwareEquipmentDTO() { Id = dto.Id, 
-                                      MainPropertyFactoryNumber = dto.MainPropertyFactoryNumber, 
-                                      Description = dto.Description,
-         Quantity = dto.Quantity};
+         new SoftwareEquipmentDTO()
+         {
+             Id = dto.Id,
+             MainPropertyFactoryNumber = dto.MainPropertyFactoryNumber,
+             Description = dto.Description,
+             Quantity = dto.Quantity
+         };
 
     }
 }

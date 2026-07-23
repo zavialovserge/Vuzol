@@ -66,7 +66,7 @@ namespace Vuzol.Services
                 employeeDTO.Position
             });
             return result == 1;
-        }    
+        }
 
         public static bool EditIntoDb(Employee employee)
         {
@@ -102,14 +102,14 @@ namespace Vuzol.Services
                 LastName = employee.LastName,
                 FatherName = employee.FatherName,
                 Rank = employee.Rank,
-                Position = employee.Position.Contains('\'') ? employee.Position.Replace("\'","''") 
+                Position = employee.Position.Contains('\'') ? employee.Position.Replace("\'", "''")
                                                             : employee.Position,
                 UnitId = employee.Unit
             };
         }
         private static Employee ToEmployee(EmployeeDTO dto) =>
                    new Employee(dto.Id, dto.FirstName, dto.LastName,
-                                dto.FatherName, dto.Rank, dto.Position,dto.RankDescription,
-                                dto.UnitId,dto.UnitName);
+                                dto.FatherName, dto.Rank, dto.Position, dto.RankDescription,
+                                dto.UnitId, dto.UnitName);
     }
 }

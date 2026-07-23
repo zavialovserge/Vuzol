@@ -3,9 +3,9 @@
 namespace Vuzol.ViewModel.Command
 {
     public class RelayCommand : ICommand
-    {      
+    {
         private Action<object> _execute;
-        private Func<object,bool> _canExecute;
+        private Func<object, bool> _canExecute;
         public RelayCommand(Action<object> execute)
             : this(execute, null)
         {

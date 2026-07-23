@@ -1,12 +1,8 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Vuzol.Navigation;
@@ -46,9 +42,9 @@ namespace Vuzol.ViewModel
             SelectedList = new ObservableCollection<Property>(PropertyData.GetAllProperty());
             SelectedProperty = SelectedList.First();
             AddCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
-                                                ()=>new AddViewModel(NavigationProperty, SelectedProperty));
+                                                () => new AddViewModel(NavigationProperty, SelectedProperty));
             EditCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
-                                                () => new AddViewModel(NavigationProperty,SelectedProperty,true));
+                                                () => new AddViewModel(NavigationProperty, SelectedProperty, true));
             ShowEmployees = new NavigateCommand<EmployeeViewModel>(NavigationProperty,
                                                 () => new EmployeeViewModel(NavigationProperty));
             ShowUnits = new NavigateCommand<UnitViewModel>(NavigationProperty,
@@ -60,27 +56,27 @@ namespace Vuzol.ViewModel
             ShowPropertyStatus = new NavigateCommand<PropertyStatusViewModel>(NavigationProperty,
                                                () => new PropertyStatusViewModel(NavigationProperty));
             SelectedListSource = (CollectionView)CollectionViewSource.GetDefaultView(SelectedList);
-            SelectedListSource.Filter =new Predicate<object>(o=> Filters(o as Property));
-        }        
-        public CollectionView SelectedListSource { get;  set; }
+            SelectedListSource.Filter = new Predicate<object>(o => Filters(o as Property));
+        }
+        public CollectionView SelectedListSource { get; set; }
         public Property SelectedProperty
         {
             get { return _selectedProperty; }
             set
             {
                 _selectedProperty = value;
-                
+
                 OnPropertyChanged(nameof(_selectedProperty));
             }
         }
-        public ObservableCollection<Property> SelectedList { get; set; }       
+        public ObservableCollection<Property> SelectedList { get; set; }
         public ICommand Complectness { get; }
         public ICommand ComplectnessSoftWare { get; }
         public ICommand ShowEmployees { get; }
         public ICommand ShowUnits { get; }
         public ICommand ShowPropertyType { get; }
         public ICommand ShowRanks { get; }
-        public ICommand ShowPropertyStatus { get; }        
+        public ICommand ShowPropertyStatus { get; }
         public ICommand AddCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DelCommand
@@ -130,7 +126,7 @@ namespace Vuzol.ViewModel
             bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
             bool canQuantityFilter = decimal.TryParse(QuantityFilter, out QuantityFilterDouble);
             bool canPriceFilter = decimal.TryParse(PriceFilter, out PriceFilterDouble);
-            
+
             if (!canFactoryNumberFilter
                 && string.IsNullOrEmpty(NameFilter)
                 && !canInventoryNumberFilter
@@ -148,15 +144,15 @@ namespace Vuzol.ViewModel
                 )
                 return true;
 
-           if (FactoryNumberFilterInt != 0 || !string.IsNullOrEmpty(NameFilter) 
-                || InventoryNumberFilterInt != 0 || !string.IsNullOrEmpty(StatusNameFilter)
-                || InvoiceIdFilterInt != 0 || OrderIdFilterInt!=0 || BookIdFilterInt!=0 
-                || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
-                || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter) 
-                || !string.IsNullOrEmpty(AdditionalnfoFilter)
-                || QuantityFilterDouble!=0 || PriceFilterDouble != 0
-                )
-                return (   (FactoryNumberFilterInt == 0 || FactoryNumberFilterInt == prop.FactoryNumber)
+            if (FactoryNumberFilterInt != 0 || !string.IsNullOrEmpty(NameFilter)
+                 || InventoryNumberFilterInt != 0 || !string.IsNullOrEmpty(StatusNameFilter)
+                 || InvoiceIdFilterInt != 0 || OrderIdFilterInt != 0 || BookIdFilterInt != 0
+                 || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
+                 || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
+                 || !string.IsNullOrEmpty(AdditionalnfoFilter)
+                 || QuantityFilterDouble != 0 || PriceFilterDouble != 0
+                 )
+                return ((FactoryNumberFilterInt == 0 || FactoryNumberFilterInt == prop.FactoryNumber)
                         && (NameFilter == null || prop.Name.Contains(NameFilter))
                         && (InventoryNumberFilterInt == 0 || InventoryNumberFilterInt == prop.InventoryNumber)
                         && (StatusNameFilter == null || prop.StatusName.Contains(StatusNameFilter))
@@ -165,7 +161,7 @@ namespace Vuzol.ViewModel
                         && (BookIdFilterInt == 0 || BookIdFilterInt == prop.BookId)
                         && (OrderBookIdFilterInt == 0 || OrderBookIdFilterInt == prop.OrderBookId)
                         && (FormIdFilter == null || prop.FormId.Contains(FormIdFilter))
-                        && (FIO_R_STRFilter == null  || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
+                        && (FIO_R_STRFilter == null || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
                         && (UnitNameFilter == null || prop.UnitName.Contains(UnitNameFilter))
                         && (AdditionalnfoFilter == null || prop.Additionalnfo.Contains(AdditionalnfoFilter))
                         && (QuantityFilterDouble == 0 || QuantityFilterDouble == prop.Quantity)
@@ -193,7 +189,7 @@ namespace Vuzol.ViewModel
             get { return _factoryNumberFilter; }
             set
             {
-                _factoryNumberFilter = value;                
+                _factoryNumberFilter = value;
                 OnPropertyChanged(nameof(_factoryNumberFilter));
                 SelectedListSource?.Refresh();
             }
@@ -356,7 +352,7 @@ namespace Vuzol.ViewModel
                            // Перевірка мінімальної кількості колонок
                            if (cl < 17)
                            {
-                               MessageBox.Show("Помилка: Excel файл повинен мати як мінімум 17 колонок.", 
+                               MessageBox.Show("Помилка: Excel файл повинен мати як мінімум 17 колонок.",
                                    "Неправильний формат файлу", MessageBoxButton.OK, MessageBoxImage.Error);
                                return;
                            }
@@ -366,7 +362,7 @@ namespace Vuzol.ViewModel
                                try
                                {
                                    var rowErrors = ValidateAndParseExcelRow(xlRange, rCnt);
-                                   
+
                                    if (rowErrors.Item1 != null)
                                    {
                                        properties.Add(rowErrors.Item1);
@@ -389,7 +385,7 @@ namespace Vuzol.ViewModel
                                if (validationErrors.Count > 10)
                                    errorMessage += $"\n... та ще {validationErrors.Count - 10} помилок";
 
-                               MessageBox.Show(errorMessage, "Помилки при завантаженні даних", 
+                               MessageBox.Show(errorMessage, "Помилки при завантаженні даних",
                                    MessageBoxButton.OK, MessageBoxImage.Warning);
                            }
 
@@ -409,13 +405,13 @@ namespace Vuzol.ViewModel
                                }
                                SelectedListSource.Refresh();
 
-                               MessageBox.Show($"Успішно завантажено {properties.Count} записів.", 
+                               MessageBox.Show($"Успішно завантажено {properties.Count} записів.",
                                    "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
                            }
                        }
                        catch (Exception ex)
                        {
-                           MessageBox.Show($"Помилка при читанні Excel файлу: {ex.Message}", 
+                           MessageBox.Show($"Помилка при читанні Excel файлу: {ex.Message}",
                                "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                        }
                        finally
@@ -476,7 +472,7 @@ namespace Vuzol.ViewModel
                            };
                        string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
                        PrintWordDoc(items, path);
-                       
+
                    }));
             }
         }
@@ -500,7 +496,7 @@ namespace Vuzol.ViewModel
                 string newFileName =
                 Path.Combine(file.DirectoryName, DateTime.Now.ToString("yyyyMMdd HHmmss ") + file.Name);
                 app.ActiveDocument.SaveAs2(newFileName);
-                
+
             }
             catch (Exception)
             {
@@ -509,7 +505,7 @@ namespace Vuzol.ViewModel
             }
             finally
             {
-                
+
             }
         }
         private void FindAndReplace(Microsoft.Office.Interop.Word.Application doc, object findText, object replaceWithText)
@@ -546,7 +542,7 @@ namespace Vuzol.ViewModel
                        Dictionary<string, string> items = new Dictionary<string, string>()
                            {
                                {  "FormNumber", SelectedProperty.FormId },
-                               {  "Name", SelectedProperty.Name+ " " 
+                               {  "Name", SelectedProperty.Name+ " "
                                            + SelectedProperty.InventoryNumber.ToString() },
                                {  "UnitFio", SelectedProperty.UnitName + " " + SelectedProperty.FIO_R_STR },
                                {  "ConBook", SelectedProperty.BookId.ToString() },
@@ -566,12 +562,12 @@ namespace Vuzol.ViewModel
         private (Property property, List<string> errors) ValidateAndParseExcelRow(Excel.Range xlRange, int rowNumber)
         {
             var errors = new List<string>();
-            
+
             try
             {
                 // Допоміжна функція для безпечного читання значення
                 object GetCellValue(int row, int col) => (xlRange.Cells[row, col] as Excel.Range).Value;
-                
+
                 string? GetStringValue(int row, int col)
                 {
                     var value = GetCellValue(row, col);
@@ -582,7 +578,7 @@ namespace Vuzol.ViewModel
                 {
                     result = 0;
                     var value = GetCellValue(row, col);
-                    
+
                     if (value == null)
                     {
                         errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): значення пусте");
@@ -632,7 +628,7 @@ namespace Vuzol.ViewModel
                 bool TryParseDate(string dateStr, string fieldName, out DateTime result)
                 {
                     result = DateTime.Now;
-                    
+
                     if (string.IsNullOrWhiteSpace(dateStr))
                     {
                         return true; // Дозволяємо пусті дати (встановимо DateTime.Now)
@@ -648,9 +644,9 @@ namespace Vuzol.ViewModel
                 }
 
                 // Парсимо кожне поле з валідацією
-                if (!TryParseInt(rowNumber, 1, "Заводський номер", out int factoryNumber)) 
+                if (!TryParseInt(rowNumber, 1, "Заводський номер", out int factoryNumber))
                     return (null, errors);
-                
+
                 string name = GetStringValue(rowNumber, 2);
                 if (string.IsNullOrWhiteSpace(name))
                 {
@@ -658,34 +654,34 @@ namespace Vuzol.ViewModel
                     return (null, errors);
                 }
 
-                if (!TryParseInt(rowNumber, 3, "Інвентарний номер", out int inventoryNumber)) 
-                    return (null, errors);
-                
-                if (!TryParseInt(rowNumber, 4, "Номер накладної", out int invoiceId)) 
-                    return (null, errors);
-                
-                string invoiceDate = GetStringValue(rowNumber, 5);
-                if (!TryParseDate(invoiceDate, "Дата накладної", out DateTime invoiceDateD)) 
+                if (!TryParseInt(rowNumber, 3, "Інвентарний номер", out int inventoryNumber))
                     return (null, errors);
 
-                if (!TryParseInt(rowNumber, 6, "Книга обліку", out int bookId)) 
+                if (!TryParseInt(rowNumber, 4, "Номер накладної", out int invoiceId))
                     return (null, errors);
-                
-                if (!TryParseInt(rowNumber, 7, "Сторінка книги", out int bookPage)) 
+
+                string invoiceDate = GetStringValue(rowNumber, 5);
+                if (!TryParseDate(invoiceDate, "Дата накладної", out DateTime invoiceDateD))
                     return (null, errors);
-                
-                if (!TryParseInt(rowNumber, 8, "Книга закріплень", out int orderBookId)) 
+
+                if (!TryParseInt(rowNumber, 6, "Книга обліку", out int bookId))
                     return (null, errors);
-                
-                if (!TryParseInt(rowNumber, 9, "Сторінка закріплень", out int orderBookPage)) 
+
+                if (!TryParseInt(rowNumber, 7, "Сторінка книги", out int bookPage))
                     return (null, errors);
-                
+
+                if (!TryParseInt(rowNumber, 8, "Книга закріплень", out int orderBookId))
+                    return (null, errors);
+
+                if (!TryParseInt(rowNumber, 9, "Сторінка закріплень", out int orderBookPage))
+                    return (null, errors);
+
                 string formId = GetStringValue(rowNumber, 10);
-                if (!TryParseInt(rowNumber, 11, "Наказ на введення", out int orderId)) 
+                if (!TryParseInt(rowNumber, 11, "Наказ на введення", out int orderId))
                     return (null, errors);
-                
+
                 string orderDate = GetStringValue(rowNumber, 12);
-                if (!TryParseDate(orderDate, "Дата наказу", out DateTime orderDateD)) 
+                if (!TryParseDate(orderDate, "Дата наказу", out DateTime orderDateD))
                     return (null, errors);
 
                 string statusName = GetStringValue(rowNumber, 13);
@@ -697,11 +693,11 @@ namespace Vuzol.ViewModel
 
                 string additionalInfo = GetStringValue(rowNumber, 14) ?? string.Empty;
                 string propertyTypeName = GetStringValue(rowNumber, 15);
-                
-                if (!TryParseDecimal(rowNumber, 16, "Ціна", out decimal price)) 
+
+                if (!TryParseDecimal(rowNumber, 16, "Ціна", out decimal price))
                     return (null, errors);
-                
-                if (!TryParseDecimal(rowNumber, 17, "Кількість", out decimal quantity)) 
+
+                if (!TryParseDecimal(rowNumber, 17, "Кількість", out decimal quantity))
                     return (null, errors);
 
                 // Якщо помилок немає, повертаємо Property

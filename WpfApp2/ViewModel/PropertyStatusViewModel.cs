@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using Vuzol.Navigation;
 using Vuzol.Services;
-using Vuzol.View;
 using Vuzol.ViewModel.Command;
 using Vuzol.ViewModel.Helper;
 using Vuzol.ViewModel.Model;
@@ -19,7 +18,7 @@ namespace Vuzol.ViewModel
         {
             HomeCommand = new NavigateCommand<HomeViewModel>(navigationProperty,
                () => new HomeViewModel(navigationProperty));
-            PropertyStatusList = 
+            PropertyStatusList =
                 new ObservableCollection<PropertyStatus>(PropertyStatusData.GetAllPropertyStatus());
             SelectedPropertyStatus = PropertyStatusList.First();
         }
@@ -67,7 +66,7 @@ namespace Vuzol.ViewModel
                 return _editCommand ?? (_editCommand = new RelayCommand(
                    x =>
                    {
-                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву статуса:", 
+                       string name = InputDialogHelper.GetDialogAnswer("Введіть назву статуса:",
                                                         SelectedPropertyStatus.Name);
                        if (string.IsNullOrEmpty(name)) return;
                        SelectedPropertyStatus.Name = name;
@@ -76,7 +75,7 @@ namespace Vuzol.ViewModel
                    }));
             }
         }
-        
+
         private void RefreshCollection()
         {
             PropertyStatusList.Clear();

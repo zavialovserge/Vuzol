@@ -1,6 +1,6 @@
 ﻿namespace Vuzol.ViewModel.Model
 {
-    public class Property 
+    public class Property
     {
         public int FactoryNumber { get; set; }
         public string Name { get; set; }
@@ -8,7 +8,7 @@
         public int InvoiceId { get; set; }
         public DateTime InvoiceDate { get; set; }
         public int BookId { get; set; }
-        public int OrderBookId { get; set; }        
+        public int OrderBookId { get; set; }
         public string FormId { get; set; }
         public string? FormName { get; set; }
         public DateTime FormDate { get; set; }
@@ -30,13 +30,13 @@
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public Property(int factoryNumber, string? name,
-            int inventoryNumber, int invoiceId,  
-            int bookId, int orderBookId,string? formId, 
-            string? formName, DateTime formDate, 
-            int orderId, int propertyTypeId, 
-            string? additionalnfo, 
-            DateTime dLM,int fio_r, int fio_i,string fio_r_str, string fio_i_str,string unit_name,
-            int bookPage,int orderBookPage, DateTime orderDate,int status)
+            int inventoryNumber, int invoiceId,
+            int bookId, int orderBookId, string? formId,
+            string? formName, DateTime formDate,
+            int orderId, int propertyTypeId,
+            string? additionalnfo,
+            DateTime dLM, int fio_r, int fio_i, string fio_r_str, string fio_i_str, string unit_name,
+            int bookPage, int orderBookPage, DateTime orderDate, int status)
         {
             FactoryNumber = factoryNumber;
             Name = name;
@@ -63,7 +63,7 @@
         }
         public Property()
         {
-            
+
         }
     }
 }

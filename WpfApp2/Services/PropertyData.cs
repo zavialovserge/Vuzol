@@ -1,17 +1,8 @@
 ﻿using Dapper;
-using Microsoft.Office.Interop.Excel;
-using Microsoft.SqlServer.Server;
 using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
-using System.Net;
-using System.Security.Policy;
 using System.Text;
-using System.Windows.Controls.Primitives;
-using System.Xml.Linq;
 using Vuzol.Model.Db;
 using Vuzol.ViewModel.Model;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Vuzol.Services
 {
@@ -41,7 +32,7 @@ namespace Vuzol.Services
     @FactoryNumber, @InventoryNumber, @Name, @BookId,
     @BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
     @Additionalnfo, @Quantity, @Price, @Date_D)";
-        
+
 
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE ""Property"" 
@@ -70,7 +61,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             IEnumerable<PropertyDTO> propertyDTOs =
-                database.Query<PropertyDTO>(GET_ALL_PROPERTYS_SQL);            
+                database.Query<PropertyDTO>(GET_ALL_PROPERTYS_SQL);
             return propertyDTOs.Select(ToProperty).ToList();
         }
         public static bool UpdateDb(Property selectedProperty)
@@ -78,13 +69,23 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            var result = database.Execute(UPDATE_PROPERTYS_SQL, new { propertyDTO.InventoryNumber, propertyDTO.Name,
-                                                                      propertyDTO.InvoiceId, propertyDTO.BookId, 
-                                                                      propertyDTO.OrderBookId, propertyDTO.OrderId, 
-                                                                      propertyDTO.PropertyTypeId, propertyDTO.Status,
-                                                                      propertyDTO.Additionalnfo, propertyDTO.BookPage, 
-                                                                      propertyDTO.OrderBookPage, propertyDTO.Quantity, 
-                                                                      propertyDTO.Price, propertyDTO.FactoryNumber });
+            var result = database.Execute(UPDATE_PROPERTYS_SQL, new
+            {
+                propertyDTO.InventoryNumber,
+                propertyDTO.Name,
+                propertyDTO.InvoiceId,
+                propertyDTO.BookId,
+                propertyDTO.OrderBookId,
+                propertyDTO.OrderId,
+                propertyDTO.PropertyTypeId,
+                propertyDTO.Status,
+                propertyDTO.Additionalnfo,
+                propertyDTO.BookPage,
+                propertyDTO.OrderBookPage,
+                propertyDTO.Quantity,
+                propertyDTO.Price,
+                propertyDTO.FactoryNumber
+            });
             return result == 1;
         }
         public static bool InsertIntoDb(Property selectedProperty)
@@ -93,26 +94,27 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
             int formID = 0;
-            Int32.TryParse(propertyDTO.FormId, out formID); 
+            Int32.TryParse(propertyDTO.FormId, out formID);
 
-            var result = database.Execute(INSERT_PROPERTYS_SQL, new {
-                                                           propertyDTO.InvoiceId,
-                                                           propertyDTO.OrderBookId,
-                                                           FormId = formID,
-                                                           propertyDTO.OrderId,
-                                                           propertyDTO.FactoryNumber, 
-                                                           propertyDTO.InventoryNumber,
-                                                           propertyDTO.Name,                                                           
-                                                           propertyDTO.BookId, 
-                                                           propertyDTO.BookPage, 
-                                                           propertyDTO.OrderBookPage,
-                                                           propertyDTO.PropertyTypeName,
-                                                           propertyDTO.StatusName,
-                                                           propertyDTO.Additionalnfo, 
-                                                           propertyDTO.Quantity, 
-                                                           propertyDTO.Price,                                                           
-                                                           Date_D = propertyDTO.OrderDate
-                                                          });
+            var result = database.Execute(INSERT_PROPERTYS_SQL, new
+            {
+                propertyDTO.InvoiceId,
+                propertyDTO.OrderBookId,
+                FormId = formID,
+                propertyDTO.OrderId,
+                propertyDTO.FactoryNumber,
+                propertyDTO.InventoryNumber,
+                propertyDTO.Name,
+                propertyDTO.BookId,
+                propertyDTO.BookPage,
+                propertyDTO.OrderBookPage,
+                propertyDTO.PropertyTypeName,
+                propertyDTO.StatusName,
+                propertyDTO.Additionalnfo,
+                propertyDTO.Quantity,
+                propertyDTO.Price,
+                Date_D = propertyDTO.OrderDate
+            });
             return result == 1;
         }
 
@@ -175,7 +177,7 @@ namespace Vuzol.Services
                           $"N'{propertyDTO.Additionalnfo}'," +
                           $"{propertyDTO.Quantity}," +
                           $"{propertyDTO.Price}," +
-                          $"GETDATE())") ;
+                          $"GETDATE())");
 
             }
             var strInsert = INSERT_PROPERTYS_SQL + sb.ToString().TrimEnd(',');
@@ -185,8 +187,8 @@ namespace Vuzol.Services
         public static void DeleteFromDb(Property selectedProperty)
         {
             DbData dbData = new DbData();
-            using IDbConnection database = dbData.Connect();       
-            database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });            
+            using IDbConnection database = dbData.Connect();
+            database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });
         }
         private static Property ToProperty(PropertyDTO dto) =>
                    new Property(dto.FactoryNumber,
@@ -214,38 +216,39 @@ namespace Vuzol.Services
                    {
                        StatusName = dto.StatusName,
                        Quantity = dto.Quantity,
-                       Price=dto.Price
+                       Price = dto.Price
                    };
         private static PropertyDTO ToDtoProperty(Property prop) =>
                    new PropertyDTO()
-                   {  FactoryNumber = prop.FactoryNumber,
-                       Name=prop.Name,
-                       InventoryNumber=prop.InventoryNumber,
-                       InvoiceId=prop.InvoiceId,
-                       InvoiceDate=prop.InvoiceDate,
-                       BookId=prop.BookId,
-                       OrderBookId=prop.OrderBookId,
-                       FormId=prop.FormId,
-                       FormName=prop.FormName,
-                       FormDate=prop.FormDate,
-                       OrderId=prop.OrderId,
-                       PropertyTypeId=prop.PropertyTypeId,
+                   {
+                       FactoryNumber = prop.FactoryNumber,
+                       Name = prop.Name,
+                       InventoryNumber = prop.InventoryNumber,
+                       InvoiceId = prop.InvoiceId,
+                       InvoiceDate = prop.InvoiceDate,
+                       BookId = prop.BookId,
+                       OrderBookId = prop.OrderBookId,
+                       FormId = prop.FormId,
+                       FormName = prop.FormName,
+                       FormDate = prop.FormDate,
+                       OrderId = prop.OrderId,
+                       PropertyTypeId = prop.PropertyTypeId,
                        PropertyTypeName = prop.PropertyTypeName.Contains("\'")
                                               ? prop.PropertyTypeName.Replace("\'", "''")
                                               : prop.PropertyTypeName,
-                       Additionalnfo =prop.Additionalnfo.Contains("\'") 
+                       Additionalnfo = prop.Additionalnfo.Contains("\'")
                                               ? prop.Additionalnfo.Replace("\'", "''")
                                               : prop.Additionalnfo,
-                       FIO_I=prop.FIO_I,
-                       FIO_R=prop.FIO_R,
-                       BookPage=prop.BookPage,
-                       OrderBookPage=prop.OrderBookPage,
-                       OrderDate=prop.OrderDate,
+                       FIO_I = prop.FIO_I,
+                       FIO_R = prop.FIO_R,
+                       BookPage = prop.BookPage,
+                       OrderBookPage = prop.OrderBookPage,
+                       OrderDate = prop.OrderDate,
                        Status = prop.Status,
-                       StatusName=prop.StatusName.Contains("\'") ? prop.StatusName.Replace("\'", "''") 
+                       StatusName = prop.StatusName.Contains("\'") ? prop.StatusName.Replace("\'", "''")
                                                                  : prop.StatusName,
-                       Quantity=prop.Quantity,
-                       Price=prop.Price
-                   };        
+                       Quantity = prop.Quantity,
+                       Price = prop.Price
+                   };
     }
 }

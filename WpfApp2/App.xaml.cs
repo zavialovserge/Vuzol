@@ -8,10 +8,10 @@ namespace Vuzol
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {        
+    {
         protected override void OnStartup(StartupEventArgs e)
-        { 
-            NavigationProperty  navigationProperty = new NavigationProperty();
+        {
+            NavigationProperty navigationProperty = new NavigationProperty();
             navigationProperty.CurrentViewModel = new HomeViewModel(navigationProperty);
             MainWindow = new MainWindow()
             {
@@ -20,5 +20,5 @@ namespace Vuzol
             MainWindow.Show();
             base.OnStartup(e);
         }
-    } 
+    }
 }
