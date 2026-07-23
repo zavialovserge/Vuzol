@@ -97,7 +97,7 @@ namespace Vuzol.ViewModel
                        }
                        if (SelectedProperty != null)
                        {
-                           PropertyData.DeletefFromDb(SelectedProperty);
+                           PropertyData.DeleteFromDb(SelectedProperty);
                            SelectedList.Clear();
                            List<Property> allPropertyFromDb = PropertyData.GetAllProperty();
                            foreach (var propertyFromDb in allPropertyFromDb)
