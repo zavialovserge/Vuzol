@@ -10,24 +10,23 @@ namespace Vuzol.Services
     {
         private const string GET_ALL_SOFTWAREEQUIPMENT_SQL =
                    @"SELECT ""Id"",""MainPropertyFactoryNumber"",""Description"",""Quantity""
-                     FROM ""SoftwareEquipment"" ";
+                     FROM ""SoftwareEquipment"" where ""MainPropertyFactoryNumber"" = @factoryNumber";
 
         private const string UPDATE_SOFTWAREEQUIPMENT_SQL =
-                   @"UPDATE [dbo].[SoftwareEquipment] SET ";
+                   @"UPDATE ""SoftwareEquipment"" SET ""Description"" = @Description, ""Quantity"" = @Quantity WHERE ""Id"" = @Id";
         private const string INSERT_SOFTWAREEQUIPMENT_SQL =
-                  @"INSERT INTO [dbo].[SoftwareEquipment]
-                            ([MainPropertyFactoryNumber],
-                             [Description],[Quantity])
-                             VALUES ";
+                  @"INSERT INTO ""SoftwareEquipment""
+                            (""MainPropertyFactoryNumber"",
+                             ""Description"",""Quantity"")
+                             VALUES (@MainPropertyFactoryNumber, @Description, @Quantity)";
         private const string DELETE_SOFTWAREEQUIPMENT_SQL =
-                  @"DELETE FROM [dbo].[SoftwareEquipment]";
+                  @"DELETE FROM ""SoftwareEquipment"" WHERE ""Id"" = @Id";
         public static IEnumerable<SoftwareEquipment> GetAllSoftwareEquipment(int factoryNumber)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             IEnumerable<SoftwareEquipmentDTO> softwareEquipmentDTOs =
-                database.Query<SoftwareEquipmentDTO>(GET_ALL_SOFTWAREEQUIPMENT_SQL 
-                                                    + $"where \"MainPropertyFactoryNumber\" = {factoryNumber}");
+                database.Query<SoftwareEquipmentDTO>(GET_ALL_SOFTWAREEQUIPMENT_SQL, new { factoryNumber });
             var softwareEquipmentList = softwareEquipmentDTOs.Select(ToSoftwareEquipment).ToList();
             int i = 1;
             foreach (var softwareEquipment in softwareEquipmentList)
@@ -43,9 +42,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var strDelete = DELETE_SOFTWAREEQUIPMENT_SQL +
-                " WHERE [Id] =" + $"{softwareEquipmentDTO.Id}";
-            var result = database.Execute(strDelete);
+            var result = database.Execute(DELETE_SOFTWAREEQUIPMENT_SQL, new { Id = softwareEquipmentDTO.Id });
             return result == 1;
         }
 
@@ -54,10 +51,9 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var strUpdate = UPDATE_SOFTWAREEQUIPMENT_SQL + $"[Description] = N'{softwareEquipmentDTO.Description}', " +
-                                                           $"[Quantity] ={softwareEquipmentDTO.Quantity.ToString().Replace(',','.')} " +
-                " WHERE [Id] =" + $"{softwareEquipmentDTO.Id}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(UPDATE_SOFTWAREEQUIPMENT_SQL, new { softwareEquipmentDTO.Description, 
+                softwareEquipmentDTO.Quantity,  
+                softwareEquipmentDTO.Id });
             return result == 1;
         }
         public static bool InsertSoftwareEquipment(SoftwareEquipment softwareEquipment)
@@ -65,10 +61,9 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             SoftwareEquipmentDTO softwareEquipmentDTO = ToSoftwareEquipmentDTO(softwareEquipment);
-            var strInsert = INSERT_SOFTWAREEQUIPMENT_SQL +  $"({softwareEquipmentDTO.MainPropertyFactoryNumber},"+
-                                                               $"N'{softwareEquipmentDTO.Description}'," +
-                                                               $"{softwareEquipmentDTO.Quantity.ToString().Replace(',', '.')})";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(INSERT_SOFTWAREEQUIPMENT_SQL, new { softwareEquipmentDTO.MainPropertyFactoryNumber, 
+                softwareEquipmentDTO.Description, 
+                softwareEquipmentDTO.Quantity });
             return result == 1;
         }
         private static SoftwareEquipment ToSoftwareEquipment(SoftwareEquipmentDTO dto) =>
