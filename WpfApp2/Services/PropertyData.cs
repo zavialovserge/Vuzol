@@ -5,10 +5,13 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
 using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Windows.Controls.Primitives;
+using System.Xml.Linq;
 using Vuzol.Model.Db;
 using Vuzol.ViewModel.Model;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Vuzol.Services
 {
@@ -33,45 +36,12 @@ namespace Vuzol.Services
                    LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
                    LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
 
-        private const string INSERT_PROPERTYS_SQL = @"DO $$
-            DECLARE
-            statusNew integer:= @PropertyTypeIdNew;
-            PropertyTypeIdNew integer := @InvoiceId;
-            BEGIN 
-            IF NOT EXISTS(SELECT 1 FROM ""Invoice"" WHERE ""InvoiceID"" = @InvoiceId) THEN 
-            INSERT INTO ""Invoice""(""InvoiceID"", ""Date_From"") 
-            VALUES(@InvoiceId,NOW()); 
-            END IF; 
-            IF NOT EXISTS(SELECT 1 FROM ""OrderBook"" WHERE ""OrderBookID"" = @OrderBookId) THEN 
-                INSERT INTO ""Orderbook""(""OrderBookID"", ""Date_D"") 
-            VALUES(@OrderBookId, NOW()); 
-            END IF; 
-            IF NOT EXISTS(SELECT 1 FROM ""Form"" WHERE ""FormId"" = @FormId) THEN 
-            INSERT INTO ""Form""(""FormId"", ""Date_D"") 
-            VALUES( @FormId, NOW()); 
-            END IF; 
-            IF NOT EXISTS(SELECT 1 FROM ""Order"" WHERE ""OrderId"" = @FormId) THEN
-              INSERT INTO ""Order""(""Orderid"", ""Date_D"") 
-            VALUES(@FormId, NOW()); 
-            END IF; 
-            IF NOT EXISTS(SELECT 1 FROM ""PropertyStatus"" ps WHERE ps.""Name"" = @statusOld) THEN 
-            INSERT INTO ""PropertyStatus""(""Name"") VALUES(@statusOld); 
-            END IF;
-            statusNew:= (SELECT ""Id"" FROM ""PropertyStatus"" ps WHERE ps.""Name"" = @statusOld 
-            LIMIT 1); 
-            IF NOT EXISTS(SELECT 1 FROM ""PropertyType"" pt WHERE pt.""Name"" = @PropertyTypeName) THEN 
-                INSERT INTO ""PropertyType""(""Name"") VALUES(@PropertyTypeName); 
-            END IF; 
-            PropertyTypeIdNew:= (SELECT ""Id"" FROM ""PropertyType"" pt WHERE pt.""Name"" = @PropertyTypeName
-            LIMIT 1); 
-            INSERT INTO ""Property""
-                   (""FactoryNumber"", ""InventoryNumber"", ""Name"", ""InvoiceId"", ""BookId"", 
-                    ""BookPage"", ""FormId"", ""OrderId"", ""OrderBookId"", ""OrderBookPage"", 
-                    ""PropertyTypeId"", ""Status"", ""Additionalnfo"", ""Quantity"", ""Price"", ""DLM"")
-                   VALUES (@FactoryNumber,@InventoryNumber,@Name,@InvoiceId,@BookId,
-                           @BookPage,@FormId,@OrderId,@OrderBookId,@OrderBookPage,
-                           @PropertyTypeId,@Status,@Additionalnfo,@Quantity,@Price,@Date_D)
-                           END $$;";
+        private const string INSERT_PROPERTYS_SQL = @"CALL sp_insert_property(
+    @InvoiceId, @OrderBookId, @FormId, @OrderId,
+    @FactoryNumber, @InventoryNumber, @Name, @BookId,
+    @BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
+    @Additionalnfo, @Quantity, @Price, @Date_D)";
+        
 
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE ""Property"" 
@@ -121,18 +91,63 @@ namespace Vuzol.Services
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
-            PropertyDTO propertyDTO = ToDtoProperty(selectedProperty); 
-            var result = database.Execute(INSERT_PROPERTYS_SQL, new { propertyDTO.FactoryNumber, propertyDTO.InventoryNumber,
-                                                           propertyDTO.Name, propertyDTO.InvoiceId, 
-                                                           propertyDTO.BookId, propertyDTO.BookPage, 
-                                                           propertyDTO.FormId, propertyDTO.OrderId, 
-                                                           propertyDTO.OrderBookId, propertyDTO.OrderBookPage, 
-                                                           PropertyTypeIdNew = propertyDTO.PropertyTypeId, statusNew = propertyDTO.StatusName,
-                                                           statusOld = propertyDTO.StatusName,
-                                                           propertyDTO.Additionalnfo, propertyDTO.Quantity, 
-                                                           propertyDTO.Price,propertyDTO.PropertyTypeName
+            PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
+            int formID = 0;
+            Int32.TryParse(propertyDTO.FormId, out formID); 
+
+            var result = database.Execute(INSERT_PROPERTYS_SQL, new {
+                                                           propertyDTO.InvoiceId,
+                                                           propertyDTO.OrderBookId,
+                                                           FormId = formID,
+                                                           propertyDTO.OrderId,
+                                                           propertyDTO.FactoryNumber, 
+                                                           propertyDTO.InventoryNumber,
+                                                           propertyDTO.Name,                                                           
+                                                           propertyDTO.BookId, 
+                                                           propertyDTO.BookPage, 
+                                                           propertyDTO.OrderBookPage,
+                                                           propertyDTO.PropertyTypeName,
+                                                           propertyDTO.StatusName,
+                                                           propertyDTO.Additionalnfo, 
+                                                           propertyDTO.Quantity, 
+                                                           propertyDTO.Price,                                                           
+                                                           Date_D = propertyDTO.OrderDate
                                                           });
             return result == 1;
+        }
+
+        private static int GetNewTypeId(IDbConnection database, string propertyTypeName)
+        {
+            string query = @"WITH ins AS (
+                            INSERT INTO ""PropertyType"" (""Name"")
+                            SELECT '@PropertyTypeName'
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM ""PropertyType"" WHERE ""Name"" = @PropertyTypeName   
+                            )
+                            RETURNING ""Id""
+                            )
+                            SELECT ""Id"" FROM ins
+                            UNION ALL
+                            SELECT ""Id"" FROM ""PropertyType"" WHERE ""Name"" = @PropertyTypeName
+                            LIMIT 1;";
+            return database.QuerySingle<int>(query, new { PropertyTypeName = propertyTypeName });
+        }
+
+        private static int GetNewStatus(IDbConnection database, string statusName)
+        {
+            string query = @"WITH ins AS (
+                            INSERT INTO ""PropertyStatus""(""Name"")
+                            SELECT '@statusOld'
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM ""PropertyStatus"" WHERE ""Name"" = @StatusName
+                            )
+                            RETURNING ""Id""
+                            )
+                            SELECT ""Id"" FROM ins
+                            UNION ALL
+                            SELECT ""Id"" FROM ""PropertyStatus"" WHERE ""Name"" = @StatusName
+                            LIMIT 1;";
+            return database.QuerySingle<int>(query, new { StatusName = statusName });
         }
 
         //Need to fix Don`t use this method for now, it is not working properly

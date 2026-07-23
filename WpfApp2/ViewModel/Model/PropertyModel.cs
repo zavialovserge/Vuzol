@@ -128,8 +128,8 @@ namespace Vuzol.ViewModel.Model
         private int _bookPage { get; set; }
         private int _orderBookPage { get; set; }
         private int _status { get; set; }
-        private double _quantity { get; set; }
-        private double _price { get; set; }
+        private decimal _quantity { get; set; }
+        private decimal _price { get; set; }
         private List<string> _employeeList { get; set; }
 
         public int Status
@@ -357,7 +357,7 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_unitName));
             }
         }
-        public double Quantity
+        public decimal Quantity
         {
             get { return _quantity; }
             set
@@ -366,7 +366,7 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_quantity));
             }
         }
-        public double Price
+        public decimal Price
         {
             get { return _price; }
             set

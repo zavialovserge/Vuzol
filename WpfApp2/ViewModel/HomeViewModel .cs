@@ -118,8 +118,8 @@ namespace Vuzol.ViewModel
             int OrderIdFilterInt = 0;
             int BookIdFilterInt = 0;
             int OrderBookIdFilterInt = 0;
-            double QuantityFilterDouble = 0;
-            double PriceFilterDouble = 0;
+            decimal QuantityFilterDouble = 0;
+            decimal PriceFilterDouble = 0;
 
 
             bool canFactoryNumberFilter = int.TryParse(FactoryNumberFilter, out FactoryNumberFilterInt);
@@ -128,8 +128,8 @@ namespace Vuzol.ViewModel
             bool canOrderIdFilter = int.TryParse(OrderIdFilter, out OrderIdFilterInt);
             bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
             bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
-            bool canQuantityFilter = double.TryParse(QuantityFilter, out QuantityFilterDouble);
-            bool canPriceFilter = double.TryParse(PriceFilter, out PriceFilterDouble);
+            bool canQuantityFilter = decimal.TryParse(QuantityFilter, out QuantityFilterDouble);
+            bool canPriceFilter = decimal.TryParse(PriceFilter, out PriceFilterDouble);
             
             if (!canFactoryNumberFilter
                 && string.IsNullOrEmpty(NameFilter)
@@ -604,18 +604,18 @@ namespace Vuzol.ViewModel
                     return true;
                 }
 
-                bool TryParseDouble(int row, int col, string fieldName, out double result)
+                bool TryParseDecimal(int row, int col, string fieldName, out decimal result)
                 {
                     result = 0;
                     var value = GetCellValue(row, col);
-                    
+
                     if (value == null)
                     {
                         errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): значення пусте");
                         return false;
                     }
 
-                    if (!double.TryParse(value.ToString(), out result))
+                    if (!decimal.TryParse(value.ToString(), out result))
                     {
                         errors.Add($"Рядок {rowNumber}, колонка {col} ({fieldName}): '{value}' не є числом");
                         return false;
@@ -629,7 +629,6 @@ namespace Vuzol.ViewModel
 
                     return true;
                 }
-
                 bool TryParseDate(string dateStr, string fieldName, out DateTime result)
                 {
                     result = DateTime.Now;
@@ -699,10 +698,10 @@ namespace Vuzol.ViewModel
                 string additionalInfo = GetStringValue(rowNumber, 14) ?? string.Empty;
                 string propertyTypeName = GetStringValue(rowNumber, 15);
                 
-                if (!TryParseDouble(rowNumber, 16, "Ціна", out double price)) 
+                if (!TryParseDecimal(rowNumber, 16, "Ціна", out decimal price)) 
                     return (null, errors);
                 
-                if (!TryParseDouble(rowNumber, 17, "Кількість", out double quantity)) 
+                if (!TryParseDecimal(rowNumber, 17, "Кількість", out decimal quantity)) 
                     return (null, errors);
 
                 // Якщо помилок немає, повертаємо Property
