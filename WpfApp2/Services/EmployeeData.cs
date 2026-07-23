@@ -31,11 +31,18 @@ namespace Vuzol.Services
                                 ,""Rank""
                                 ,""UnitId""
                                 ,""Position"")
-                                VALUES";
+                                VALUES (@FirstName, @LastName, @FatherName, @Rank, @UnitId, @Position)";
         private const string UPDATE_EMPLOYEE_SQL =
-              @"UPDATE ""Employee"" Set";
+              @"UPDATE ""Employee"" SET
+                        ""FirstName"" = @FirstName,
+                        ""LastName"" = @LastName,
+                        ""FatherName"" = @FatherName,
+                        ""Rank"" = @Rank,
+                        ""Position"" = @Position,
+                        ""UnitId"" = @UnitId
+                        WHERE ""Id"" = @Id";
         private const string DELETE_EMPLOYEE_SQL =
-              @"DELETE FROM ""Employee""";
+              @"DELETE FROM ""Employee"" WHERE ""Id"" = @Id";
         public static List<Employee> GetAllEmployees()
         {
             DbData dbData = new DbData();
@@ -49,13 +56,15 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             EmployeeDTO employeeDTO = ToEmployeeDTO(employee);
-            var strInsert = Insert_EMPLOYEE_SQL + $"('{employeeDTO.FirstName}'," +
-                                                                 $"'{employeeDTO.LastName}'," +
-                                                                 $"'{employeeDTO.FatherName}'," +
-                                                                 $"{employeeDTO.Rank}," +
-                                                                 $"{employeeDTO.UnitId}," +
-                                                                 $"'{employeeDTO.Position}')";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(Insert_EMPLOYEE_SQL, new
+            {
+                employeeDTO.FirstName,
+                employeeDTO.LastName,
+                employeeDTO.FatherName,
+                employeeDTO.Rank,
+                employeeDTO.UnitId,
+                employeeDTO.Position
+            });
             return result == 1;
         }    
 
@@ -63,16 +72,17 @@ namespace Vuzol.Services
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
-            EmployeeDTO EmployeeDTO = ToEmployeeDTO(employee);
-            var strUpdate = UPDATE_EMPLOYEE_SQL + 
-            $"  \"FirstName\" =" + $"'{EmployeeDTO.FirstName}'," +
-                $"\"LastName\" =" + $"'{EmployeeDTO.LastName}'," +
-                $"\"FatherName\" = " + $"'{EmployeeDTO.FatherName}'," +
-                $"\"Rank\" = " + $"{EmployeeDTO.Rank}," +
-                $"\"Position\" = " + $"'{EmployeeDTO.Position}', " +
-                $"\"UnitId\" = " + $"'{EmployeeDTO.UnitId}' " +
-                " WHERE \"Id\" =" + $"{EmployeeDTO.Id}";
-            var result = database.Execute(strUpdate);
+            EmployeeDTO employeeDTO = ToEmployeeDTO(employee);
+            var result = database.Execute(UPDATE_EMPLOYEE_SQL, new
+            {
+                employeeDTO.FirstName,
+                employeeDTO.LastName,
+                employeeDTO.FatherName,
+                employeeDTO.Rank,
+                employeeDTO.UnitId,
+                employeeDTO.Position,
+                employeeDTO.Id
+            });
             return result == 1;
         }
         public static bool DeleteFromDb(Employee employee)
@@ -80,9 +90,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             EmployeeDTO EmployeeDTO = ToEmployeeDTO(employee);
-            var strUpdate = DELETE_EMPLOYEE_SQL  +
-                " WHERE \"Id\" =" + $"{EmployeeDTO.Id}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(DELETE_EMPLOYEE_SQL, new { EmployeeDTO.Id });
             return result == 1;
         }
         private static EmployeeDTO ToEmployeeDTO(Employee employee)

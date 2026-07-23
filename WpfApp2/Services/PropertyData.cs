@@ -42,8 +42,11 @@ namespace Vuzol.Services
 
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE ""Property""";
+
         private const string DELETE_PROPERTYS_SQL =
-                  @" delete from  ""Property"" where ""FactoryNumber"" =  ";
+                                                 @"DELETE FROM ""HardwareEquipment"" 
+                                                  WHERE ""SubPropertyFactoryNumber"" = @FactoryNumber;
+                                                  DELETE FROM ""Property"" WHERE ""FactoryNumber"" = @FactoryNumber;";
         public static List<Property> GetAllProperty()
         {
             DbData dbData = new DbData();
@@ -167,15 +170,8 @@ namespace Vuzol.Services
         public static void DeletefFromDb(Property selectedProperty)
         {
             DbData dbData = new DbData();
-            using IDbConnection database = dbData.Connect();
-            string strDelete = "DO $$\r\nBEGIN\r\n    " +
-                "IF EXISTS (SELECT 1 FROM \"HardwareEquipment\" " +
-                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber}) " +
-                "THEN\r\n        DELETE FROM \"HardwareEquipment\" " +
-                $"WHERE \"SubPropertyFactoryNumber\" = {selectedProperty.FactoryNumber};\r\n \r\nEND IF;  " +
-                $"DELETE FROM \"Property\" WHERE \"FactoryNumber\" = {selectedProperty.FactoryNumber};" +
-                "\r\nEND $$;";         
-            database.Execute(strDelete);            
+            using IDbConnection database = dbData.Connect();       
+            database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });            
         }
         private static Property ToProperty(PropertyDTO dto) =>
                    new Property(dto.FactoryNumber,

@@ -13,26 +13,32 @@ namespace Vuzol.Services
                              ,""SubPropertyFactoryNumber""
                              ,""Quantity""
                              ,""Description""
-                             FROM ""HardwareEquipment""";
+                             FROM ""HardwareEquipment""
+                             where ""MainPropertyFactoryNumber""=  @factoryNumber ";
 
         private const string UPDATE_HARDWAREEQUIPMENT_SQL =
-                   @"UPDATE [HardwareEquipment] SET ";
+                   @"UPDATE ""HardwareEquipment"" SET SubPropertyFactoryNumber = @SubPropertyFactoryNumber ,
+                            ""Quantity""=@Quantity, 
+                            ""Description""=@Description
+                    WHERE ""MainPropertyFactoryNumber"" = @MainPropertyFactoryNumber AND 
+                            ""SubPropertyFactoryNumber"" = @PreviousSubPropertyFactoryNumber";
         private const string INSERT_HARDWAREEQUIPMENT_SQL =
-                  @"INSERT INTO [dbo].[HardwareEquipment]
-                            ([MainPropertyFactoryNumber]
-           ,[SubPropertyFactoryNumber]
-           ,[Quantity]
-           ,[Description])
-                             VALUES ";
+                  @"INSERT INTO ""dbo"".""HardwareEquipment""
+                            (""MainPropertyFactoryNumber""
+           ,""SubPropertyFactoryNumber""
+           ,""Quantity""
+           ,""Description"")
+                             VALUES (@MainPropertyFactoryNumber, @SubPropertyFactoryNumber, @Quantity, @Description)";
         private const string DELETE_HARDWAREEQUIPMENT_SQL =
-                  @"DELETE FROM [dbo].[HardwareEquipment]";
+                  @"DELETE FROM ""HardwareEquipment""
+                    WHERE ""MainPropertyFactoryNumber"" = @MainPropertyFactoryNumber 
+                    AND ""SubPropertyFactoryNumber"" = @SubPropertyFactoryNumber ";
         public static IEnumerable<HardwareEquipment> GetAllHardwareEquipment(int factoryNumber)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             IEnumerable<HardwareEquipmentDTO> HardwareEquipmentDTOs =
-                database.Query<HardwareEquipmentDTO>(GET_ALL_HARDWAREEQUIPMENT_SQL
-                                                    + $"where \"MainPropertyFactoryNumber\" = {factoryNumber}");
+                database.Query<HardwareEquipmentDTO>(GET_ALL_HARDWAREEQUIPMENT_SQL, new { factoryNumber });
             var HardwareEquipmentList = HardwareEquipmentDTOs.Select(ToHardwareEquipment).ToList();
             int i = 1;
             foreach (var hardwareEquipment in HardwareEquipmentList)
@@ -48,10 +54,9 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var strDelete = DELETE_HARDWAREEQUIPMENT_SQL +
-                " WHERE [MainPropertyFactoryNumber] = " + $"{HardwareEquipmentDTO.MainPropertyFactoryNumber} " +
-                $" and SubPropertyFactoryNumber = {HardwareEquipmentDTO.SubPropertyFactoryNumber}";
-            var result = database.Execute(strDelete);
+            var result = database.Execute(DELETE_HARDWAREEQUIPMENT_SQL, 
+                                        new { HardwareEquipmentDTO.MainPropertyFactoryNumber, 
+                                            HardwareEquipmentDTO.SubPropertyFactoryNumber });
             return result == 1;
         }
 
@@ -60,12 +65,12 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var strUpdate = UPDATE_HARDWAREEQUIPMENT_SQL + "[SubPropertyFactoryNumber] = " + $"{HardwareEquipmentDTO.SubPropertyFactoryNumber}," 
-                                                         + "[Quantity]= " + $"N'{HardwareEquipmentDTO.Quantity}'," 
-                                                         + "[Description]= " + $"N'{HardwareEquipmentDTO.Description}' " +
-                " WHERE [MainPropertyFactoryNumber] = " + $"{HardwareEquipmentDTO.MainPropertyFactoryNumber} " +
-                $" and SubPropertyFactoryNumber = {previousSubPropertyFactoryNumber}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(UPDATE_HARDWAREEQUIPMENT_SQL, new { 
+                                                          HardwareEquipmentDTO.SubPropertyFactoryNumber, 
+                                                          HardwareEquipmentDTO.Quantity, 
+                                                          HardwareEquipmentDTO.Description, 
+                                                          HardwareEquipmentDTO.MainPropertyFactoryNumber, 
+                                                          PreviousSubPropertyFactoryNumber = previousSubPropertyFactoryNumber });
             return result == 1;
         }
         public static bool InsertHardwareEquipment(HardwareEquipment HardwareEquipment)
@@ -73,11 +78,12 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
-            var strInsert = INSERT_HARDWAREEQUIPMENT_SQL + $"({HardwareEquipmentDTO.MainPropertyFactoryNumber}," +
-                                                               $"{HardwareEquipmentDTO.SubPropertyFactoryNumber}," +
-                                                               $"{HardwareEquipmentDTO.Quantity}," +
-                                                               $"N'{HardwareEquipmentDTO.Description}')";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(INSERT_HARDWAREEQUIPMENT_SQL, new {
+                HardwareEquipmentDTO.SubPropertyFactoryNumber,
+                HardwareEquipmentDTO.Quantity,
+                HardwareEquipmentDTO.Description,
+                HardwareEquipmentDTO.MainPropertyFactoryNumber,
+            });
             return result == 1;
         }
         private static HardwareEquipment ToHardwareEquipment(HardwareEquipmentDTO dto) =>

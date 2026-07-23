@@ -12,13 +12,13 @@ namespace Vuzol.Services
                    @"SELECT ""ID"", ""Description"" FROM ""Rank""";
 
         private const string UPDATE_RANK_SQL =
-                   @"UPDATE ""Rank"" SET ""Description"" = ";
+                   @"UPDATE ""Rank"" SET ""Description"" = @Description WHERE ""ID"" = @Id";
 
         private const string INSERT_RANK_SQL =
-                  @"INSERT INTO ""Rank"" (""Description"") VALUES ";
+                  @"INSERT INTO ""Rank"" (""Description"") VALUES (@Description)";
 
         private const string DELETE_RANK_SQL =
-                  @"DELETE FROM ""Rank"" WHERE ""ID"" = ";
+                  @"DELETE FROM ""Rank"" WHERE ""ID"" = @Id";
 
         public static IEnumerable<Rank> getAllRanks()
         {
@@ -34,8 +34,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             RankDTO rankDTO = ToRankDTO(rank);
-            var strDelete = DELETE_RANK_SQL + $"{rankDTO.Id}";
-            var result = database.Execute(strDelete);
+            var result = database.Execute(DELETE_RANK_SQL, new { Id = rankDTO.Id });
             return result == 1;
         }
 
@@ -45,9 +44,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             RankDTO rankDTO = ToRankDTO(rank);
             var escapedDesc = EscapePostgresString(rankDTO.Description);
-            var idValue = rankDTO.Id;
-            var strUpdate = UPDATE_RANK_SQL + $"'{escapedDesc}' WHERE \"ID\" = {idValue}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(UPDATE_RANK_SQL, new { Description = escapedDesc, ID= rankDTO.Id });
             return result == 1;
         }
 
@@ -56,8 +53,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             RankDTO rankDTO = ToRankDTO(rank);
-            var strInsert = INSERT_RANK_SQL + $"('{EscapePostgresString(rankDTO.Description)}')";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(INSERT_RANK_SQL, new { Description = EscapePostgresString(rankDTO.Description) });
             return result == 1;
         }
 

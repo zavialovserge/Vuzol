@@ -12,13 +12,13 @@ namespace Vuzol.Services
                    @"SELECT ""Id"", ""Name"" FROM ""Unit""";
 
         private const string UPDATE_UNIT_SQL =
-                   @"UPDATE ""Unit"" SET ""Name"" = ";
+                   @"UPDATE ""Unit"" SET ""Name"" = @Name WHERE ""Id"" = @Id";
 
         private const string INSERT_UNIT_SQL =
-                  @"INSERT INTO ""Unit"" (""Name"") VALUES ";
+                  @"INSERT INTO ""Unit"" (""Name"") VALUES (@Name)";
 
         private const string DELETE_UNIT_SQL =
-                  @"DELETE FROM ""Unit"" WHERE ""Id"" = ";
+                  @"DELETE FROM ""Unit"" WHERE ""Id"" = @Id";
 
         public static IEnumerable<Unit> getAllUnits()
         {
@@ -34,8 +34,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             UnitDTO unitDTO = ToUnitDTO(unit);
-            var strInsert = INSERT_UNIT_SQL + $"('{EscapePostgresString(unitDTO.Name)}')";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(INSERT_UNIT_SQL, new { Name = unitDTO.Name });
             return result == 1;
         }
 
@@ -45,9 +44,7 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             UnitDTO unitDTO = ToUnitDTO(unit);
             var escapedName = EscapePostgresString(unitDTO.Name);
-            var idValue = unitDTO.Id;
-            var strUpdate = UPDATE_UNIT_SQL + $"'{escapedName}' WHERE \"Id\" = {idValue}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(UPDATE_UNIT_SQL, new { Name = escapedName, Id = unitDTO.Id });
             return result == 1;
         }
 
@@ -56,8 +53,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             UnitDTO unitDTO = ToUnitDTO(unit);
-            var strDelete = DELETE_UNIT_SQL + $"{unitDTO.Id}";
-            var result = database.Execute(strDelete);
+            var result = database.Execute(DELETE_UNIT_SQL, new { Id = unitDTO.Id });
             return result == 1;
         }
 

@@ -12,13 +12,13 @@ namespace Vuzol.Services
                    @"SELECT ""Id"", ""Name"" FROM ""PropertyStatus""";
 
         private const string UPDATE_PROPERTYSTATUS_SQL =
-                   @"UPDATE ""PropertyStatus"" SET ""Name"" = ";
+                   @"UPDATE ""PropertyStatus"" SET ""Name"" = @Name WHERE ""Id"" = @Id";
 
         private const string INSERT_PROPERTYSTATUS_SQL =
-                  @"INSERT INTO ""PropertyStatus"" (""Name"") VALUES ";
+                  @"INSERT INTO ""PropertyStatus"" (""Name"") VALUES (@Name)";
 
         private const string DELETE_PROPERTYSTATUS_SQL =
-                  @"DELETE FROM ""PropertyStatus"" WHERE ""Id"" = ";
+                  @"DELETE FROM ""PropertyStatus"" WHERE ""Id"" = @Id";
 
         public static IEnumerable<PropertyStatus> GetAllPropertyStatus()
         {
@@ -33,8 +33,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyStatusDTO propertyStatusDTO = ToPropertyStatusDTO(propertyStatus);
-            var strInsert = INSERT_PROPERTYSTATUS_SQL + $"(N'{propertyStatusDTO.Name}')";
-            var result = database.Execute(strInsert);
+            var result = database.Execute(INSERT_PROPERTYSTATUS_SQL, new { Name = propertyStatusDTO.Name });
             return result == 1;
         }
         public static bool EditPropertyType(PropertyStatus propertyStatus)
@@ -44,7 +43,7 @@ namespace Vuzol.Services
             PropertyStatusDTO propertyStatusDTO = ToPropertyStatusDTO(propertyStatus);
             var strUpdate = UPDATE_PROPERTYSTATUS_SQL + $"N'{propertyStatusDTO.Name}' " +
                 " WHERE \"Id\" =" + $"{propertyStatusDTO.Id}";
-            var result = database.Execute(strUpdate);
+            var result = database.Execute(UPDATE_PROPERTYSTATUS_SQL, new { Name = propertyStatusDTO.Name, Id = propertyStatusDTO.Id });
             return result == 1;
         }
         public static bool DeleteFromDb(PropertyStatus propertyStatus)
@@ -52,8 +51,7 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyStatusDTO propertyStatusDTO = ToPropertyStatusDTO(propertyStatus);
-            var strDelete = DELETE_PROPERTYSTATUS_SQL + $"{propertyStatusDTO.Id}";
-            var result = database.Execute(strDelete);
+            var result = database.Execute(DELETE_PROPERTYSTATUS_SQL, new { Id = propertyStatusDTO.Id });
             return result == 1;
         }
         private static PropertyStatus ToPropertyStatus(PropertyStatusDTO dTO)
