@@ -459,18 +459,25 @@ namespace Vuzol.ViewModel
                 return _printForm ?? (_printForm = new RelayCommand(
                    x =>
                    {
+                       if(SelectedProperty == null)
+                       {
+                           MessageBox.Show("Будь ласка, виберіть строку для друку.", "Помилка",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+                           return;
+                       }
                        Dictionary<string, string> items = new Dictionary<string, string>()
                            {
                                {  "FormNumber", SelectedProperty.FormId },
                                {  "Name", SelectedProperty.Name },
                                {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
                                {  "AdditionalInfo", SelectedProperty.Additionalnfo },
-                               {  "DateD", SelectedProperty.FormDate.Day.ToString() },
-                               {  "DateM", SelectedProperty.FormDate.Month.ToString() },
+                               {  "DateD", SelectedProperty.FormDate.Day.ToString("00") },
+                               {  "DateM", SelectedProperty.FormDate.Month.ToString("00") },
                                {  "DateY", SelectedProperty.FormDate.Year.ToString() },
                                {  "DateForm", SelectedProperty.FormDate.ToString("d") }
                            };
                        string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
+
                        PrintWordDoc(items, path);
 
                    }));
@@ -479,58 +486,128 @@ namespace Vuzol.ViewModel
         private void PrintWordDoc(Dictionary<string, string> items, string path)
         {
             Word.Application app = null;
+            Word.Document aDoc = null;
             FileInfo file = new FileInfo(path);
             try
             {
                 string fileName = file.FullName;
-                app = new Microsoft.Office.Interop.Word.Application { Visible = true };
-                Microsoft.Office.Interop.Word.Document aDoc =
-                    app.Documents.Open(fileName, ReadOnly: false, Visible: true);
+                app = new Microsoft.Office.Interop.Word.Application 
+                { 
+                    Visible = false,  // Change to false for automation
+                    DisplayAlerts = Word.WdAlertLevel.wdAlertsNone  // Suppress all alerts
+                };
+                
+                aDoc = app.Documents.Open(fileName, ReadOnly: false, Visible: false);
                 aDoc.Activate();
 
                 foreach (var item in items)
                 {
                     FindAndReplace(app, item.Key, item.Value);
-
                 }
-                string newFileName =
-                Path.Combine(file.DirectoryName, DateTime.Now.ToString("yyyyMMdd HHmmss ") + file.Name);
-                app.ActiveDocument.SaveAs2(newFileName);
-
-            }
-            catch (Exception)
-            {
-
-                throw;
+                
+                // Ensure unique filename with milliseconds
+                string newFileName = Path.Combine(file.DirectoryName, 
+                    DateTime.Now.ToString("yyyyMMdd HHmmss fff ") + file.Name);
+                
+                // Check if file exists and handle it
+                if (File.Exists(newFileName))
+                {
+                    File.Delete(newFileName);
+                }
+                
+                aDoc.SaveAs2(newFileName);
+                aDoc.Close();
+                
+                // Optional: Show the saved file
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = newFileName,
+                    UseShellExecute = true
+                });
             }
             finally
             {
-
+                // Proper COM cleanup
+                if (aDoc != null)
+                {
+                    Marshal.ReleaseComObject(aDoc);
+                }
+                if (app != null)
+                {
+                    app.Quit();
+                    Marshal.ReleaseComObject(app);
+                }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
         }
-        private void FindAndReplace(Microsoft.Office.Interop.Word.Application doc, object findText, object replaceWithText)
+        private void FindAndReplace(Microsoft.Office.Interop.Word.Application app, object findText, object replaceWithText)
         {
+            // Пошук у основному тексті документа
+            Word.Find findObject = app.ActiveDocument.Content.Find;
+            findObject.ClearFormatting();
+            findObject.Replacement.ClearFormatting();
+            
             //options
-            object matchCase = false;
-            object matchWholeWord = true;
-            object matchWildCards = false;
-            object matchSoundsLike = false;
-            object matchAllWordForms = false;
-            object forward = true;
-            object format = false;
-            object matchKashida = false;
-            object matchDiacritics = false;
-            object matchAlefHamza = false;
-            object matchControl = false;
-            object read_only = false;
-            object visible = true;
-            object replace = 2;
-            object wrap = 1;
-            //execute find and replace
-            doc.Selection.Find.Execute(ref findText, ref matchCase, ref matchWholeWord,
-                ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref replaceWithText, ref replace,
-                ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
-
+            findObject.Text = findText.ToString();
+            findObject.Replacement.Text = replaceWithText.ToString();
+            findObject.Forward = true;
+            findObject.Wrap = Word.WdFindWrap.wdFindContinue;
+            findObject.Format = false;
+            findObject.MatchCase = false;
+            findObject.MatchWholeWord = true;
+            findObject.MatchWildcards = false;
+            findObject.MatchSoundsLike = false;
+            findObject.MatchAllWordForms = false;
+            
+            findObject.Execute(Replace: Word.WdReplace.wdReplaceAll);
+            
+            // Пошук у всіх таблицях
+            foreach (Word.Table table in app.ActiveDocument.Tables)
+            {
+                Word.Range tableRange = table.Range;
+                Word.Find tableFind = tableRange.Find;
+                tableFind.ClearFormatting();
+                tableFind.Replacement.ClearFormatting();
+                
+                tableFind.Text = findText.ToString();
+                tableFind.Replacement.Text = replaceWithText.ToString();
+                tableFind.Forward = true;
+                tableFind.Wrap = Word.WdFindWrap.wdFindContinue;
+                tableFind.Format = false;
+                tableFind.MatchCase = false;
+                tableFind.MatchWholeWord = true;
+                tableFind.MatchWildcards = false;
+                tableFind.MatchSoundsLike = false;
+                tableFind.MatchAllWordForms = false;
+                
+                tableFind.Execute(Replace: Word.WdReplace.wdReplaceAll);
+            }
+            
+            // Пошук у всіх фігурах (текстові поля, рамки тощо)
+            foreach (Word.Shape shape in app.ActiveDocument.Shapes)
+            {
+                if (shape.TextFrame.HasText != 0)
+                {
+                    Word.Range shapeRange = shape.TextFrame.TextRange;
+                    Word.Find shapeFind = shapeRange.Find;
+                    shapeFind.ClearFormatting();
+                    shapeFind.Replacement.ClearFormatting();
+                    
+                    shapeFind.Text = findText.ToString();
+                    shapeFind.Replacement.Text = replaceWithText.ToString();
+                    shapeFind.Forward = true;
+                    shapeFind.Wrap = Word.WdFindWrap.wdFindStop;
+                    shapeFind.Format = false;
+                    shapeFind.MatchCase = false;
+                    shapeFind.MatchWholeWord = true;
+                    shapeFind.MatchWildcards = false;
+                    shapeFind.MatchSoundsLike = false;
+                    shapeFind.MatchAllWordForms = false;
+                    
+                    shapeFind.Execute(Replace: Word.WdReplace.wdReplaceAll);
+                }
+            }
         }
         public ICommand PrintAccountingForm
         {
