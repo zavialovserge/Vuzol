@@ -3,6 +3,7 @@ using System.Data;
 using System.Text;
 using Vuzol.Model.Db;
 using Vuzol.ViewModel.Model;
+using WpfApp2.Services;
 
 namespace Vuzol.Services
 {
@@ -69,23 +70,32 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            var result = database.Execute(UPDATE_PROPERTYS_SQL, new
+            int result = 0;
+            try
             {
-                propertyDTO.InventoryNumber,
-                propertyDTO.Name,
-                propertyDTO.InvoiceId,
-                propertyDTO.BookId,
-                propertyDTO.OrderBookId,
-                propertyDTO.OrderId,
-                propertyDTO.PropertyTypeId,
-                propertyDTO.Status,
-                propertyDTO.Additionalnfo,
-                propertyDTO.BookPage,
-                propertyDTO.OrderBookPage,
-                propertyDTO.Quantity,
-                propertyDTO.Price,
-                propertyDTO.FactoryNumber
-            });
+                result = database.Execute(UPDATE_PROPERTYS_SQL, new
+                {
+                    propertyDTO.InventoryNumber,
+                    propertyDTO.Name,
+                    propertyDTO.InvoiceId,
+                    propertyDTO.BookId,
+                    propertyDTO.OrderBookId,
+                    propertyDTO.OrderId,
+                    propertyDTO.PropertyTypeId,
+                    propertyDTO.Status,
+                    propertyDTO.Additionalnfo,
+                    propertyDTO.BookPage,
+                    propertyDTO.OrderBookPage,
+                    propertyDTO.Quantity,
+                    propertyDTO.Price,
+                    propertyDTO.FactoryNumber
+                });
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Помилка при оновеленні Property в базу даних: {ex.Message}";
+                ErrorLogger.LogError(ex, errorMessage);
+            }
             return result == 1;
         }
         public static bool InsertIntoDb(Property selectedProperty)
@@ -95,62 +105,38 @@ namespace Vuzol.Services
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
             int formID = 0;
             Int32.TryParse(propertyDTO.FormId, out formID);
-
-            var result = database.Execute(INSERT_PROPERTYS_SQL, new
+            int result = 0;
+            try
             {
-                propertyDTO.InvoiceId,
-                propertyDTO.OrderBookId,
-                FormId = formID,
-                propertyDTO.OrderId,
-                propertyDTO.FactoryNumber,
-                propertyDTO.InventoryNumber,
-                propertyDTO.Name,
-                propertyDTO.BookId,
-                propertyDTO.BookPage,
-                propertyDTO.OrderBookPage,
-                propertyDTO.PropertyTypeName,
-                propertyDTO.StatusName,
-                propertyDTO.Additionalnfo,
-                propertyDTO.Quantity,
-                propertyDTO.Price,
-                Date_D = propertyDTO.OrderDate
-            });
+
+                result = database.Execute(INSERT_PROPERTYS_SQL, new
+                {
+                    propertyDTO.InvoiceId,
+                    propertyDTO.OrderBookId,
+                    FormId = formID,
+                    propertyDTO.OrderId,
+                    propertyDTO.FactoryNumber,
+                    propertyDTO.InventoryNumber,
+                    propertyDTO.Name,
+                    propertyDTO.BookId,
+                    propertyDTO.BookPage,
+                    propertyDTO.OrderBookPage,
+                    propertyDTO.PropertyTypeName,
+                    propertyDTO.StatusName,
+                    propertyDTO.Additionalnfo,
+                    propertyDTO.Quantity,
+                    propertyDTO.Price,
+                    Date_D = propertyDTO.OrderDate
+                });
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Помилка при додаванні Property в базу даних: {ex.Message}";
+                ErrorLogger.LogError(ex, errorMessage);
+            }
             return result == 1;
-        }
-
-        private static int GetNewTypeId(IDbConnection database, string propertyTypeName)
-        {
-            string query = @"WITH ins AS (
-                            INSERT INTO ""PropertyType"" (""Name"")
-                            SELECT '@PropertyTypeName'
-                            WHERE NOT EXISTS (
-                                SELECT 1 FROM ""PropertyType"" WHERE ""Name"" = @PropertyTypeName   
-                            )
-                            RETURNING ""Id""
-                            )
-                            SELECT ""Id"" FROM ins
-                            UNION ALL
-                            SELECT ""Id"" FROM ""PropertyType"" WHERE ""Name"" = @PropertyTypeName
-                            LIMIT 1;";
-            return database.QuerySingle<int>(query, new { PropertyTypeName = propertyTypeName });
-        }
-
-        private static int GetNewStatus(IDbConnection database, string statusName)
-        {
-            string query = @"WITH ins AS (
-                            INSERT INTO ""PropertyStatus""(""Name"")
-                            SELECT '@statusOld'
-                            WHERE NOT EXISTS (
-                                SELECT 1 FROM ""PropertyStatus"" WHERE ""Name"" = @StatusName
-                            )
-                            RETURNING ""Id""
-                            )
-                            SELECT ""Id"" FROM ins
-                            UNION ALL
-                            SELECT ""Id"" FROM ""PropertyStatus"" WHERE ""Name"" = @StatusName
-                            LIMIT 1;";
-            return database.QuerySingle<int>(query, new { StatusName = statusName });
-        }
+            
+        }      
 
         //Need to fix Don`t use this method for now, it is not working properly
         public static bool InsertMassIntoDb(List<Property> selectedProperty)
@@ -188,7 +174,16 @@ namespace Vuzol.Services
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
-            database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });
+            try
+            {
+                database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Помилка при видаленні Property в базу даних: {ex.Message}";
+                ErrorLogger.LogError(ex, errorMessage);
+            }
+            
         }
         private static Property ToProperty(PropertyDTO dto) =>
                    new Property(dto.FactoryNumber,

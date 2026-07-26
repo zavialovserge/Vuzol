@@ -9,6 +9,7 @@ using Vuzol.Navigation;
 using Vuzol.Services;
 using Vuzol.ViewModel.Command;
 using Vuzol.ViewModel.Model;
+using WpfApp2.Services;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 namespace Vuzol.ViewModel
@@ -65,7 +66,6 @@ namespace Vuzol.ViewModel
             set
             {
                 _selectedProperty = value;
-
                 OnPropertyChanged(nameof(_selectedProperty));
             }
         }
@@ -375,6 +375,7 @@ namespace Vuzol.ViewModel
                                catch (Exception ex)
                                {
                                    validationErrors.Add($"Рядок {rCnt}: {ex.Message}");
+                                   ErrorLogger.LogError(ex, $"Помилка при обробці рядка {rCnt} в Excel файлі.");
                                }
                            }
 
@@ -411,7 +412,9 @@ namespace Vuzol.ViewModel
                        }
                        catch (Exception ex)
                        {
-                           MessageBox.Show($"Помилка при читанні Excel файлу: {ex.Message}",
+                           string errorMessage = $"Помилка при читанні Excel файлу: {ex.Message}";
+                           ErrorLogger.LogError(ex, errorMessage);   
+                           MessageBox.Show(errorMessage,
                                "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
                        }
                        finally
