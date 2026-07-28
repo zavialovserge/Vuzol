@@ -57,6 +57,17 @@ namespace Vuzol.Services
                                                  @"DELETE FROM ""HardwareEquipment"" 
                                                   WHERE ""SubPropertyFactoryNumber"" = @FactoryNumber;
                                                   DELETE FROM ""Property"" WHERE ""FactoryNumber"" = @FactoryNumber;";
+
+        private const string EXIST_PROPERTY_SQL =
+                  @"SELECT ""InventoryNumber"" FROM ""Property"" WHERE ""InventoryNumber"" = @InventoryNumber";
+        public static bool ExistProperty(int inventoryNumber)
+        {
+            DbData dbData = new DbData();   
+            using IDbConnection database = dbData.Connect();
+            int InventoryNumberFromDb =
+                database.ExecuteScalar<int>(EXIST_PROPERTY_SQL, new { InventoryNumber = inventoryNumber });
+            return inventoryNumber == InventoryNumberFromDb;
+        }
         public static List<Property> GetAllProperty()
         {
             DbData dbData = new DbData();

@@ -1,17 +1,19 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 
 namespace Vuzol.ViewModel.Command
 {
     public class RelayCommand : ICommand
     {
-        private Action<object> _execute;
-        private Func<object, bool> _canExecute;
+        readonly Action<object> _execute;
+        readonly Predicate<object> _canExecute;
+
         public RelayCommand(Action<object> execute)
-            : this(execute, null)
+        : this(execute, null)
         {
         }
 
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute)
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
@@ -20,15 +22,15 @@ namespace Vuzol.ViewModel.Command
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute(parameter);
-        }
-
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null ? true : _canExecute(parameter);
         }
 
         public void Execute(object parameter)
@@ -36,5 +38,9 @@ namespace Vuzol.ViewModel.Command
             _execute(parameter);
         }
 
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

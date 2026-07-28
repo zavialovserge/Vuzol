@@ -1,14 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Vuzol.Services;
 using Vuzol.View;
 using Vuzol.ViewModel.Command;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Vuzol.ViewModel.Model
 {
-    public class PropertyModel : INotifyPropertyChanged
+    public class PropertyModel : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         private RelayCommand _addSoftwareEquipmentCommand;
         private RelayCommand _editSoftwareEquipmentCommand;
@@ -16,6 +20,10 @@ namespace Vuzol.ViewModel.Model
         private RelayCommand _delHardwareEquipmentCommand;
         private SoftwareEquipment _softwareEquipment;
         private HardwareEquipment _hardwareEquipment;
+        
+        // Словник для зберігання помилок валідації
+        private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+
         public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
         public ObservableCollection<HardwareEquipment> HardwareEquipmentList { get; set; }
         public SoftwareEquipment SelectedSoftwareEquipment
@@ -112,7 +120,7 @@ namespace Vuzol.ViewModel.Model
         private string _FIO_R_STR { get; set; }
         private string _FIO_I_STR { get; set; }
         private string? _additionalnfo { get; set; }
-        private int _inventoryNumberStr { get; set; }
+        private int _inventoryNumber { get; set; }
         private int _factoryNumber { get; set; }
         private string? _name { get; set; }
         private int _invoiceId { get; set; }
@@ -130,7 +138,7 @@ namespace Vuzol.ViewModel.Model
         private decimal _quantity { get; set; }
         private decimal _price { get; set; }
         private List<string> _employeeList { get; set; }
-
+        public bool IsEdit { get; set; }
         public int Status
         {
             get { return _status; }
@@ -149,13 +157,17 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_additionalnfo));
             }
         }
-        public int InventoryNumberStr
+        public int InventoryNumber
         {
-            get { return _inventoryNumberStr; }
+            get { return _inventoryNumber; }
             set
             {
-                _inventoryNumberStr = value;
-                OnPropertyChanged(nameof(_inventoryNumberStr));
+                if (_inventoryNumber != value)
+                {
+                    _inventoryNumber = value;
+                    OnPropertyChanged(nameof(InventoryNumber));
+                    ValidateInventoryNumber();
+                }
             }
         }
         public int FactoryNumber
@@ -164,7 +176,7 @@ namespace Vuzol.ViewModel.Model
             set
             {
                 _factoryNumber = value;
-                OnPropertyChanged(nameof(_factoryNumber));
+                OnPropertyChanged(nameof(FactoryNumber));
             }
         }
         public string? Name
@@ -174,6 +186,15 @@ namespace Vuzol.ViewModel.Model
             {
                 _name = value;
                 OnPropertyChanged(nameof(_name));
+                ValidateName();
+            }
+        }
+        private void ValidateName()
+        {
+            ClearErrors(nameof(Name));
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                AddError(nameof(Name), "Найменування є обов'язковим");
             }
         }
         public List<string> PropertyTypeNameList
@@ -334,8 +355,12 @@ namespace Vuzol.ViewModel.Model
             get { return _FIO_R_STR; }
             set
             {
-                _FIO_R_STR = value;
-                OnPropertyChanged(nameof(_FIO_R_STR));
+                if (_FIO_R_STR != value)
+                {
+                    _FIO_R_STR = value;
+                    OnPropertyChanged(nameof(FIO_R_STR));
+                    ValidateFIO_R_STR();
+                }
             }
         }
         public string? FIO_I_STR
@@ -374,12 +399,83 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_price));
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+
+        // INotifyDataErrorInfo implementation
+        public bool HasErrors => _errors.Any();
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        public IEnumerable? GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName) || !_errors.ContainsKey(propertyName))
+                return null;
+            return _errors[propertyName];
+        }
+
+        private void AddError(string propertyName, string error)
+        {
+            if (!_errors.ContainsKey(propertyName))
+                _errors[propertyName] = new List<string>();
+
+            if (!_errors[propertyName].Contains(error))
+            {
+                _errors[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            if (_errors.ContainsKey(propertyName))
+            {
+                _errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        private void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        // Validation methods
+        private void ValidateInventoryNumber()
+        {
+            ClearErrors(nameof(InventoryNumber));
+            if (InventoryNumber <= 0)
+            {
+                AddError(nameof(InventoryNumber), "Інвентарний номер є обов'язковим");
+            }
+            if(PropertyData.ExistProperty(InventoryNumber) && IsEdit)
+            {
+                AddError(nameof(InventoryNumber), "Інвентарний номер вже існує");
+            }
+        }
+
+        private void ValidateFIO_R_STR()
+        {
+            ClearErrors(nameof(FIO_R_STR));
+            if (string.IsNullOrWhiteSpace(FIO_R_STR))
+            {
+                AddError(nameof(FIO_R_STR), "Відповідальний є обов'язковим полем");
+            }
+        }
+
+        // Метод для тригерування валідації всіх обов'язкових полів
+        public void TriggerValidation()
+        {
+            ValidateInventoryNumber();
+            ValidateFIO_R_STR();
+            ValidateName();
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        
         private void RefreshSoftwareEquipment()
         {
             SoftwareEquipmentList.Clear();
@@ -389,7 +485,8 @@ namespace Vuzol.ViewModel.Model
                 SoftwareEquipmentList.Add(softwareEquipment);
             }
         }
-        private Tuple<string, double> GetSoftwareEquipmentDescription(string name, double quantity)
+        
+        private Tuple<string, double>? GetSoftwareEquipmentDescription(string name, double quantity)
         {
             InputDialogSample inputDialog =
                        new InputDialogSample("Введіть опис", name, true, quantity);

@@ -8,6 +8,68 @@
              mc:Ignorable="d" 
              d:DesignHeight="1000" Background="#FAFAFA">
 
+    <UserControl.Resources>
+        <!-- Конвертер для отримання тексту помилки -->
+        <Style x:Key="ErrorToolTipStyle" TargetType="ToolTip">
+            <Setter Property="Background" Value="#FFFFE0E0"/>
+            <Setter Property="BorderBrush" Value="Red"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#D8000C"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+
+        <!-- Стиль для TextBox з валідацією -->
+        <Style x:Key="ValidatedTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputTextBoxStyle}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel>
+                            <Border BorderBrush="Red" BorderThickness="2" CornerRadius="3">
+                                <AdornedElementPlaceholder/>
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <ToolTip Style="{StaticResource ErrorToolTipStyle}"
+                                     Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.(Validation.Errors)[0].ErrorContent}"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для ComboBox з валідацією -->
+        <Style x:Key="ValidatedComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource InputComboBoxStyle}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel>
+                            <Border BorderBrush="Red" BorderThickness="2" CornerRadius="3">
+                                <AdornedElementPlaceholder/>
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <ToolTip Style="{StaticResource ErrorToolTipStyle}"
+                                     Content="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.(Validation.Errors)[0].ErrorContent}"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -29,16 +91,29 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="Інвентарний номер"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.InventoryNumberStr, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Style="{StaticResource LabelStyle}">
+                                    <Run Text="Інвентарний номер"/>
+                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                </TextBlock>
+                                <TextBox Style="{StaticResource ValidatedTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.InventoryNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="Найменування"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.Name}"/>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="Найменування">
+                                    <Run Text="Найменування"/>
+                                    <Run Text="*" Foreground="Red"/>
+                                </TextBlock>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.Name, 
+                                    UpdateSourceTrigger=PropertyChanged,ValidatesOnNotifyDataErrors=True, 
+                                    NotifyOnValidationError=True}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="Заводський номер"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.FactoryNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Style="{StaticResource LabelStyle}">
+                                    <Run Text="Заводський номер"/>
+                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                </TextBlock>
+                                <TextBox Style="{StaticResource ValidatedTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.FactoryNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -152,9 +227,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="Відповідальний"/>
-                                <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding PropertyAdd.EmployeeList}" 
-                                          SelectedValue="{Binding PropertyAdd.FIO_R_STR, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Style="{StaticResource LabelStyle}">
+                                    <Run Text="Відповідальний"/>
+                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                </TextBlock>
+                                <ComboBox Style="{StaticResource ValidatedComboBoxStyle}" 
+                                          ItemsSource="{Binding PropertyAdd.EmployeeList}" 
+                                          SelectedValue="{Binding PropertyAdd.FIO_R_STR, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Статус"/>

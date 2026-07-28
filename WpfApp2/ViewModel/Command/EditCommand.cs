@@ -7,9 +7,6 @@ namespace Vuzol.ViewModel.Command
         {
         }
 
-        public EditCommand(Action<object> execute, Func<object, bool> canExecute) : base(execute, canExecute)
-        {
-        }
 
 
     }
