@@ -42,6 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\PersonalChoose.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Form for print\Form.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

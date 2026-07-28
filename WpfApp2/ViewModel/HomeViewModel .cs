@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Vuzol.Navigation;
 using Vuzol.Services;
+using Vuzol.View;
 using Vuzol.ViewModel.Command;
 using Vuzol.ViewModel.Model;
 using WpfApp2.Services;
@@ -454,38 +455,7 @@ namespace Vuzol.ViewModel
                        }
                    }));
             }
-        }
-        public ICommand PrintForm
-        {
-            get
-            {
-                return _printForm ?? (_printForm = new RelayCommand(
-                   x =>
-                   {
-                       if(SelectedProperty == null)
-                       {
-                           MessageBox.Show("Будь ласка, виберіть строку для друку.", "Помилка",
-                               MessageBoxButton.OK, MessageBoxImage.Error);
-                           return;
-                       }
-                       Dictionary<string, string> items = new Dictionary<string, string>()
-                           {
-                               {  "FormNumber", SelectedProperty.FormId },
-                               {  "Name", SelectedProperty.Name },
-                               {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
-                               {  "AdditionalInfo", SelectedProperty.Additionalnfo },
-                               {  "DateD", SelectedProperty.FormDate.Day.ToString("00") },
-                               {  "DateM", SelectedProperty.FormDate.Month.ToString("00") },
-                               {  "DateY", SelectedProperty.FormDate.Year.ToString() },
-                               {  "DateForm", SelectedProperty.FormDate.ToString("d") }
-                           };
-                       string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
-
-                       PrintWordDoc(items, path);
-
-                   }));
-            }
-        }
+        }        
         private void PrintWordDoc(Dictionary<string, string> items, string path)
         {
             Word.Application app = null;
@@ -612,6 +582,51 @@ namespace Vuzol.ViewModel
                 }
             }
         }
+        public ICommand PrintForm
+        {
+            get
+            {
+                return _printForm ?? (_printForm = new RelayCommand(
+                   x =>
+                   {
+                       if (SelectedProperty == null)
+                       {
+                           MessageBox.Show("Будь ласка, виберіть строку для друку.", "Помилка",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+                           return;
+                       }
+                       PersonalChoose personalChoose = new PersonalChoose(EmployeeData.GetAllEmployees());
+                       if (personalChoose.ShowDialog() != true)
+                       {
+                           return; // Користувач скасував вибір
+                       }
+                       string[] answer = personalChoose.Answer.Split(' ');
+                       string rank = answer[0];
+                       string FirstName = answer[1];
+                       string LastName = answer[2].ToUpper();
+                       string position = answer[3];
+                       Dictionary<string, string> items = new Dictionary<string, string>()
+                           {
+                               {  "FormNumber", SelectedProperty.FormId },
+                               {  "Name", SelectedProperty.Name },
+                               {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
+                               {  "AdditionalInfo", SelectedProperty.Additionalnfo },
+                               {  "DateD", SelectedProperty.FormDate.Day.ToString("00") },
+                               {  "DateM", SelectedProperty.FormDate.Month.ToString("00") },
+                               {  "DateY", SelectedProperty.FormDate.Year.ToString() },
+                               {  "DateForm", SelectedProperty.FormDate.ToString("d") },
+                               {  "LastName", LastName},
+                               {  "FirstName", FirstName},
+                               {  "Rank", rank},
+                               {  "Position", position}
+                           };
+                       string path = Directory.GetCurrentDirectory() + "\\Form for print\\Form.docx";
+
+                       PrintWordDoc(items, path);
+
+                   }));
+            }
+        }
         public ICommand PrintAccountingForm
         {
             get
@@ -619,6 +634,16 @@ namespace Vuzol.ViewModel
                 return _printAccountingForm ?? (_printAccountingForm = new RelayCommand(
                    x =>
                    {
+                       PersonalChoose personalChoose = new PersonalChoose(EmployeeData.GetAllEmployees());
+                       if (personalChoose.ShowDialog() != true)
+                       {
+                           return; // Користувач скасував вибір
+                       }
+                       string[] answer = personalChoose.Answer.Split(' ');
+                       string rank = answer[0];
+                       string FirstName = answer[1];
+                       string LastName = answer[2].ToUpper();
+                       string position = answer[3];
                        Dictionary<string, string> items = new Dictionary<string, string>()
                            {
                                {  "FormNumber", SelectedProperty.FormId },
@@ -628,8 +653,11 @@ namespace Vuzol.ViewModel
                                {  "ConBook", SelectedProperty.BookId.ToString() },
                                {  "PageConBook", SelectedProperty.BookPage.ToString() },
                                {  "OrderBook", SelectedProperty.OrderBookId.ToString() },
-                               {  "PageOrderBook", SelectedProperty.OrderBookPage.ToString() }
-
+                               {  "PageOrderBook", SelectedProperty.OrderBookPage.ToString() },
+                               {  "LastName", LastName},
+                               {  "FirstName", FirstName},
+                               {  "Rank", rank},
+                               {  "Position", position}
                            };
                        string path = Directory.GetCurrentDirectory() + "\\Form for print\\RegistraionCard.docx";
                        PrintWordDoc(items, path);
