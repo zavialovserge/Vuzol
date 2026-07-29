@@ -50,13 +50,13 @@ namespace Vuzol.Services
                        ""OrderBookPage"" =@OrderBookPage,
                        ""Quantity"" =@Quantity,
                        ""Price"" =@Price,
-                       ""DLM"" = Now() 
-                       WHERE ""FactoryNumber"" =@FactoryNumber";
+                       ""DLM"" = Now()
+                       WHERE ""InventoryNumber"" =@InventoryNumber";
 
         private const string DELETE_PROPERTYS_SQL =
                                                  @"DELETE FROM ""HardwareEquipment"" 
                                                   WHERE ""SubPropertyFactoryNumber"" = @FactoryNumber;
-                                                  DELETE FROM ""Property"" WHERE ""FactoryNumber"" = @FactoryNumber;";
+                                                  DELETE FROM ""Property"" WHERE ""InventoryNumber"" = @InventoryNumber;";
 
         private const string EXIST_PROPERTY_SQL =
                   @"SELECT ""InventoryNumber"" FROM ""Property"" WHERE ""InventoryNumber"" = @InventoryNumber";
@@ -119,7 +119,6 @@ namespace Vuzol.Services
             int result = 0;
             try
             {
-
                 result = database.Execute(INSERT_PROPERTYS_SQL, new
                 {
                     propertyDTO.InvoiceId,
@@ -187,7 +186,9 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             try
             {
-                database.Execute(DELETE_PROPERTYS_SQL, new { FactoryNumber = selectedProperty.FactoryNumber });
+                database.Execute(DELETE_PROPERTYS_SQL, 
+                    new { FactoryNumber = selectedProperty.FactoryNumber,
+                          InventoryNumber = selectedProperty.InventoryNumber });
             }
             catch (Exception ex)
             {

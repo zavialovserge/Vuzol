@@ -446,7 +446,7 @@ namespace Vuzol.ViewModel.Model
             {
                 AddError(nameof(InventoryNumber), "Інвентарний номер є обов'язковим");
             }
-            if(PropertyData.ExistProperty(InventoryNumber) && IsEdit)
+            if(PropertyData.ExistProperty(InventoryNumber) && !IsEdit)
             {
                 AddError(nameof(InventoryNumber), "Інвентарний номер вже існує");
             }
