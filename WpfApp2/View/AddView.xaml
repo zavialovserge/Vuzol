@@ -185,7 +185,7 @@
                 <!-- Finansovie dani -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Фінансовиі характеристики"/>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Фінансові характеристики"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
