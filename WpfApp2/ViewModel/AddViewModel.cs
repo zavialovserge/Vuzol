@@ -25,41 +25,14 @@ namespace Vuzol.ViewModel
             EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
             PropertyAdd = new PropertyModel()
             {
-                InventoryNumber = current.InventoryNumber,
-                FactoryNumber = current.FactoryNumber,
-                Name = current.Name,
-                InvoiceId = current.InvoiceId,
-                BookId = current.BookId,
-                OrderBookId = current.OrderBookId,
-                FormId = current.FormId,
-                OrderId = current.OrderId,
-                OrderDate = current.OrderDate.ToString("yyyy/MM/dd"),
-                PropertyTypeId = current.PropertyTypeId,
-                Additionalnfo = current.Additionalnfo,
-                UnitName = current.UnitName,
-                BookPage = current.BookPage,
-                Status = current.Status,
-                OrderBookPage = current.OrderBookPage,
-                FIO_R_STR = current.FIO_R_STR,
-                FIO_R = current.FIO_R,
                 PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
                 PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
                 PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
                 PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
                 Quantity = current.Quantity,
-                Price = current.Price,
-                IsEdit = isEdit,
                 EmployeeList = EmployeesList
                                             .Select(a => a.LastName + " " + a.FirstName)
-                                            .ToList(),
-                SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
-                                    SoftwareEquipmentData.GetAllSoftwareEquipment(current.FactoryNumber)),
-                HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
-                                    HardwareEquipmentData.GetAllHardwareEquipment(current.FactoryNumber)),
-                AddHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
-                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
-                EditHardwareEquipmentCommand = new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
-                () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd, true)),
+                                            .ToList()
             };
 
             // Підписуємося на зміни помилок валідації
@@ -175,7 +148,8 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR,
                                              PropertyAdd.UnitName,
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
-                                             DateTime.Parse(PropertyAdd.OrderDate), status)
+                                             DateTime.Parse(string.IsNullOrEmpty(PropertyAdd.OrderDate) ? DateTime.Now.ToString() : PropertyAdd.OrderDate), 
+                                             status)
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,

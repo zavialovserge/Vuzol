@@ -164,19 +164,23 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Книга закріплень"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.BookId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.BookId, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Сторінка"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.BookPage, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.BookPage, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="4">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Книга обліку"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderBookId, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.OrderBookId, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="6">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Сторінка"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding PropertyAdd.OrderBookPage, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource InputTextBoxStyle}" 
+                                         Text="{Binding PropertyAdd.OrderBookPage, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0}"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -250,7 +254,7 @@
                 <!-- Komplektnist zalizo -->
                 <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектность - залізо"/>
+                        <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектність - залізо"/>
                         <DataGrid Style="{StaticResource ModernDataGridStyle}" Height="200"
                                   ItemsSource="{Binding PropertyAdd.HardwareEquipmentList}" 
                                   SelectedItem="{Binding PropertyAdd.SelectedHardwareEquipment}" 
