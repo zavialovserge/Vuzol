@@ -36,7 +36,8 @@
                 <MenuItem Header="Матеріальні активи " Command="{Binding ShowMaterialResources}"/>
                 <MenuItem Header="Категорії" Command="{Binding ShowCategory}"/>
                 <MenuItem Header="Мітка(Коротке найменування)" Command="{Binding ShowPropertyType}"/>
-                <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}"/>                
+                <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}"/>
+                <MenuItem Header="Одиниці виміру " Command="{Binding ShowQuantityType}"/>
             </MenuItem>
         </Menu>
         
@@ -84,6 +85,7 @@
                     <DataGridTextColumn x:Name="FIO_R_STRColumn" Width="Auto" Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                     <DataGridTextColumn x:Name="UnitNameColumn" Width="Auto" Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
                     <DataGridTextColumn x:Name="QuantityColumn" Width="Auto" Header="Кількість" Binding="{Binding Quantity}"/>
+                    <DataGridTextColumn x:Name="QuantityTypeDescriptionColumn" Width="Auto" Header="Одиниці виміру" Binding="{Binding QuantityTypeDescription}"/>
                     <DataGridTextColumn x:Name="PriceColumn" Width="Auto" Header="Ціна" Binding="{Binding Price}"/>
                     <DataGridTextColumn x:Name="CategoryDescriptionColumn" Width="Auto" Header="Категорія" Binding="{Binding CategoryDescription}"/>
                     <DataGridTextColumn x:Name="MaterialResourcesDescriptionColumn" Width="Auto" Header="Матеріальні ресурси" Binding="{Binding MaterialResourcesDescription}"/>

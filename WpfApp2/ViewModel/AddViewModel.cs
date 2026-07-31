@@ -5,9 +5,6 @@ using Vuzol.Services;
 using Vuzol.ViewModel.Model;
 using Vuzol.ViewModel.Command;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System;
-using System.Collections.Generic;
 
 namespace Vuzol.ViewModel
 {
@@ -112,7 +109,8 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.BookPage,
                                              PropertyAdd.OrderBookPage,
                                              DateTime.Parse(PropertyAdd.OrderDate), status, 
-                                             PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription)
+                                             PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription, 
+                                             PropertyAdd.QuantityTypeDescription)
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,
@@ -150,7 +148,8 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.UnitName,
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
                                              DateTime.Parse(string.IsNullOrEmpty(PropertyAdd.OrderDate) ? DateTime.Now.ToString() : PropertyAdd.OrderDate), 
-                                             status, PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription)
+                                             status, PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription, 
+                                             PropertyAdd.QuantityTypeDescription)
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,

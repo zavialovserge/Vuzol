@@ -37,6 +37,9 @@
     <Compile Update="View\PropertyTypeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\QuantityTypeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\RankView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

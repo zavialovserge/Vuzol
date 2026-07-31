@@ -31,5 +31,6 @@
         public decimal Price { get; set; }        
         public string CategoryDescription { get; set; }
         public string MaterialResourcesDescription { get; set; }
+        public string QuantityTypeDescription { get; set; }
     }
 }

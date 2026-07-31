@@ -30,6 +30,7 @@
         public string CategoryDescription { get; set; }
         public string MaterialResourcesDescription { get; set; }
         public decimal Quantity { get; set; }
+        public string QuantityTypeDescription { get; set; }
         public decimal Price { get; set; }
         public Property(int factoryNumber, string? name,
             int inventoryNumber, int invoiceId,
@@ -38,7 +39,7 @@
             int orderId, int propertyTypeId,
             string? additionalnfo,
             DateTime dLM, int fio_r, int fio_i, string fio_r_str, string fio_i_str, string unit_name,
-            int bookPage, int orderBookPage, DateTime orderDate, int status, string categoryDescription, string materialResourcesDescription)
+            int bookPage, int orderBookPage, DateTime orderDate, int status, string categoryDescription, string materialResourcesDescription, string quantityTypeDescription    )
         {
             FactoryNumber = factoryNumber;
             Name = name;
@@ -64,6 +65,7 @@
             Status = status;
             CategoryDescription = categoryDescription;
             MaterialResourcesDescription = materialResourcesDescription;
+            QuantityTypeDescription = quantityTypeDescription;
         }
         public Property()
         {
