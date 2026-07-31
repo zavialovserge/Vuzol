@@ -138,6 +138,7 @@ namespace Vuzol.ViewModel.Model
         private decimal _quantity { get; set; }
         private decimal _price { get; set; }
         private string _categoryDescription { get; set; }
+        private string _materialResourcesDescription { get; set; }
         private List<string> _employeeList { get; set; }
         public bool IsEdit { get; set; }
         public int Status
@@ -165,6 +166,15 @@ namespace Vuzol.ViewModel.Model
             {
                 _categoryDescription = value;
                 OnPropertyChanged(nameof(_categoryDescription));
+            }
+        }
+        public string? MaterialResourcesDescription
+        {
+            get { return _materialResourcesDescription; }
+            set
+            {
+                _materialResourcesDescription = value;
+                OnPropertyChanged(nameof(_materialResourcesDescription));
             }
         }
         public int InventoryNumber

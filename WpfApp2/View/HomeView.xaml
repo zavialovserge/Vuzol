@@ -33,8 +33,9 @@
                 <MenuItem Header="Звання" Command="{Binding ShowRanks}"/>
             </MenuItem>
             <MenuItem Header="Довідники">
+                <MenuItem Header="Матеріальні активи " Command="{Binding ShowMaterialResources}"/>
                 <MenuItem Header="Категорії" Command="{Binding ShowCategory}"/>
-                <MenuItem Header="Мітка" Command="{Binding ShowPropertyType}"/>
+                <MenuItem Header="Мітка(Коротке найменування)" Command="{Binding ShowPropertyType}"/>
                 <MenuItem Header="Статуси" Command="{Binding ShowPropertyStatus}"/>                
             </MenuItem>
         </Menu>
@@ -85,6 +86,7 @@
                     <DataGridTextColumn x:Name="QuantityColumn" Width="Auto" Header="Кількість" Binding="{Binding Quantity}"/>
                     <DataGridTextColumn x:Name="PriceColumn" Width="Auto" Header="Ціна" Binding="{Binding Price}"/>
                     <DataGridTextColumn x:Name="CategoryDescriptionColumn" Width="Auto" Header="Категорія" Binding="{Binding CategoryDescription}"/>
+                    <DataGridTextColumn x:Name="MaterialResourcesDescriptionColumn" Width="Auto" Header="Матеріальні ресурси" Binding="{Binding MaterialResourcesDescription}"/>
                     <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
                 </DataGrid.Columns>
             </DataGrid>

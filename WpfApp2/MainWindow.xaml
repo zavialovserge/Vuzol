@@ -41,6 +41,9 @@
             <DataTemplate DataType="{x:Type viewmodels:CategoryViewModel}">
                 <views:CategoryView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:MaterialResourcesViewModel}">
+                <views:MaterialResourcesView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl Content="{Binding CurrentViewModel}" />
     </Grid>

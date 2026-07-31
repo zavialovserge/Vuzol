@@ -20,13 +20,15 @@ namespace Vuzol.Services
                           COALESCE(e1.""LastName"" || ' ' || e1.""FirstName"", '') as ""FIO_R_STR"",
                           COALESCE(e2.""LastName"" || ' ' || e2.""FirstName"", '') as ""FIO_I_STR"",
                           COALESCE(u.""Name"", '') as ""UnitName"",
-                          COALESCE(c.""Description"", '') as ""CategoryDescription""
+                          COALESCE(c.""Description"", '') as ""CategoryDescription"",
+                          COALESCE(mr.""Description"", '') as ""MaterialResourcesDescription""
                    FROM ""Property"" as pr
                    LEFT JOIN ""Form"" as f ON f.""FormId"" = pr.""FormId""
                    LEFT JOIN ""Employee"" as e1 ON e1.""Id"" = pr.""FIO_R""
                    LEFT JOIN ""Employee"" as e2 ON e2.""Id"" = pr.""Fio_I""
                    LEFT JOIN ""Unit"" as u ON u.""Id"" = e2.""UnitId""
                    LEFT JOIN ""Category"" as c ON c.""Id"" = pr.""CategoryId""
+                   LEFT JOIN ""MaterialResources"" as mr ON mr.""Id"" = pr.""MaterialResourcesId""
                    LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
                    LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
 
@@ -222,7 +224,8 @@ namespace Vuzol.Services
                                 dto.OrderBookPage,
                                 dto.OrderDate,
                                 dto.Status,
-                                dto.CategoryDescription)
+                                dto.CategoryDescription,
+                                dto.MaterialResourcesDescription)
                    {
                        StatusName = dto.StatusName,
                        Quantity = dto.Quantity,
