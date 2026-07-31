@@ -27,7 +27,7 @@
                 <views:UnitView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:RankViewModel}">
-                <views:RankView/>
+                <views:CategoryView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:PropertyTypeViewModel}">
                 <views:PropertyTypeView/>
@@ -37,6 +37,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:HardwareEquipmentViewModel}">
                 <views:HardwareEquipmentView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:CategoryViewModel}">
+                <views:CategoryView/>
             </DataTemplate>
         </Grid.Resources>
         <ContentControl Content="{Binding CurrentViewModel}" />

@@ -29,5 +29,6 @@
         public string StatusName { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
+        public string CategoryDescription { get; set; }
     }
 }

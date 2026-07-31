@@ -111,7 +111,7 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.UnitName,
                                              PropertyAdd.BookPage,
                                              PropertyAdd.OrderBookPage,
-                                             DateTime.Parse(PropertyAdd.OrderDate), status)
+                                             DateTime.Parse(PropertyAdd.OrderDate), status, PropertyAdd.CategoryDescription)
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,
@@ -149,7 +149,7 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.UnitName,
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
                                              DateTime.Parse(string.IsNullOrEmpty(PropertyAdd.OrderDate) ? DateTime.Now.ToString() : PropertyAdd.OrderDate), 
-                                             status)
+                                             status, PropertyAdd.CategoryDescription    )
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,

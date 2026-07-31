@@ -57,6 +57,8 @@ namespace Vuzol.ViewModel
                                                () => new PropertyTypeViewModel(NavigationProperty));
             ShowPropertyStatus = new NavigateCommand<PropertyStatusViewModel>(NavigationProperty,
                                                () => new PropertyStatusViewModel(NavigationProperty));
+            ShowCategory = new NavigateCommand<CategoryViewModel>(NavigationProperty,
+                                               () => new CategoryViewModel(NavigationProperty));
             SelectedListSource = (CollectionView)CollectionViewSource.GetDefaultView(SelectedList);
             SelectedListSource.Filter = new Predicate<object>(o => Filters(o as Property));
         }
@@ -78,6 +80,7 @@ namespace Vuzol.ViewModel
         public ICommand ShowPropertyType { get; }
         public ICommand ShowRanks { get; }
         public ICommand ShowPropertyStatus { get; }
+        public ICommand ShowCategory { get; }
         public ICommand AddCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DelCommand

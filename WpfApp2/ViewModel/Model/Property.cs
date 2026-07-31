@@ -27,6 +27,7 @@
         public DateTime OrderDate { get; set; }
         public int Status { get; set; }
         public string StatusName { get; set; }
+        public string CategoryDescription { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public Property(int factoryNumber, string? name,
@@ -36,7 +37,7 @@
             int orderId, int propertyTypeId,
             string? additionalnfo,
             DateTime dLM, int fio_r, int fio_i, string fio_r_str, string fio_i_str, string unit_name,
-            int bookPage, int orderBookPage, DateTime orderDate, int status)
+            int bookPage, int orderBookPage, DateTime orderDate, int status, string categoryDescription)
         {
             FactoryNumber = factoryNumber;
             Name = name;
@@ -60,6 +61,7 @@
             OrderBookPage = orderBookPage;
             OrderDate = orderDate;
             Status = status;
+            CategoryDescription = categoryDescription;
         }
         public Property()
         {
