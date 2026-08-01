@@ -34,6 +34,7 @@
         public decimal Quantity { get; set; }
         public string QuantityTypeDescription { get; set; }
         public decimal Price { get; set; }
+        public decimal Cost { get; set; }
         public Property(int factoryNumber, string? name,
             int inventoryNumber, int invoiceId,
             int bookId, int orderBookId, string? formId,

@@ -236,7 +236,8 @@ namespace Vuzol.Services
                    {
                        StatusName = dto.StatusName,
                        Quantity = dto.Quantity,
-                       Price = dto.Price
+                       Price = dto.Price,
+                       Cost= dto.Price * dto.Quantity
                    };
         private static PropertyDTO ToDtoProperty(Property prop) =>
                    new PropertyDTO()

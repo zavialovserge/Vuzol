@@ -88,6 +88,7 @@
                     <DataGridTextColumn x:Name="QuantityColumn" Width="Auto" Header="Кількість" Binding="{Binding Quantity}"/>
                     <DataGridTextColumn x:Name="QuantityTypeDescriptionColumn" Width="Auto" Header="Одиниці виміру" Binding="{Binding QuantityTypeDescription}"/>
                     <DataGridTextColumn x:Name="PriceColumn" Width="Auto" Header="Ціна" Binding="{Binding Price}"/>
+                    <DataGridTextColumn x:Name="CostColumn" Width="Auto" Header="Вартість" Binding="{Binding Cost}"/>
                     <DataGridTextColumn x:Name="CategoryDescriptionColumn" Width="Auto" Header="Категорія" Binding="{Binding CategoryDescription}"/>
                     <DataGridTextColumn x:Name="MaterialResourcesDescriptionColumn" Width="Auto" Header="Матеріальні ресурси" Binding="{Binding MaterialResourcesDescription}"/>
                     <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
