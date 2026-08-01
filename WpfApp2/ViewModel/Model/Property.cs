@@ -19,8 +19,10 @@
         public DateTime DLM { get; set; }
         public int FIO_R { get; set; }
         public int FIO_I { get; set; }
+        public int FIO_V { get; set; }
         public string FIO_R_STR { get; set; }
         public string FIO_I_STR { get; set; }
+        public string FIO_V_STR { get; set; }
         public string UnitName { get; set; }
         public int BookPage { get; set; }
         public int OrderBookPage { get; set; }
@@ -38,7 +40,7 @@
             string? formName, DateTime formDate,
             int orderId, int propertyTypeId,
             string? additionalnfo,
-            DateTime dLM, int fio_r, int fio_i, string fio_r_str, string fio_i_str, string unit_name,
+            DateTime dLM, int fio_r, int fio_i, int fio_v, string fio_r_str, string fio_i_str, string fio_v_str, string unit_name,
             int bookPage, int orderBookPage, DateTime orderDate, int status, string categoryDescription, string materialResourcesDescription, string quantityTypeDescription    )
         {
             FactoryNumber = factoryNumber;
@@ -56,8 +58,10 @@
             DLM = dLM;
             FIO_R = fio_r;
             FIO_I = fio_i;
+            FIO_V = fio_v;
             FIO_R_STR = fio_r_str;
             FIO_I_STR = fio_i_str;
+            FIO_V_STR = fio_v_str;
             UnitName = unit_name;
             BookPage = bookPage;
             OrderBookPage = orderBookPage;

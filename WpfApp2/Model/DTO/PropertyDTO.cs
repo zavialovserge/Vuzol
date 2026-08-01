@@ -21,8 +21,10 @@
         public DateTime DLM { get; set; }
         public int FIO_R { get; set; }
         public int FIO_I { get; set; }
+        public int FIO_V { get; set; }
         public string FIO_R_STR { get; set; }
         public string FIO_I_STR { get; set; }
+        public string FIO_V_STR { get; set; }
         public string UnitName { get; set; }
         public DateTime OrderDate { get; set; }
         public int Status { get; set; }

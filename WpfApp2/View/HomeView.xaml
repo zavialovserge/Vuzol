@@ -84,6 +84,7 @@
                     <DataGridTextColumn x:Name="StatusNameColumn" Width="Auto" Header="Статус" Binding="{Binding StatusName}"/>
                     <DataGridTextColumn x:Name="FIO_R_STRColumn" Width="Auto" Header="Відповідальний" Binding="{Binding FIO_R_STR}"/>
                     <DataGridTextColumn x:Name="UnitNameColumn" Width="Auto" Header="Відповідальний підрозділ" Binding="{Binding UnitName}"/>
+                    <DataGridTextColumn x:Name="FIO_V_STRColumn" Width="Auto" Header="Видано в користування" Binding="{Binding FIO_V_STR}"/>
                     <DataGridTextColumn x:Name="QuantityColumn" Width="Auto" Header="Кількість" Binding="{Binding Quantity}"/>
                     <DataGridTextColumn x:Name="QuantityTypeDescriptionColumn" Width="Auto" Header="Одиниці виміру" Binding="{Binding QuantityTypeDescription}"/>
                     <DataGridTextColumn x:Name="PriceColumn" Width="Auto" Header="Ціна" Binding="{Binding Price}"/>

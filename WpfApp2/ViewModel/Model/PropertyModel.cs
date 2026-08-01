@@ -117,8 +117,10 @@ namespace Vuzol.ViewModel.Model
         private string _propertyStatusName { get; set; }
         private int _FIO_R { get; set; }
         private int _FIO_I { get; set; }
+        private int _FIO_V { get; set; }
         private string _FIO_R_STR { get; set; }
         private string _FIO_I_STR { get; set; }
+        private string _FIO_V_STR { get; set; }
         private string? _additionalnfo { get; set; }
         private int _inventoryNumber { get; set; }
         private int _factoryNumber { get; set; }
@@ -362,6 +364,15 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_FIO_I));
             }
         }
+        public int FIO_V
+        {
+            get { return _FIO_V; }
+            set
+            {
+                _FIO_V = value;
+                OnPropertyChanged(nameof(_FIO_V));
+            }
+        }
         public int BookPage
         {
             get { return _bookPage; }
@@ -400,6 +411,15 @@ namespace Vuzol.ViewModel.Model
             {
                 _FIO_I_STR = value;
                 OnPropertyChanged(nameof(_FIO_I_STR));
+            }
+        }
+        public string? FIO_V_STR
+        {
+            get { return _FIO_V_STR; }
+            set
+            {
+                _FIO_V_STR = value;
+                OnPropertyChanged(nameof(_FIO_V_STR));
             }
         }
         public string UnitName

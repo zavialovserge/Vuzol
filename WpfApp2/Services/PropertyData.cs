@@ -11,7 +11,7 @@ namespace Vuzol.Services
     {
         private const string GET_ALL_PROPERTYS_SQL =
                   @"SELECT pr.""FactoryNumber"", pr.""Name"", pr.""InventoryNumber"",
-                          pr.""InvoiceId"", pr.""FIO_R"", pr.""Fio_I"", pr.""BookId"", pr.""FormId"", 
+                          pr.""InvoiceId"", pr.""FIO_R"", pr.""Fio_I"", pr.""Fio_V"", pr.""BookId"", pr.""FormId"", 
                           pr.""OrderId"", o.""Date_D"" as ""OrderDate"",
                           pr.""OrderBookId"", pr.""PropertyTypeId"", pr.""Status"", ps.""Name"" as ""StatusName"",
                           COALESCE(pr.""Additionalnfo"", '') as ""Additionalnfo"", pr.""DLM"", f.""Name"" as ""FormName"",
@@ -19,6 +19,7 @@ namespace Vuzol.Services
                           pr.""OrderBookPage"", f.""Date_D"" as ""FormDate"",
                           COALESCE(e1.""LastName"" || ' ' || e1.""FirstName"", '') as ""FIO_R_STR"",
                           COALESCE(e2.""LastName"" || ' ' || e2.""FirstName"", '') as ""FIO_I_STR"",
+                          COALESCE(e3.""LastName"" || ' ' || e3.""FirstName"", '') as ""FIO_V_STR"",
                           COALESCE(u.""Name"", '') as ""UnitName"",
                           COALESCE(c.""Description"", '') as ""CategoryDescription"",
                           COALESCE(mr.""Description"", '') as ""MaterialResourcesDescription"",
@@ -27,6 +28,7 @@ namespace Vuzol.Services
                    LEFT JOIN ""Form"" as f ON f.""FormId"" = pr.""FormId""
                    LEFT JOIN ""Employee"" as e1 ON e1.""Id"" = pr.""FIO_R""
                    LEFT JOIN ""Employee"" as e2 ON e2.""Id"" = pr.""Fio_I""
+                   LEFT JOIN ""Employee"" as e3 ON e3.""Id"" = pr.""Fio_V""
                    LEFT JOIN ""Unit"" as u ON u.""Id"" = e2.""UnitId""
                    LEFT JOIN ""Category"" as c ON c.""Id"" = pr.""CategoryId""
                    LEFT JOIN ""MaterialResources"" as mr ON mr.""Id"" = pr.""MaterialResourcesId""
@@ -219,8 +221,10 @@ namespace Vuzol.Services
                                 dto.DLM,
                                 dto.FIO_R,
                                 dto.FIO_I,
+                                dto.FIO_V,
                                 dto.FIO_R_STR,
                                 dto.FIO_I_STR,
+                                dto.FIO_V_STR,
                                 dto.UnitName,
                                 dto.BookPage,
                                 dto.OrderBookPage,
@@ -257,6 +261,7 @@ namespace Vuzol.Services
                                               : prop.Additionalnfo,
                        FIO_I = prop.FIO_I,
                        FIO_R = prop.FIO_R,
+                       FIO_V = prop.FIO_V,
                        BookPage = prop.BookPage,
                        OrderBookPage = prop.OrderBookPage,
                        OrderDate = prop.OrderDate,
