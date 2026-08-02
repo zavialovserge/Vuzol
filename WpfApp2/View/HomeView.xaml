@@ -48,10 +48,10 @@
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=NameColumn}" Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Найменування"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding InventoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Інвентарний номер"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InvoiceIdColumn}" Text="{Binding InvoiceIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Номер накладної"/>
-                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=OrderIdColumn}" Text="{Binding OrderIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Наказ на введення в експлуатацію"/>
+                
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=BookIdColumn}" Text="{Binding BookIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Книга обліку"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=OrderBookIdColumn}" Text="{Binding OrderBookIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Книга закріплень"/>
-                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FormIdColumn}" Text="{Binding FormIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Номер формуляру"/>
+                
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=StatusNameColumn}" Text="{Binding StatusNameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Статус"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FIO_R_STRColumn}" Text="{Binding FIO_R_STRFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Відповідальний"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=UnitNameColumn}" Text="{Binding UnitNameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Відповідальний підрозділ"/>
@@ -91,7 +91,7 @@
                     <DataGridTextColumn x:Name="CostColumn" Width="Auto" Header="Вартість" Binding="{Binding Cost}"/>
                     <DataGridTextColumn x:Name="CategoryDescriptionColumn" Width="Auto" Header="Категорія" Binding="{Binding CategoryDescription}"/>
                     <DataGridTextColumn x:Name="MaterialResourcesDescriptionColumn" Width="Auto" Header="Матеріальні ресурси" Binding="{Binding MaterialResourcesDescription}"/>
-                    <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding Additionalnfo}"/>
+                    <DataGridTextColumn x:Name="AdditionalnfoColumn" Width="Auto" Header="Додаткова інформація" Binding="{Binding AdditionalInfo}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </ScrollViewer>

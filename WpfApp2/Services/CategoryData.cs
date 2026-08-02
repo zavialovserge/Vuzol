@@ -20,7 +20,7 @@ namespace Vuzol.Services
         private const string DELETE_Category_SQL =
                   @"DELETE FROM ""Category"" WHERE ""Id"" = @Id";
 
-        public static IEnumerable<Category> getAllCategorys()
+        public static IEnumerable<Category> GetAllCategorys()
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();

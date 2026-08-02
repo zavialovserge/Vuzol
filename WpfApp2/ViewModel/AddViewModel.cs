@@ -11,17 +11,19 @@ namespace Vuzol.ViewModel
     public class AddViewModel : BaseViewModel
     {
         private RelayCommand _addPropertyCommand;
-
         public AddViewModel(NavigationProperty NavigationProperty, Property current, bool isEdit = false)
         {
             HomeCommand = new NavigateCommand<HomeViewModel>(NavigationProperty,
                 () => new HomeViewModel(NavigationProperty));
-            
-            PropertyTypeList = PropertyTypeData.GetAllPropertyType().ToList();
-            PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();
-            EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
+            List<Employee> EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees()).ToList();
+            List<PropertyType> propertiesTypes = PropertyTypeData.GetAllPropertyType().ToList();
+            List<PropertyStatus> propertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();
+            List<Employee> employeeList = EmployeeData.GetAllEmployees().ToList();
+            List<MaterialResources> materialResourcesList = MaterialResourcesData.GetAllMaterialResourcess().ToList();
+            List<Category> categoryList = CategoryData.GetAllCategorys().ToList();
+            List<QuantityType> quantityTypeList = QuantityTypeData.GetAllQuantityTypes().ToList();
             if (isEdit)
-            {
+            {              
                 PropertyAdd = new PropertyModel()
                 {
                     IsEdit = isEdit,
@@ -34,51 +36,49 @@ namespace Vuzol.ViewModel
                     FormId = current.FormId,
                     OrderId = current.OrderId,
                     OrderDate = current.OrderDate.ToString("yyyy/MM/dd"),
-                    PropertyTypeId = current.PropertyTypeId,
-                    Additionalnfo = current.Additionalnfo,
-                    UnitName = current.UnitName,
+                    AdditionalInfo = current.AdditionalInfo,
                     BookPage = current.BookPage,
-                    Status = current.Status,
-                    OrderBookPage = current.OrderBookPage,
-                    FIO_R_STR = current.FIO_R_STR,
-                    FIO_R = current.FIO_R,
-                    PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
-                    PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
-                    PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
-                    PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
-                    Quantity = current.Quantity,
+                    OrderBookPage = current.OrderBookPage,                   
                     Price = current.Price,
-                    EmployeeList = EmployeesList
-                                .Select(a => a.LastName + " " + a.FirstName)
-                                .ToList(),
+                    Quantity = current.Quantity,
+                    PropertyTypes = new ObservableCollection<PropertyType>(propertiesTypes),
+                    SelectedPropertyType = propertiesTypes.FirstOrDefault(a => a.Id == current.PropertyTypeId),
+                    PropertyStatuses = new ObservableCollection<PropertyStatus>(propertyStatusList),
+                    SelectedPropertyStatus = propertyStatusList.FirstOrDefault(a => a.Id == current.Status),
+                    Employees = new ObservableCollection<Employee>(EmployeesList),
+                    SelectedEmployee = EmployeesList.FirstOrDefault(a => a.Id == current.FIO_R),
+                    SelectedEmployeeProvidedForUse = EmployeesList.FirstOrDefault(a => a.Id == current.FIO_V),
+                    MaterialResources = new ObservableCollection<MaterialResources>(materialResourcesList),
+                    SelectedMaterialResources= materialResourcesList.FirstOrDefault(a => a.Id == current.MaterialResourcesId),
+                    Categories = new ObservableCollection<Category>(categoryList),
+                    SelectedCategory = categoryList.FirstOrDefault(a => a.Id == current.CategoryId),
+                    QuantityTypes = new ObservableCollection<QuantityType>(quantityTypeList),
+                    SelectedQuantityType = quantityTypeList.FirstOrDefault(a => a.Id == current.QuantityTypeId),
                     SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
                         SoftwareEquipmentData.GetAllSoftwareEquipment(current.InventoryNumber)),
                     HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
                         HardwareEquipmentData.GetAllHardwareEquipment(current.InventoryNumber)),
                     AddHardwareEquipmentCommand =
                     new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
-    () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
-                    EditHardwareEquipmentCommand =
-                    new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
-    () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd, true))
+                        () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
+                                        EditHardwareEquipmentCommand =
+                                        new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
+                        () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd, true))
                 };
             }
-            else {
+            else 
+            {
                 PropertyAdd = new PropertyModel()
                 {
-                    IsEdit = isEdit,
-                    PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
-                    PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
-                    PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
-                    PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
-                    Quantity = current.Quantity,
-                    EmployeeList = EmployeesList
-                                                .Select(a => a.LastName + " " + a.FirstName)
-                                                .ToList()
+                    PropertyTypes = new ObservableCollection<PropertyType>(propertiesTypes),
+                    SelectedPropertyType = propertiesTypes.FirstOrDefault(a => a.Id == 0),
+                    PropertyStatuses = new ObservableCollection<PropertyStatus>(propertyStatusList),
+                    SelectedPropertyStatus = propertyStatusList.FirstOrDefault(a => a.Id == 0),
+                    Employees = new ObservableCollection<Employee>(EmployeesList),
+                    SelectedEmployee = EmployeesList.FirstOrDefault(a => a.Id == 0),
                 };
             }
             
-            // Підписуємося на зміни помилок валідації
             PropertyAdd.ErrorsChanged += (s, e) => 
             {
                 _addPropertyCommand?.RaiseCanExecuteChanged();
@@ -88,10 +88,8 @@ namespace Vuzol.ViewModel
             IsEditMode = isEdit;
             NavigationPropertyStore = NavigationProperty;
         }
-
         private NavigationProperty NavigationPropertyStore { get; set; }
         private bool IsEditMode { get; set; }
-
         private bool CanExecuteAddProperty(object parameter)
         {
             // Перевіряємо всі обов'язкові поля
@@ -100,7 +98,7 @@ namespace Vuzol.ViewModel
 
         private bool ValidateBeforeSave()
         {
-            // Тригеруємо валідацію всіх обов'язкових полів
+            
             PropertyAdd.TriggerValidation();
 
             if (PropertyAdd.HasErrors)
@@ -110,7 +108,7 @@ namespace Vuzol.ViewModel
                 if (string.IsNullOrWhiteSpace(PropertyAdd.InventoryNumber))
                     errorMessages.Add("• Інвентарний номер є обов'язковим полем");
 
-                if (string.IsNullOrWhiteSpace(PropertyAdd.FIO_R_STR))
+                if (PropertyAdd.SelectedEmployee==null || PropertyAdd.SelectedEmployee.Id == 0)
                     errorMessages.Add("• Відповідальний є обов'язковим полем");
 
                 if (string.IsNullOrWhiteSpace(PropertyAdd.Name))
@@ -126,59 +124,32 @@ namespace Vuzol.ViewModel
 
             return true;
         }
-
         private HomeViewModel EditNewPropertyFunc(NavigationProperty navigationProperty)
-        {
-            // Перевірка валідації перед збереженням
+        {            
             if (!ValidateBeforeSave())
                 return null;
-
-            int propertyTypeId = PropertyTypeList
-                                 .Where(a => a.Name == PropertyAdd.PropertyTypeName)
-                                 .First().Id;
-            int status = PropertyStatusList
-                                 .Where(a => a.Name == PropertyAdd.PropertyStatusName)
-                                 .First().Id;
-            Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
-                                             PropertyAdd.InventoryNumber,
-                                             PropertyAdd.InvoiceId, PropertyAdd.BookId,
-                                             PropertyAdd.OrderBookId,
-                                             PropertyAdd.FormId,
-                                             string.Empty, DateTime.Now,
-                                             PropertyAdd.OrderId, propertyTypeId,
-                                             PropertyAdd.Additionalnfo, DateTime.Now,
-                                             PropertyAdd.FIO_R, PropertyAdd.FIO_I, PropertyAdd.FIO_I,
-                                             PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR, PropertyAdd.FIO_I_STR,
-                                             PropertyAdd.UnitName,
-                                             PropertyAdd.BookPage,
-                                             PropertyAdd.OrderBookPage,
-                                             DateTime.Parse(PropertyAdd.OrderDate), status, 
-                                             PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription, 
-                                             PropertyAdd.QuantityTypeDescription)
-            {
-                Quantity = PropertyAdd.Quantity,
-                Price = PropertyAdd.Price,
-                PropertyTypeName = string.IsNullOrEmpty(PropertyAdd.PropertyTypeName) ? string.Empty : PropertyAdd.PropertyTypeName,
-                StatusName = string.IsNullOrEmpty(PropertyAdd.PropertyStatusName) ? string.Empty : PropertyAdd.PropertyStatusName,
-
-            };
-
+            Property property = GetNewProperty();   
             PropertyData.UpdateDb(property);
             return new HomeViewModel(navigationProperty);
         }
-
         private HomeViewModel AddNewPropertyFunc(NavigationProperty navigationProperty)
         {
             // Перевірка валідації перед збереженням
             if (!ValidateBeforeSave())
                 return null;
-
-            int propertyTypeId = PropertyTypeList
-                                 .Where(a => a.Name == PropertyAdd.PropertyTypeName)
-                                 .First().Id;
-            int status = PropertyStatusList
-                                 .Where(a => a.Name == PropertyAdd.PropertyStatusName)
-                                 .First().Id;
+            Property property = GetNewProperty();            
+            PropertyData.InsertIntoDb(property);
+            return new HomeViewModel(navigationProperty);
+        }
+        private Property GetNewProperty()
+        {
+            int propertyTypeId = PropertyAdd.SelectedPropertyType != null ? PropertyAdd.SelectedPropertyType.Id : 0; 
+            int status = PropertyAdd.SelectedPropertyStatus != null ? PropertyAdd.SelectedPropertyStatus.Id : 0; 
+            string UnitName = "Без підрозділу";
+            int fio_r = PropertyAdd.SelectedEmployee != null ? PropertyAdd.SelectedEmployee.Id : 0;
+            string Fio_r = PropertyAdd.SelectedEmployee != null ? PropertyAdd.SelectedEmployee.LastName : "";
+            int fio_v = PropertyAdd.SelectedEmployeeProvidedForUse != null ? PropertyAdd.SelectedEmployeeProvidedForUse.Id : 0;
+            string Fio_v = PropertyAdd.SelectedEmployeeProvidedForUse != null ? PropertyAdd.SelectedEmployeeProvidedForUse.LastName : "";
             Property property = new Property(PropertyAdd.FactoryNumber, PropertyAdd.Name,
                                              PropertyAdd.InventoryNumber,
                                              PropertyAdd.InvoiceId,
@@ -186,26 +157,24 @@ namespace Vuzol.ViewModel
                                              PropertyAdd.FormId,
                                              string.Empty, DateTime.Now,
                                              PropertyAdd.OrderId, propertyTypeId,
-                                             PropertyAdd.Additionalnfo, DateTime.Now,
-                                             PropertyAdd.FIO_R, PropertyAdd.FIO_I, PropertyAdd.FIO_V,
-                                             PropertyAdd.FIO_R_STR, PropertyAdd.FIO_I_STR, PropertyAdd.FIO_V_STR,
-                                             PropertyAdd.UnitName,
+                                             PropertyAdd.AdditionalInfo, DateTime.Now,
+                                             fio_r, fio_v,
+                                             Fio_r, Fio_v,
+                                             UnitName,
                                              PropertyAdd.BookPage, PropertyAdd.OrderBookPage,
-                                             DateTime.Parse(string.IsNullOrEmpty(PropertyAdd.OrderDate) ? DateTime.Now.ToString() : PropertyAdd.OrderDate), 
-                                             status, PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription, 
+                                             DateTime.Parse(string.IsNullOrEmpty(PropertyAdd.OrderDate) ? DateTime.Now.ToString() : PropertyAdd.OrderDate),
+                                             status, PropertyAdd.CategoryDescription, PropertyAdd.MaterialResourcesDescription,
                                              PropertyAdd.QuantityTypeDescription)
             {
                 Quantity = PropertyAdd.Quantity,
                 Price = PropertyAdd.Price,
-                PropertyTypeName = string.IsNullOrEmpty(PropertyAdd.PropertyTypeName) ? string.Empty : PropertyAdd.PropertyTypeName,
-                StatusName = string.IsNullOrEmpty(PropertyAdd.PropertyStatusName) ? string.Empty : PropertyAdd.PropertyStatusName,
+                MaterialResourcesId = PropertyAdd.SelectedMaterialResources != null ? PropertyAdd.SelectedMaterialResources.Id : 0,
+                CategoryId = PropertyAdd.SelectedCategory != null ? PropertyAdd.SelectedCategory.Id : 0,
+                QuantityTypeId = PropertyAdd.SelectedQuantityType != null ? PropertyAdd.SelectedQuantityType.Id : 0,
             };
-            PropertyData.InsertIntoDb(property);
-            return new HomeViewModel(navigationProperty);
+            return property;
         }
-
-        public ICommand HomeCommand { get; }
-        
+        public ICommand HomeCommand { get; }        
         public ICommand AddPropertyCommand
         {
             get
@@ -222,11 +191,7 @@ namespace Vuzol.ViewModel
                     ));
             }
         }
-
-        public ObservableCollection<Employee> EmployeesList { get; set; }
         public PropertyModel PropertyAdd { get; set; }
-        public List<PropertyType> PropertyTypeList { get; set; }
-        public List<PropertyStatus> PropertyStatusList { get; set; }
         public string ButtonName { get; set; }
 
     }

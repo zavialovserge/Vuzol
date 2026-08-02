@@ -21,7 +21,7 @@ namespace Vuzol.ViewModel
         {
             HomeCommand = new NavigateCommand<HomeViewModel>(navigationProperty,
                () => new HomeViewModel(navigationProperty));
-            CategoryList = new ObservableCollection<Category>(CategoryData.getAllCategorys());
+            CategoryList = new ObservableCollection<Category>(CategoryData.GetAllCategorys());
             SelectedCategory = CategoryList.First();
         }
         public ICommand DelCategoryCommand
@@ -85,7 +85,7 @@ namespace Vuzol.ViewModel
         private void RefreshCollection()
         {
             CategoryList.Clear();
-            var categoryData = CategoryData.getAllCategorys();
+            var categoryData = CategoryData.GetAllCategorys();
             foreach (var Category in categoryData)
             {
                 CategoryList.Add(Category);

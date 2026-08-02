@@ -20,7 +20,7 @@ namespace Vuzol.Services
         private const string DELETE_QuantityType_SQL =
                   @"DELETE FROM ""QuantityType"" WHERE ""Id"" = @Id";
 
-        public static IEnumerable<QuantityType> getAllQuantityTypes()
+        public static IEnumerable<QuantityType> GetAllQuantityTypes()
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();

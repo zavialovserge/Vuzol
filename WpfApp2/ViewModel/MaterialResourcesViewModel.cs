@@ -20,7 +20,7 @@ namespace Vuzol.ViewModel
             {
                 HomeCommand = new NavigateCommand<HomeViewModel>(navigationProperty,
                    () => new HomeViewModel(navigationProperty));
-                MaterialResourcesList = new ObservableCollection<MaterialResources>(MaterialResourcesData.getAllMaterialResourcess());
+                MaterialResourcesList = new ObservableCollection<MaterialResources>(MaterialResourcesData.GetAllMaterialResourcess());
                 SelectedMaterialResources = MaterialResourcesList.First();
             }
             public ICommand DelMaterialResourcesCommand
@@ -84,7 +84,7 @@ namespace Vuzol.ViewModel
             private void RefreshCollection()
             {
                 MaterialResourcesList.Clear();
-                var materialResourcesData = MaterialResourcesData.getAllMaterialResourcess();
+                var materialResourcesData = MaterialResourcesData.GetAllMaterialResourcess();
                 foreach (var MaterialResources in materialResourcesData)
                 {
                     MaterialResourcesList.Add(MaterialResources);

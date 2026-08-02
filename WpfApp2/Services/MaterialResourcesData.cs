@@ -20,7 +20,7 @@ namespace Vuzol.Services
         private const string DELETE_MaterialResources_SQL =
                   @"DELETE FROM ""MaterialResources"" WHERE ""Id"" = @Id";
 
-        public static IEnumerable<MaterialResources> getAllMaterialResourcess()
+        public static IEnumerable<MaterialResources> GetAllMaterialResourcess()
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();

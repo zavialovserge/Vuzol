@@ -148,7 +148,7 @@ namespace Vuzol.ViewModel.Command
                     worksheet.Cells[excelRow, 7] = property.BookPage;
                     worksheet.Cells[excelRow, 8] = property.OrderBookId;
                     worksheet.Cells[excelRow, 9] = property.OrderBookPage;
-                    worksheet.Cells[excelRow, 10] = property.FormId ?? string.Empty;
+                    worksheet.Cells[excelRow, 10] = property.FormId.ToString() ?? string.Empty;
                     worksheet.Cells[excelRow, 11] = property.FormDate == DateTime.MinValue ?
                         string.Empty : property.FormDate.ToString("dd.MM.yyyy");
                     worksheet.Cells[excelRow, 12] = property.OrderId;
@@ -160,7 +160,7 @@ namespace Vuzol.ViewModel.Command
                     worksheet.Cells[excelRow, 17] = property.Quantity.ToString("F2");
                     worksheet.Cells[excelRow, 18] = property.FIO_R_STR ?? string.Empty;
                     worksheet.Cells[excelRow, 19] = property.UnitName ?? string.Empty;
-                    worksheet.Cells[excelRow, 20] = property.Additionalnfo ?? string.Empty;
+                    worksheet.Cells[excelRow, 20] = property.AdditionalInfo ?? string.Empty;
 
                     // Альтернативне фарбування рядків для кращої читабельності
                     if (row % 2 == 1)

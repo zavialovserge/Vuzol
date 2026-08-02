@@ -22,7 +22,7 @@ namespace Vuzol.ViewModel
         {
             HomeCommand = new NavigateCommand<HomeViewModel>(navigationProperty,
                () => new HomeViewModel(navigationProperty));
-            QuantityTypeList = new ObservableCollection<QuantityType>(QuantityTypeData.getAllQuantityTypes());
+            QuantityTypeList = new ObservableCollection<QuantityType>(QuantityTypeData.GetAllQuantityTypes());
             SelectedQuantityType = QuantityTypeList.First();
         }
         public ICommand DelQuantityTypeCommand
@@ -86,7 +86,7 @@ namespace Vuzol.ViewModel
         private void RefreshCollection()
         {
             QuantityTypeList.Clear();
-            var quantityTypeData = QuantityTypeData.getAllQuantityTypes();
+            var quantityTypeData = QuantityTypeData.GetAllQuantityTypes();
             foreach (var quantityType in quantityTypeData)
             {
                 QuantityTypeList.Add(quantityType);

@@ -11,14 +11,14 @@ namespace Vuzol.Services
     {
         private const string GET_ALL_PROPERTYS_SQL =
                   @"SELECT pr.""FactoryNumber"", pr.""Name"", pr.""InventoryNumber"",
-                          pr.""InvoiceId"", pr.""FIO_R"", pr.""Fio_I"", pr.""Fio_V"", pr.""BookId"", pr.""FormId"", 
+                          pr.""InvoiceId"", pr.""Fio_R"", pr.""Fio_I"", pr.""Fio_V"", pr.""BookId"", pr.""FormId"", 
                           pr.""OrderId"", o.""Date_D"" as ""OrderDate"",
                           pr.""OrderBookId"", pr.""PropertyTypeId"", pr.""Status"", ps.""Name"" as ""StatusName"",
-                          COALESCE(pr.""Additionalnfo"", '') as ""Additionalnfo"", pr.""DLM"", f.""Name"" as ""FormName"",
+                          COALESCE(pr.""AdditionalInfo"", '') as ""AdditionalInfo"", pr.""DLM"", f.""Name"" as ""FormName"",
                           pr.""BookPage"", pr.""Quantity"" as ""quantity"", pr.""Price"" as ""price"",
                           pr.""OrderBookPage"", f.""Date_D"" as ""FormDate"",
+                          pr.""CategoryId"", pr.""MaterialResourcesId"", pr.""QuantityTypeId"",
                           COALESCE(e1.""LastName"" || ' ' || e1.""FirstName"", '') as ""FIO_R_STR"",
-                          COALESCE(e2.""LastName"" || ' ' || e2.""FirstName"", '') as ""FIO_I_STR"",
                           COALESCE(e3.""LastName"" || ' ' || e3.""FirstName"", '') as ""FIO_V_STR"",
                           COALESCE(u.""Name"", '') as ""UnitName"",
                           COALESCE(c.""Description"", '') as ""CategoryDescription"",
@@ -26,13 +26,12 @@ namespace Vuzol.Services
                           COALESCE(qt.""Description"", '') as ""QuantityTypeDescription"" 
                    FROM ""Property"" as pr
                    LEFT JOIN ""Form"" as f ON f.""FormId"" = pr.""FormId""
-                   LEFT JOIN ""Employee"" as e1 ON e1.""Id"" = pr.""FIO_R""
-                   LEFT JOIN ""Employee"" as e2 ON e2.""Id"" = pr.""Fio_I""
+                   LEFT JOIN ""Employee"" as e1 ON e1.""Id"" = pr.""Fio_R""
                    LEFT JOIN ""Employee"" as e3 ON e3.""Id"" = pr.""Fio_V""
-                   LEFT JOIN ""Unit"" as u ON u.""Id"" = e2.""UnitId""
+                   LEFT JOIN ""Unit"" as u ON u.""Id"" = e3.""UnitId""
                    LEFT JOIN ""Category"" as c ON c.""Id"" = pr.""CategoryId""
                    LEFT JOIN ""MaterialResources"" as mr ON mr.""Id"" = pr.""MaterialResourcesId""
-                    LEFT JOIN ""QuantityType"" as qt ON qt.""Id"" = pr.""QuantityTypeId""
+                   LEFT JOIN ""QuantityType"" as qt ON qt.""Id"" = pr.""QuantityTypeId""
                    LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
                    LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
 
@@ -40,12 +39,12 @@ namespace Vuzol.Services
     @InvoiceId, @OrderBookId, @FormId, @OrderId,
     @FactoryNumber, @InventoryNumber, @Name, @BookId,
     @BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
-    @Additionalnfo, @Quantity, @Price, @Date_D)";
+    @AdditionalInfo, @Quantity, @Price, @Date_D)";
 
 
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE ""Property"" 
-                   SET ""InventoryNumber"" =@InventoryNumber,
+                   SET ""FactoryNumber"" =@FactoryNumber,
                        ""Name"" =@Name,
                        ""InvoiceId"" =@InvoiceId,
                        ""BookId"" =@BookId,
@@ -53,17 +52,23 @@ namespace Vuzol.Services
                        ""OrderId"" =@OrderId,
                        ""PropertyTypeId"" =@PropertyTypeId,
                        ""Status"" =@Status,
-                       ""Additionalnfo"" =@Additionalnfo,
+                       ""AdditionalInfo"" =@AdditionalInfo,
                        ""BookPage"" =@BookPage,
                        ""OrderBookPage"" =@OrderBookPage,
                        ""Quantity"" =@Quantity,
+                       ""CategoryId"" =@CategoryId,
+                       ""MaterialResourcesId"" =@MaterialResourcesId,
+                       ""QuantityTypeId"" =@QuantityTypeId,
                        ""Price"" =@Price,
+                       ""Fio_R"" =@Fio_R,
+                       ""Fio_V"" =@Fio_V,
+                       ""FormId"" =@FormId,
                        ""DLM"" = Now()
                        WHERE ""InventoryNumber"" =@InventoryNumber";
 
         private const string DELETE_PROPERTYS_SQL =
                                                  @"DELETE FROM ""HardwareEquipment"" 
-                                                  WHERE ""SubInventoryNumber"" = @FactoryNumber;
+                                                  WHERE ""SubInventoryNumber"" = @InventoryNumber;
                                                   DELETE FROM ""Property"" WHERE ""InventoryNumber"" = @InventoryNumber;";
 
         private const string EXIST_PROPERTY_SQL =
@@ -82,33 +87,45 @@ namespace Vuzol.Services
             using IDbConnection database = dbData.Connect();
             IEnumerable<PropertyDTO> propertyDTOs =
                 database.Query<PropertyDTO>(GET_ALL_PROPERTYS_SQL);
-            return propertyDTOs.Select(ToProperty).ToList();
+            return propertyDTOs.Select(ToProperty).OrderBy(p => p.InventoryNumber).ToList();
         }
         public static bool UpdateDb(Property selectedProperty)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
+            
             int result = 0;
             try
             {
-                result = database.Execute(UPDATE_PROPERTYS_SQL, new
+                
+                // Явно створюємо об'єкт параметрів
+                var parameters = new
                 {
-                    propertyDTO.InventoryNumber,
-                    propertyDTO.Name,
-                    propertyDTO.InvoiceId,
-                    propertyDTO.BookId,
-                    propertyDTO.OrderBookId,
-                    propertyDTO.OrderId,
-                    propertyDTO.PropertyTypeId,
-                    propertyDTO.Status,
-                    propertyDTO.Additionalnfo,
-                    propertyDTO.BookPage,
-                    propertyDTO.OrderBookPage,
-                    propertyDTO.Quantity,
-                    propertyDTO.Price,
-                    propertyDTO.FactoryNumber
-                });
+                    InventoryNumber = propertyDTO.InventoryNumber,
+                    Name = propertyDTO.Name,
+                    InvoiceId = propertyDTO.InvoiceId,
+                    BookId = propertyDTO.BookId,
+                    FormId = propertyDTO.FormId,
+                    OrderBookId = propertyDTO.OrderBookId,
+                    OrderId = propertyDTO.OrderId,
+                    PropertyTypeId = propertyDTO.PropertyTypeId,
+                    Status = propertyDTO.Status,
+                    AdditionalInfo = propertyDTO.AdditionalInfo,  
+                    BookPage = propertyDTO.BookPage,
+                    OrderBookPage = propertyDTO.OrderBookPage,
+                    Quantity = propertyDTO.Quantity,
+                    Price = propertyDTO.Price,
+                    FactoryNumber = propertyDTO.FactoryNumber,
+                    Fio_R = propertyDTO.Fio_R,
+                    Fio_V = propertyDTO.FIO_V,
+                    CategoryId = propertyDTO.CategoryId,
+                    MaterialResourcesId = propertyDTO.MaterialResourcesId,
+                    QuantityTypeId = propertyDTO.QuantityTypeId
+                };
+
+                result = database.Execute(UPDATE_PROPERTYS_SQL, parameters);
+                
             }
             catch (Exception ex)
             {
@@ -122,8 +139,6 @@ namespace Vuzol.Services
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
-            int formID = 0;
-            Int32.TryParse(propertyDTO.FormId, out formID);
             int result = 0;
             try
             {
@@ -131,7 +146,7 @@ namespace Vuzol.Services
                 {
                     propertyDTO.InvoiceId,
                     propertyDTO.OrderBookId,
-                    FormId = formID,
+                    FormId = propertyDTO.FormId,
                     propertyDTO.OrderId,
                     propertyDTO.FactoryNumber,
                     propertyDTO.InventoryNumber,
@@ -141,7 +156,7 @@ namespace Vuzol.Services
                     propertyDTO.OrderBookPage,
                     propertyDTO.PropertyTypeName,
                     propertyDTO.StatusName,
-                    propertyDTO.Additionalnfo,
+                    propertyDTO.AdditionalInfo,
                     propertyDTO.Quantity,
                     propertyDTO.Price,
                     Date_D = propertyDTO.OrderDate
@@ -178,7 +193,7 @@ namespace Vuzol.Services
                           $"{propertyDTO.OrderBookId}," +
                           $"{propertyDTO.OrderBookPage}," +
                           $"{propertyDTO.PropertyTypeId}," +
-                          $"N'{propertyDTO.Additionalnfo}'," +
+                          $"N'{propertyDTO.AdditionalInfo}'," +
                           $"{propertyDTO.Quantity}," +
                           $"{propertyDTO.Price}," +
                           $"GETDATE())");
@@ -217,13 +232,11 @@ namespace Vuzol.Services
                                 dto.FormDate,
                                 dto.OrderId,
                                 dto.PropertyTypeId,
-                                dto.Additionalnfo,
+                                dto.AdditionalInfo,
                                 dto.DLM,
-                                dto.FIO_R,
-                                dto.FIO_I,
+                                dto.Fio_R,                                
                                 dto.FIO_V,
-                                dto.FIO_R_STR,
-                                dto.FIO_I_STR,
+                                dto.FIO_R_STR,                                
                                 dto.FIO_V_STR,
                                 dto.UnitName,
                                 dto.BookPage,
@@ -237,7 +250,10 @@ namespace Vuzol.Services
                        StatusName = dto.StatusName,
                        Quantity = dto.Quantity,
                        Price = dto.Price,
-                       Cost= dto.Price * dto.Quantity
+                       Cost= dto.Price * dto.Quantity,
+                       CategoryId  = dto.CategoryId,
+                       MaterialResourcesId = dto.MaterialResourcesId,
+                       QuantityTypeId = dto.QuantityTypeId
                    };
         private static PropertyDTO ToDtoProperty(Property prop) =>
                    new PropertyDTO()
@@ -254,23 +270,20 @@ namespace Vuzol.Services
                        FormDate = prop.FormDate,
                        OrderId = prop.OrderId,
                        PropertyTypeId = prop.PropertyTypeId,
-                       PropertyTypeName = prop.PropertyTypeName.Contains("\'")
-                                              ? prop.PropertyTypeName.Replace("\'", "''")
-                                              : prop.PropertyTypeName,
-                       Additionalnfo = prop.Additionalnfo.Contains("\'")
-                                              ? prop.Additionalnfo.Replace("\'", "''")
-                                              : prop.Additionalnfo,
-                       FIO_I = prop.FIO_I,
-                       FIO_R = prop.FIO_R,
+                       AdditionalInfo = prop.AdditionalInfo.Contains("\'")
+                                              ? prop.AdditionalInfo.Replace("\'", "''")
+                                              : prop.AdditionalInfo,                       
+                       Fio_R = prop.FIO_R,
                        FIO_V = prop.FIO_V,
                        BookPage = prop.BookPage,
                        OrderBookPage = prop.OrderBookPage,
                        OrderDate = prop.OrderDate,
                        Status = prop.Status,
-                       StatusName = prop.StatusName.Contains("\'") ? prop.StatusName.Replace("\'", "''")
-                                                                 : prop.StatusName,
                        Quantity = prop.Quantity,
-                       Price = prop.Price
+                       Price = prop.Price,
+                       MaterialResourcesId = prop.MaterialResourcesId,
+                       QuantityTypeId = prop.QuantityTypeId,    
+                       CategoryId = prop.CategoryId,
                    };
     }
 }

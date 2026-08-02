@@ -24,7 +24,10 @@
         public int Unit { get; set; }
         public string Position { get; set; }
         public string RankDescription { get; set; }
-
         public string UnitName { get; set; }
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName} {FatherName}";
+        }
     }
 }

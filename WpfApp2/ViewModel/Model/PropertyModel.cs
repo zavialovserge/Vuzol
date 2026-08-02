@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -6,9 +7,6 @@ using System.Windows.Input;
 using Vuzol.Services;
 using Vuzol.View;
 using Vuzol.ViewModel.Command;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Vuzol.ViewModel.Model
 {
@@ -19,13 +17,140 @@ namespace Vuzol.ViewModel.Model
         private RelayCommand _delSoftwareEquipmentCommand;
         private RelayCommand _delHardwareEquipmentCommand;
         private SoftwareEquipment _softwareEquipment;
-        private HardwareEquipment _hardwareEquipment;
-        
-        // Словник для зберігання помилок валідації
+        private HardwareEquipment _hardwareEquipment;  
         private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
-
         public ObservableCollection<SoftwareEquipment> SoftwareEquipmentList { get; set; }
         public ObservableCollection<HardwareEquipment> HardwareEquipmentList { get; set; }
+        private ObservableCollection<Employee> _employees;       
+        private ObservableCollection<PropertyType> _propertyTypes;
+        private ObservableCollection<PropertyStatus> _propertyStatuses;
+        private ObservableCollection<Category> _categories;
+        private ObservableCollection<QuantityType> _quantityTypes;
+        private ObservableCollection<MaterialResources> _materialResources;       
+        private Employee _employee;
+        private Employee _employeeProvidedForUse;
+        private PropertyType _propertyType;
+        private PropertyStatus _propertyStatus;
+        private Category _category;
+        private QuantityType _quantityType;
+        private MaterialResources _materialResource;
+        public ObservableCollection<Employee> Employees
+        {
+            get { return _employees; } 
+            set
+            {
+                _employees = value;
+                OnPropertyChanged(nameof(Employees));
+            }
+        }        
+        public Employee SelectedEmployee
+        {
+            get { return _employee; }
+            set
+            {
+                _employee = value;
+                OnPropertyChanged(nameof(_employee));
+            }
+        }        
+        public Employee SelectedEmployeeProvidedForUse
+        {
+            get { return _employeeProvidedForUse; }
+            set
+            {
+                _employeeProvidedForUse = value;
+                OnPropertyChanged(nameof(_employeeProvidedForUse));
+            }
+        }
+        public ObservableCollection<PropertyType> PropertyTypes
+        {
+            get { return _propertyTypes; }
+            set
+            {
+                _propertyTypes = value;
+                OnPropertyChanged(nameof(PropertyTypes));
+            }
+        }
+        public PropertyType SelectedPropertyType
+        {
+            get { return _propertyType; }
+            set
+            {
+                _propertyType = value;
+                OnPropertyChanged(nameof(_propertyType));
+            }
+        }
+        public ObservableCollection<PropertyStatus> PropertyStatuses
+        {
+            get { return _propertyStatuses; }
+            set
+            {
+                _propertyStatuses = value;
+                OnPropertyChanged(nameof(_propertyStatuses));
+            }
+        }
+        public PropertyStatus SelectedPropertyStatus 
+        {
+            get { return _propertyStatus; }
+            set
+            {
+                _propertyStatus = value;
+                OnPropertyChanged(nameof(_propertyStatus));
+            }
+        }
+        public ObservableCollection<MaterialResources> MaterialResources
+        {
+            get { return _materialResources; }
+            set
+            {
+                _materialResources = value;
+                OnPropertyChanged(nameof(_materialResources));
+            }
+        }
+        public MaterialResources SelectedMaterialResources
+        {
+            get { return _materialResource; }
+            set
+            {
+                _materialResource = value;
+                OnPropertyChanged(nameof(_materialResource));
+            }
+        }
+        public ObservableCollection<QuantityType> QuantityTypes
+        {
+            get { return _quantityTypes; }
+            set
+            {
+                _quantityTypes = value;
+                OnPropertyChanged(nameof(_quantityTypes));
+            }
+        }
+        public QuantityType SelectedQuantityType
+        {
+            get { return _quantityType; }     
+            set
+            {
+                _quantityType = value;
+                OnPropertyChanged(nameof(_quantityType));
+            }
+        }
+        public ObservableCollection<Category> Categories
+        {
+            get { return _categories; }
+            set
+            {
+                _categories = value;
+                OnPropertyChanged(nameof(_categories));
+            }
+        }
+        public Category SelectedCategory
+        {
+            get { return _category; }
+            set
+            {
+                _category = value;
+                OnPropertyChanged(nameof(_category));
+            }
+        }
         public SoftwareEquipment SelectedSoftwareEquipment
         {
             get { return _softwareEquipment; }
@@ -111,55 +236,32 @@ namespace Vuzol.ViewModel.Model
                    }));
             }
         }
-        private List<string> _propertyTypeNameList { get; set; }
-        private List<string> _propertyStatusNameList { get; set; }
-        private string _propertyTypeName { get; set; }
-        private string _propertyStatusName { get; set; }
-        private int _FIO_R { get; set; }
-        private int _FIO_I { get; set; }
-        private int _FIO_V { get; set; }
-        private string _FIO_R_STR { get; set; }
-        private string _FIO_I_STR { get; set; }
-        private string _FIO_V_STR { get; set; }
-        private string? _additionalnfo { get; set; }
+        private string? _additionalInfo { get; set; }
         private string _inventoryNumber { get; set; }
         private string? _factoryNumber { get; set; }
         private string? _name { get; set; }
         private int _invoiceId { get; set; }
         private int _bookId { get; set; }
         private int _orderBookId { get; set; }
-        private string? _formId { get; set; }
+        private int _formId { get; set; }
         private string? _formName { get; set; }
         private int _orderId { get; set; }
         private string _orderDate { get; set; }
-        private int _propertyTypeId { get; set; }
-        private string _unitName { get; set; }
         private int _bookPage { get; set; }
         private int _orderBookPage { get; set; }
-        private int _status { get; set; }
         private decimal _quantity { get; set; }
         private decimal _price { get; set; }
         private string _categoryDescription { get; set; }
         private string _materialResourcesDescription { get; set; }
         private string _quantityTypeDescription { get; set; }
-        private List<string> _employeeList { get; set; }
         public bool IsEdit { get; set; }
-        public int Status
+        public string AdditionalInfo
         {
-            get { return _status; }
+            get { return _additionalInfo; }
             set
             {
-                _status = value;
-                OnPropertyChanged(nameof(_status));
-            }
-        }
-        public string? Additionalnfo
-        {
-            get { return _additionalnfo; }
-            set
-            {
-                _additionalnfo = value;
-                OnPropertyChanged(nameof(_additionalnfo));
+                _additionalInfo = value;
+                OnPropertyChanged(nameof(AdditionalInfo));
             }
         }
         public string? CategoryDescription
@@ -228,52 +330,7 @@ namespace Vuzol.ViewModel.Model
             {
                 AddError(nameof(Name), "Найменування є обов'язковим");
             }
-        }
-        public List<string> PropertyTypeNameList
-        {
-            get { return _propertyTypeNameList; }
-            set
-            {
-                _propertyTypeNameList = value;
-                OnPropertyChanged(nameof(_propertyTypeNameList));
-            }
-        }
-        public List<string> EmployeeList
-        {
-            get { return _employeeList; }
-            set
-            {
-                _employeeList = value;
-                OnPropertyChanged(nameof(_employeeList));
-            }
-        }
-        public string PropertyTypeName
-        {
-            get { return _propertyTypeName; }
-            set
-            {
-                _propertyTypeName = value;
-                OnPropertyChanged(nameof(_propertyTypeName));
-            }
-        }
-        public List<string> PropertyStatusNameList
-        {
-            get { return _propertyStatusNameList; }
-            set
-            {
-                _propertyStatusNameList = value;
-                OnPropertyChanged(nameof(_propertyStatusNameList));
-            }
-        }
-        public string PropertyStatusName
-        {
-            get { return _propertyStatusName; }
-            set
-            {
-                _propertyStatusName = value;
-                OnPropertyChanged(nameof(_propertyStatusName));
-            }
-        }
+        }       
         public int InvoiceId
         {
             get { return _invoiceId; }
@@ -301,7 +358,7 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_orderBookId));
             }
         }
-        public string? FormId
+        public int FormId
         {
             get { return _formId; }
             set
@@ -337,42 +394,6 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_orderDate));
             }
         }
-        public int PropertyTypeId
-        {
-            get { return _propertyTypeId; }
-            set
-            {
-                _propertyTypeId = value;
-                OnPropertyChanged(nameof(_propertyTypeId));
-            }
-        }
-        public int FIO_R
-        {
-            get { return _FIO_R; }
-            set
-            {
-                _FIO_R = value;
-                OnPropertyChanged(nameof(_FIO_R));
-            }
-        }
-        public int FIO_I
-        {
-            get { return _FIO_I; }
-            set
-            {
-                _FIO_I = value;
-                OnPropertyChanged(nameof(_FIO_I));
-            }
-        }
-        public int FIO_V
-        {
-            get { return _FIO_V; }
-            set
-            {
-                _FIO_V = value;
-                OnPropertyChanged(nameof(_FIO_V));
-            }
-        }
         public int BookPage
         {
             get { return _bookPage; }
@@ -389,46 +410,6 @@ namespace Vuzol.ViewModel.Model
             {
                 _orderBookPage = value;
                 OnPropertyChanged(nameof(_orderBookPage));
-            }
-        }
-        public string? FIO_R_STR
-        {
-            get { return _FIO_R_STR; }
-            set
-            {
-                if (_FIO_R_STR != value)
-                {
-                    _FIO_R_STR = value;
-                    OnPropertyChanged(nameof(FIO_R_STR));
-                    ValidateFIO_R_STR();
-                }
-            }
-        }
-        public string? FIO_I_STR
-        {
-            get { return _FIO_I_STR; }
-            set
-            {
-                _FIO_I_STR = value;
-                OnPropertyChanged(nameof(_FIO_I_STR));
-            }
-        }
-        public string? FIO_V_STR
-        {
-            get { return _FIO_V_STR; }
-            set
-            {
-                _FIO_V_STR = value;
-                OnPropertyChanged(nameof(_FIO_V_STR));
-            }
-        }
-        public string UnitName
-        {
-            get { return _unitName; }
-            set
-            {
-                _unitName = value;
-                OnPropertyChanged(nameof(_unitName));
             }
         }
         public decimal Quantity
@@ -449,19 +430,15 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_price));
             }
         }
-
         // INotifyDataErrorInfo implementation
         public bool HasErrors => _errors.Any();
-
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-
         public IEnumerable? GetErrors(string? propertyName)
         {
             if (string.IsNullOrEmpty(propertyName) || !_errors.ContainsKey(propertyName))
                 return null;
             return _errors[propertyName];
         }
-
         private void AddError(string propertyName, string error)
         {
             if (!_errors.ContainsKey(propertyName))
@@ -473,7 +450,6 @@ namespace Vuzol.ViewModel.Model
                 OnErrorsChanged(propertyName);
             }
         }
-
         private void ClearErrors(string propertyName)
         {
             if (_errors.ContainsKey(propertyName))
@@ -482,12 +458,10 @@ namespace Vuzol.ViewModel.Model
                 OnErrorsChanged(propertyName);
             }
         }
-
         private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-
         // Validation methods
         private void ValidateInventoryNumber()
         {
@@ -502,31 +476,26 @@ namespace Vuzol.ViewModel.Model
                 AddError(nameof(InventoryNumber), "Інвентарний номер вже існує");
             }
         }
-
-        private void ValidateFIO_R_STR()
+        private void ValidateSelectedEmployee()
         {
-            ClearErrors(nameof(FIO_R_STR));
-            if (string.IsNullOrWhiteSpace(FIO_R_STR))
+            ClearErrors(nameof(SelectedEmployee));
+            if (SelectedEmployee == null || SelectedEmployee.Id == 0)
             {
-                AddError(nameof(FIO_R_STR), "Відповідальний є обов'язковим полем");
+                AddError(nameof(SelectedEmployee), "Відповідальний є обов'язковим полем");
             }
         }
-
         // Метод для тригерування валідації всіх обов'язкових полів
         public void TriggerValidation()
         {
             ValidateInventoryNumber();
-            ValidateFIO_R_STR();
+            ValidateSelectedEmployee();
             ValidateName();
         }
-
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        
+        }        
         private void RefreshSoftwareEquipment()
         {
             SoftwareEquipmentList.Clear();
@@ -535,8 +504,7 @@ namespace Vuzol.ViewModel.Model
             {
                 SoftwareEquipmentList.Add(softwareEquipment);
             }
-        }
-        
+        }        
         private Tuple<string, double>? GetSoftwareEquipmentDescription(string name, double quantity)
         {
             InputDialogSample inputDialog =

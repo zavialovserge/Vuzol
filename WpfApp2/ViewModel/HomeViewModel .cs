@@ -29,10 +29,9 @@ namespace Vuzol.ViewModel
         private string _nameFilter { get; set; }
         private string _inventoryNumberFilter { get; set; }
         private string _invoiceIdFilter { get; set; }
-        private string _orderIdFilter { get; set; }
         private string _bookIdFilter { get; set; }
         private string _orderBookIdFilter { get; set; }
-        private string _formIdFilter { get; set; }
+        private int _formIdFilter { get; set; }
         private string _statusNameFilter { get; set; }
         private string _fIO_R_STRFilter { get; set; }
         private string _unitNameFilter { get; set; }
@@ -121,7 +120,6 @@ namespace Vuzol.ViewModel
             string FactoryNumberFilterInt = "0";
             string InventoryNumberFilterInt = "0";
             int InvoiceIdFilterInt = 0;
-            int OrderIdFilterInt = 0;
             int BookIdFilterInt = 0;
             int OrderBookIdFilterInt = 0;
             decimal QuantityFilterDouble = 0;
@@ -129,7 +127,6 @@ namespace Vuzol.ViewModel
 
 
             bool canInvoiceIdFilter = (int.TryParse(InvoiceIdFilter, out InvoiceIdFilterInt));
-            bool canOrderIdFilter = int.TryParse(OrderIdFilter, out OrderIdFilterInt);
             bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
             bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
             bool canQuantityFilter = decimal.TryParse(QuantityFilter, out QuantityFilterDouble);
@@ -140,10 +137,8 @@ namespace Vuzol.ViewModel
                 && string.IsNullOrEmpty(InventoryNumberFilterInt)
                 && string.IsNullOrEmpty(StatusNameFilter)
                 && !canInvoiceIdFilter
-                && !canOrderIdFilter
                 && !canBookIdFilter
                 && !canOrderBookIdFilter
-                && string.IsNullOrEmpty(FormIdFilter)
                 && string.IsNullOrEmpty(FIO_R_STRFilter)
                 && string.IsNullOrEmpty(UnitNameFilter)
                 && string.IsNullOrEmpty(AdditionalnfoFilter)
@@ -154,8 +149,8 @@ namespace Vuzol.ViewModel
 
             if (!string.IsNullOrEmpty(FactoryNumberFilterInt) || !string.IsNullOrEmpty(NameFilter)
                  || !string.IsNullOrEmpty(InventoryNumberFilterInt) || !string.IsNullOrEmpty(StatusNameFilter)
-                 || InvoiceIdFilterInt != 0 || OrderIdFilterInt != 0 || BookIdFilterInt != 0
-                 || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
+                 || InvoiceIdFilterInt != 0  || BookIdFilterInt != 0
+                 || OrderBookIdFilterInt != 0
                  || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
                  || !string.IsNullOrEmpty(AdditionalnfoFilter)
                  || QuantityFilterDouble != 0 || PriceFilterDouble != 0
@@ -165,13 +160,11 @@ namespace Vuzol.ViewModel
                         && (!string.IsNullOrEmpty(InventoryNumberFilterInt) || InventoryNumberFilterInt == prop.InventoryNumber)
                         && (StatusNameFilter == null || prop.StatusName.Contains(StatusNameFilter))
                         && (InvoiceIdFilterInt == 0 || InvoiceIdFilterInt == prop.InvoiceId)
-                        && (OrderIdFilterInt == 0 || OrderIdFilterInt == prop.OrderId)
                         && (BookIdFilterInt == 0 || BookIdFilterInt == prop.BookId)
                         && (OrderBookIdFilterInt == 0 || OrderBookIdFilterInt == prop.OrderBookId)
-                        && (FormIdFilter == null || prop.FormId.Contains(FormIdFilter))
                         && (FIO_R_STRFilter == null || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
                         && (UnitNameFilter == null || prop.UnitName.Contains(UnitNameFilter))
-                        && (AdditionalnfoFilter == null || prop.Additionalnfo.Contains(AdditionalnfoFilter))
+                        && (AdditionalnfoFilter == null || prop.AdditionalInfo.Contains(AdditionalnfoFilter))
                         && (QuantityFilterDouble == 0 || QuantityFilterDouble == prop.Quantity)
                         && (PriceFilterDouble == 0 || PriceFilterDouble == prop.Price)
                         );
@@ -181,13 +174,11 @@ namespace Vuzol.ViewModel
                    || InventoryNumberFilterInt == prop.InventoryNumber
                    || prop.StatusName.Contains(StatusNameFilter)
                    || InvoiceIdFilterInt == prop.InvoiceId
-                   || OrderIdFilterInt == prop.OrderId
                    || BookIdFilterInt == prop.BookId
                    || OrderBookIdFilterInt == prop.OrderBookId
-                   || prop.FormId.Contains(FormIdFilter)
                    || prop.FIO_R_STR.Contains(FIO_R_STRFilter)
                    || prop.UnitName.Contains(UnitNameFilter)
-                   || prop.Additionalnfo.Contains(AdditionalnfoFilter)
+                   || prop.AdditionalInfo.Contains(AdditionalnfoFilter)
                    || QuantityFilterDouble == prop.Quantity
                    || PriceFilterDouble == prop.Price
                    ;
@@ -242,16 +233,6 @@ namespace Vuzol.ViewModel
                 SelectedListSource?.Refresh();
             }
         }
-        public string OrderIdFilter
-        {
-            get { return _orderIdFilter; }
-            set
-            {
-                _orderIdFilter = value;
-                OnPropertyChanged(nameof(_orderIdFilter));
-                SelectedListSource?.Refresh();
-            }
-        }
         public string BookIdFilter
         {
             get { return _bookIdFilter; }
@@ -272,7 +253,7 @@ namespace Vuzol.ViewModel
                 SelectedListSource?.Refresh();
             }
         }
-        public string FormIdFilter
+        public int FormIdFilter
         {
             get { return _formIdFilter; }
             set
@@ -614,10 +595,10 @@ namespace Vuzol.ViewModel
                        string position = answer[3];
                        Dictionary<string, string> items = new Dictionary<string, string>()
                            {
-                               {  "FormNumber", SelectedProperty.FormId },
+                               {  "FormNumber", "SelectedProperty.FormId" },
                                {  "Name", SelectedProperty.Name },
                                {  "InventoryNumber", SelectedProperty.InventoryNumber.ToString() },
-                               {  "AdditionalInfo", SelectedProperty.Additionalnfo },
+                               {  "AdditionalInfo", SelectedProperty.AdditionalInfo },
                                {  "DateD", SelectedProperty.FormDate.Day.ToString("00") },
                                {  "DateM", SelectedProperty.FormDate.Month.ToString("00") },
                                {  "DateY", SelectedProperty.FormDate.Year.ToString() },
@@ -653,7 +634,7 @@ namespace Vuzol.ViewModel
                        string position = answer[3];
                        Dictionary<string, string> items = new Dictionary<string, string>()
                            {
-                               {  "FormNumber", SelectedProperty.FormId },
+                               {  "FormNumber", "SelectedProperty.FormId" },
                                {  "Name", SelectedProperty.Name+ " "
                                            + SelectedProperty.InventoryNumber.ToString() },
                                {  "UnitFio", SelectedProperty.UnitName + " " + SelectedProperty.FIO_R_STR },
@@ -830,10 +811,10 @@ namespace Vuzol.ViewModel
                         BookPage = bookPage,
                         OrderBookId = orderBookId,
                         OrderBookPage = orderBookPage,
-                        FormId = formId,
+                        FormId = 0,//formId,
                         OrderId = orderId,
                         OrderDate = orderDateD,
-                        Additionalnfo = additionalInfo,
+                        AdditionalInfo = additionalInfo,
                         Status = -1,
                         StatusName = statusName,
                         PropertyTypeId = -1,
