@@ -2,8 +2,8 @@
 {
     public class HardwareEquipmentDTO
     {
-        public int MainPropertyFactoryNumber { get; set; }
-        public int SubPropertyFactoryNumber { get; set; }
+        public string MainInventoryNumber { get; set; }
+        public string SubInventoryNumber { get; set; }
         public double Quantity { get; set; }
         public string Description { get; set; }
     }

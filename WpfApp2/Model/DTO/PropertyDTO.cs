@@ -2,9 +2,9 @@
 {
     public class PropertyDTO
     {
-        public int FactoryNumber { get; set; }
+        public string FactoryNumber { get; set; }
         public string? Name { get; set; }
-        public int InventoryNumber { get; set; }
+        public string InventoryNumber { get; set; }
         public int InvoiceId { get; set; }
         public DateTime InvoiceDate { get; set; }
         public int BookId { get; set; }

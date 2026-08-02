@@ -17,8 +17,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <ComboBox ItemsSource="{Binding SubPropertyFactoryNumberList}" 
-       SelectedValue="{Binding SubPropertyFactoryNumber,UpdateSourceTrigger=PropertyChanged}"  
+        <ComboBox ItemsSource="{Binding SubInventoryNumberList}" 
+       SelectedValue="{Binding SubInventoryNumber,UpdateSourceTrigger=PropertyChanged}"  
        Grid.Row="1" Grid.Column="0" Width="400" Height="30"  />
         <Label  Grid.Column="1" Grid.Row="0" Content="Опис"/>
         <TextBox Name="Description" Grid.Column="1" Grid.Row="1"  

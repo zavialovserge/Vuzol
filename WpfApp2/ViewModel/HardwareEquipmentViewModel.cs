@@ -8,23 +8,23 @@ namespace Vuzol.ViewModel
 {
     public class HardwareEquipmentViewModel : BaseViewModel
     {
-        private string _subPropertyFactoryNumber;
+        private string _subInventoryNumber;
         private string _description;
         private double _quantity;
-        private int _previousSubFactoryNumber;
+        private string _previousSubFactoryNumber;
         public HardwareEquipmentViewModel(NavigationProperty NavigationProperty, Property current, PropertyModel propertyModel, bool isEdit = false)
         {
             HomeCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
                () => new AddViewModel(NavigationProperty, current));
             ChangeHardwareEquipmentCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
                 () => isEdit ? EditHardwareEquipmentFunc(NavigationProperty, current) : AddHardwareEquipmentFunc(NavigationProperty, current));
-            List<Property> subPropertyFactoryNumberList = PropertyData.GetAllProperty();
-            _previousSubFactoryNumber = isEdit ? propertyModel.SelectedHardwareEquipment.SubPropertyFactoryNumber : 0;
-            SubPropertyFactoryNumberList = new ObservableCollection<string>(subPropertyFactoryNumberList.Select(a => "Заводський номер:" + a.FactoryNumber));
-            SubPropertyFactoryNumber = isEdit ? subPropertyFactoryNumberList.Where(a => a.FactoryNumber == _previousSubFactoryNumber)
+            List<Property> subInventoryNumberList = PropertyData.GetAllProperty();
+            _previousSubFactoryNumber = isEdit ? propertyModel.SelectedHardwareEquipment.SubInventoryNumber : "0";
+            SubInventoryNumberList = new ObservableCollection<string>(subInventoryNumberList.Select(a => "Заводський номер:" + a.FactoryNumber));
+            SubInventoryNumber = isEdit ? subInventoryNumberList.Where(a => a.FactoryNumber == _previousSubFactoryNumber)
                                                                             .Select(a => "Заводський номер:" + a.FactoryNumber)
                                                                             .First()
-                                               : SubPropertyFactoryNumberList.First();
+                                               : SubInventoryNumberList.First();
             ButtonName = isEdit ? "Коригувати" : "Додати";
             _description = isEdit ? propertyModel.SelectedHardwareEquipment.Description : "";
             _quantity = isEdit ? propertyModel.SelectedHardwareEquipment.Quantity : 0;
@@ -42,23 +42,21 @@ namespace Vuzol.ViewModel
             HardwareEquipmentData.EditHardwareEquipment(hardwareEquipment, _previousSubFactoryNumber);
             return new AddViewModel(navigationProperty, prop);
         }
-        private HardwareEquipment GerNewHardwareEquipment(int factoryNumber)
+        private HardwareEquipment GerNewHardwareEquipment(string factoryNumber)
         {
-            string sb = SubPropertyFactoryNumber.Replace("Заводський номер:", string.Empty);
-            int newFactoryNumber = 0;
-            int.TryParse(sb, out newFactoryNumber);
+            string newFactoryNumber = SubInventoryNumber.Replace("Заводський номер:", string.Empty);
             return new HardwareEquipment(factoryNumber, newFactoryNumber, Quantity, Description);
         }
         public ICommand HomeCommand { get; }
         public ICommand ChangeHardwareEquipmentCommand { get; }
-        public ObservableCollection<string> SubPropertyFactoryNumberList { get; set; }
-        public string SubPropertyFactoryNumber
+        public ObservableCollection<string> SubInventoryNumberList { get; set; }
+        public string SubInventoryNumber
         {
-            get { return _subPropertyFactoryNumber; }
+            get { return _subInventoryNumber; }
             set
             {
-                _subPropertyFactoryNumber = value;
-                OnPropertyChanged(nameof(_subPropertyFactoryNumber));
+                _subInventoryNumber = value;
+                OnPropertyChanged(nameof(_subInventoryNumber));
             }
         }
         public string ButtonName { get; set; }
@@ -77,7 +75,7 @@ namespace Vuzol.ViewModel
             set
             {
                 _quantity = value;
-                OnPropertyChanged(nameof(_subPropertyFactoryNumber));
+                OnPropertyChanged(nameof(_subInventoryNumber));
             }
         }
     }

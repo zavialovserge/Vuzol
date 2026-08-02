@@ -122,8 +122,8 @@ namespace Vuzol.ViewModel.Model
         private string _FIO_I_STR { get; set; }
         private string _FIO_V_STR { get; set; }
         private string? _additionalnfo { get; set; }
-        private int _inventoryNumber { get; set; }
-        private int _factoryNumber { get; set; }
+        private string _inventoryNumber { get; set; }
+        private string? _factoryNumber { get; set; }
         private string? _name { get; set; }
         private int _invoiceId { get; set; }
         private int _bookId { get; set; }
@@ -189,7 +189,7 @@ namespace Vuzol.ViewModel.Model
                 OnPropertyChanged(nameof(_quantityTypeDescription));
             }
         }
-        public int InventoryNumber
+        public string InventoryNumber
         {
             get { return _inventoryNumber; }
             set
@@ -202,7 +202,7 @@ namespace Vuzol.ViewModel.Model
                 }
             }
         }
-        public int FactoryNumber
+        public string? FactoryNumber
         {
             get { return _factoryNumber; }
             set
@@ -492,11 +492,12 @@ namespace Vuzol.ViewModel.Model
         private void ValidateInventoryNumber()
         {
             ClearErrors(nameof(InventoryNumber));
-            if (InventoryNumber <= 0)
+            if (IsEdit) return;
+            if (string.IsNullOrEmpty(InventoryNumber))
             {
                 AddError(nameof(InventoryNumber), "Інвентарний номер є обов'язковим");
             }
-            if(PropertyData.ExistProperty(InventoryNumber) && !IsEdit)
+            if(PropertyData.ExistProperty(InventoryNumber))
             {
                 AddError(nameof(InventoryNumber), "Інвентарний номер вже існує");
             }

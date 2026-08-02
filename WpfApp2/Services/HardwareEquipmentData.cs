@@ -9,36 +9,36 @@ namespace Vuzol.Services
     public class HardwareEquipmentData
     {
         private const string GET_ALL_HARDWAREEQUIPMENT_SQL =
-                   @"SELECT  ""MainPropertyFactoryNumber""
-                             ,""SubPropertyFactoryNumber""
+                   @"SELECT  ""MainInventoryNumber""
+                             ,""SubInventoryNumber""
                              ,""Quantity""
                              ,""Description""
                              FROM ""HardwareEquipment""
-                             where ""MainPropertyFactoryNumber""=  @factoryNumber ";
+                             where ""MainInventoryNumber""=  @inventoryNumber ";
 
         private const string UPDATE_HARDWAREEQUIPMENT_SQL =
-                   @"UPDATE ""HardwareEquipment"" SET SubPropertyFactoryNumber = @SubPropertyFactoryNumber ,
+                   @"UPDATE ""HardwareEquipment"" SET SubInventoryNumber = @SubInventoryNumber ,
                             ""Quantity""=@Quantity, 
                             ""Description""=@Description
-                    WHERE ""MainPropertyFactoryNumber"" = @MainPropertyFactoryNumber AND 
-                            ""SubPropertyFactoryNumber"" = @PreviousSubPropertyFactoryNumber";
+                    WHERE ""MainInventoryNumber"" = @MainInventoryNumber AND 
+                            ""SubInventoryNumber"" = @PreviousSubInventoryNumber";
         private const string INSERT_HARDWAREEQUIPMENT_SQL =
                   @"INSERT INTO ""dbo"".""HardwareEquipment""
-                            (""MainPropertyFactoryNumber""
-           ,""SubPropertyFactoryNumber""
+                            (""MainInventoryNumber""
+           ,""SubInventoryNumber""
            ,""Quantity""
            ,""Description"")
-                             VALUES (@MainPropertyFactoryNumber, @SubPropertyFactoryNumber, @Quantity, @Description)";
+                             VALUES (@MainInventoryNumber, @SubInventoryNumber, @Quantity, @Description)";
         private const string DELETE_HARDWAREEQUIPMENT_SQL =
                   @"DELETE FROM ""HardwareEquipment""
-                    WHERE ""MainPropertyFactoryNumber"" = @MainPropertyFactoryNumber 
-                    AND ""SubPropertyFactoryNumber"" = @SubPropertyFactoryNumber ";
-        public static IEnumerable<HardwareEquipment> GetAllHardwareEquipment(int factoryNumber)
+                    WHERE ""MainInventoryNumber"" = @MainInventoryNumber 
+                    AND ""SubInventoryNumber"" = @SubInventoryNumber ";
+        public static IEnumerable<HardwareEquipment> GetAllHardwareEquipment(string inventoryNumber)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             IEnumerable<HardwareEquipmentDTO> HardwareEquipmentDTOs =
-                database.Query<HardwareEquipmentDTO>(GET_ALL_HARDWAREEQUIPMENT_SQL, new { factoryNumber });
+                database.Query<HardwareEquipmentDTO>(GET_ALL_HARDWAREEQUIPMENT_SQL, new { inventoryNumber });
             var HardwareEquipmentList = HardwareEquipmentDTOs.Select(ToHardwareEquipment).ToList();
             int i = 1;
             foreach (var hardwareEquipment in HardwareEquipmentList)
@@ -57,24 +57,24 @@ namespace Vuzol.Services
             var result = database.Execute(DELETE_HARDWAREEQUIPMENT_SQL,
                                         new
                                         {
-                                            HardwareEquipmentDTO.MainPropertyFactoryNumber,
-                                            HardwareEquipmentDTO.SubPropertyFactoryNumber
+                                            HardwareEquipmentDTO.MainInventoryNumber,
+                                            HardwareEquipmentDTO.SubInventoryNumber
                                         });
             return result == 1;
         }
 
-        public static bool EditHardwareEquipment(HardwareEquipment HardwareEquipment, int previousSubPropertyFactoryNumber)
+        public static bool EditHardwareEquipment(HardwareEquipment HardwareEquipment, string previousSubInventoryNumber)
         {
             DbData dbData = new DbData();
             using IDbConnection database = dbData.Connect();
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
             var result = database.Execute(UPDATE_HARDWAREEQUIPMENT_SQL, new
             {
-                HardwareEquipmentDTO.SubPropertyFactoryNumber,
+                HardwareEquipmentDTO.SubInventoryNumber,
                 HardwareEquipmentDTO.Quantity,
                 HardwareEquipmentDTO.Description,
-                HardwareEquipmentDTO.MainPropertyFactoryNumber,
-                PreviousSubPropertyFactoryNumber = previousSubPropertyFactoryNumber
+                HardwareEquipmentDTO.MainInventoryNumber,
+                PreviousSubInventoryNumber = previousSubInventoryNumber
             });
             return result == 1;
         }
@@ -85,20 +85,20 @@ namespace Vuzol.Services
             HardwareEquipmentDTO HardwareEquipmentDTO = ToHardwareEquipmentDTO(HardwareEquipment);
             var result = database.Execute(INSERT_HARDWAREEQUIPMENT_SQL, new
             {
-                HardwareEquipmentDTO.SubPropertyFactoryNumber,
+                HardwareEquipmentDTO.SubInventoryNumber,
                 HardwareEquipmentDTO.Quantity,
                 HardwareEquipmentDTO.Description,
-                HardwareEquipmentDTO.MainPropertyFactoryNumber,
+                HardwareEquipmentDTO.MainInventoryNumber,
             });
             return result == 1;
         }
         private static HardwareEquipment ToHardwareEquipment(HardwareEquipmentDTO dto) =>
-         new HardwareEquipment(dto.MainPropertyFactoryNumber, dto.SubPropertyFactoryNumber, dto.Quantity, dto.Description);
+         new HardwareEquipment(dto.MainInventoryNumber, dto.SubInventoryNumber, dto.Quantity, dto.Description);
         private static HardwareEquipmentDTO ToHardwareEquipmentDTO(HardwareEquipment equipment) =>
          new HardwareEquipmentDTO()
          {
-             SubPropertyFactoryNumber = equipment.SubPropertyFactoryNumber,
-             MainPropertyFactoryNumber = equipment.MainPropertyFactoryNumber,
+             SubInventoryNumber = equipment.SubInventoryNumber,
+             MainInventoryNumber = equipment.MainInventoryNumber,
              Quantity = equipment.Quantity,
              Description = equipment.Description
          };

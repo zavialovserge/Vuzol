@@ -20,18 +20,64 @@ namespace Vuzol.ViewModel
             PropertyTypeList = PropertyTypeData.GetAllPropertyType().ToList();
             PropertyStatusList = PropertyStatusData.GetAllPropertyStatus().ToList();
             EmployeesList = new ObservableCollection<Employee>(EmployeeData.GetAllEmployees());
-            PropertyAdd = new PropertyModel()
+            if (isEdit)
             {
-                PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
-                PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
-                PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
-                PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
-                Quantity = current.Quantity,
-                EmployeeList = EmployeesList
-                                            .Select(a => a.LastName + " " + a.FirstName)
-                                            .ToList()
-            };
-
+                PropertyAdd = new PropertyModel()
+                {
+                    IsEdit = isEdit,
+                    InventoryNumber = current.InventoryNumber,
+                    FactoryNumber = current.FactoryNumber,
+                    Name = current.Name,
+                    InvoiceId = current.InvoiceId,
+                    BookId = current.BookId,
+                    OrderBookId = current.OrderBookId,
+                    FormId = current.FormId,
+                    OrderId = current.OrderId,
+                    OrderDate = current.OrderDate.ToString("yyyy/MM/dd"),
+                    PropertyTypeId = current.PropertyTypeId,
+                    Additionalnfo = current.Additionalnfo,
+                    UnitName = current.UnitName,
+                    BookPage = current.BookPage,
+                    Status = current.Status,
+                    OrderBookPage = current.OrderBookPage,
+                    FIO_R_STR = current.FIO_R_STR,
+                    FIO_R = current.FIO_R,
+                    PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
+                    PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
+                    PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
+                    PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
+                    Quantity = current.Quantity,
+                    Price = current.Price,
+                    EmployeeList = EmployeesList
+                                .Select(a => a.LastName + " " + a.FirstName)
+                                .ToList(),
+                    SoftwareEquipmentList = new ObservableCollection<SoftwareEquipment>(
+                        SoftwareEquipmentData.GetAllSoftwareEquipment(current.InventoryNumber)),
+                    HardwareEquipmentList = new ObservableCollection<HardwareEquipment>(
+                        HardwareEquipmentData.GetAllHardwareEquipment(current.InventoryNumber)),
+                    AddHardwareEquipmentCommand =
+                    new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
+    () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd)),
+                    EditHardwareEquipmentCommand =
+                    new NavigateCommand<HardwareEquipmentViewModel>(NavigationProperty,
+    () => new HardwareEquipmentViewModel(NavigationProperty, current, PropertyAdd, true))
+                };
+            }
+            else {
+                PropertyAdd = new PropertyModel()
+                {
+                    IsEdit = isEdit,
+                    PropertyTypeNameList = PropertyTypeList.Select(a => a.Name).ToList(),
+                    PropertyTypeName = PropertyTypeList.Where(a => a.Id == current.PropertyTypeId).First().Name,
+                    PropertyStatusNameList = PropertyStatusList.Select(a => a.Name).ToList(),
+                    PropertyStatusName = PropertyStatusList.Where(a => a.Id == current.Status).First().Name,
+                    Quantity = current.Quantity,
+                    EmployeeList = EmployeesList
+                                                .Select(a => a.LastName + " " + a.FirstName)
+                                                .ToList()
+                };
+            }
+            
             // Підписуємося на зміни помилок валідації
             PropertyAdd.ErrorsChanged += (s, e) => 
             {
@@ -49,9 +95,7 @@ namespace Vuzol.ViewModel
         private bool CanExecuteAddProperty(object parameter)
         {
             // Перевіряємо всі обов'язкові поля
-            return PropertyAdd.InventoryNumber > 0 
-                && PropertyAdd.FactoryNumber > 0 
-                && !string.IsNullOrWhiteSpace(PropertyAdd.FIO_R_STR);
+            return string.IsNullOrEmpty(PropertyAdd.InventoryNumber);
         }
 
         private bool ValidateBeforeSave()
@@ -63,7 +107,7 @@ namespace Vuzol.ViewModel
             {
                 var errorMessages = new List<string>();
 
-                if (PropertyAdd.InventoryNumber <= 0)
+                if (string.IsNullOrWhiteSpace(PropertyAdd.InventoryNumber))
                     errorMessages.Add("• Інвентарний номер є обов'язковим полем");
 
                 if (string.IsNullOrWhiteSpace(PropertyAdd.FIO_R_STR))
@@ -174,8 +218,8 @@ namespace Vuzol.ViewModel
                         {
                             NavigationPropertyStore.CurrentViewModel = result;
                         }
-                    },
-                    CanExecuteAddProperty));
+                    }
+                    ));
             }
         }
 

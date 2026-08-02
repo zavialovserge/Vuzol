@@ -118,8 +118,8 @@ namespace Vuzol.ViewModel
         private bool Filters(Property prop)
         {
             if (prop == null) return true;
-            int FactoryNumberFilterInt = 0;
-            int InventoryNumberFilterInt = 0;
+            string FactoryNumberFilterInt = "0";
+            string InventoryNumberFilterInt = "0";
             int InvoiceIdFilterInt = 0;
             int OrderIdFilterInt = 0;
             int BookIdFilterInt = 0;
@@ -128,8 +128,6 @@ namespace Vuzol.ViewModel
             decimal PriceFilterDouble = 0;
 
 
-            bool canFactoryNumberFilter = int.TryParse(FactoryNumberFilter, out FactoryNumberFilterInt);
-            bool canInventoryNumberFilter = int.TryParse(InventoryNumberFilter, out InventoryNumberFilterInt);
             bool canInvoiceIdFilter = (int.TryParse(InvoiceIdFilter, out InvoiceIdFilterInt));
             bool canOrderIdFilter = int.TryParse(OrderIdFilter, out OrderIdFilterInt);
             bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
@@ -137,9 +135,9 @@ namespace Vuzol.ViewModel
             bool canQuantityFilter = decimal.TryParse(QuantityFilter, out QuantityFilterDouble);
             bool canPriceFilter = decimal.TryParse(PriceFilter, out PriceFilterDouble);
 
-            if (!canFactoryNumberFilter
+            if (string.IsNullOrEmpty(FactoryNumberFilterInt)
                 && string.IsNullOrEmpty(NameFilter)
-                && !canInventoryNumberFilter
+                && string.IsNullOrEmpty(InventoryNumberFilterInt)
                 && string.IsNullOrEmpty(StatusNameFilter)
                 && !canInvoiceIdFilter
                 && !canOrderIdFilter
@@ -154,17 +152,17 @@ namespace Vuzol.ViewModel
                 )
                 return true;
 
-            if (FactoryNumberFilterInt != 0 || !string.IsNullOrEmpty(NameFilter)
-                 || InventoryNumberFilterInt != 0 || !string.IsNullOrEmpty(StatusNameFilter)
+            if (!string.IsNullOrEmpty(FactoryNumberFilterInt) || !string.IsNullOrEmpty(NameFilter)
+                 || !string.IsNullOrEmpty(InventoryNumberFilterInt) || !string.IsNullOrEmpty(StatusNameFilter)
                  || InvoiceIdFilterInt != 0 || OrderIdFilterInt != 0 || BookIdFilterInt != 0
                  || OrderBookIdFilterInt != 0 || !string.IsNullOrEmpty(FormIdFilter)
                  || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
                  || !string.IsNullOrEmpty(AdditionalnfoFilter)
                  || QuantityFilterDouble != 0 || PriceFilterDouble != 0
                  )
-                return ((FactoryNumberFilterInt == 0 || FactoryNumberFilterInt == prop.FactoryNumber)
+                return ((!string.IsNullOrEmpty(FactoryNumberFilterInt) || FactoryNumberFilterInt == prop.FactoryNumber)
                         && (NameFilter == null || prop.Name.Contains(NameFilter))
-                        && (InventoryNumberFilterInt == 0 || InventoryNumberFilterInt == prop.InventoryNumber)
+                        && (!string.IsNullOrEmpty(InventoryNumberFilterInt) || InventoryNumberFilterInt == prop.InventoryNumber)
                         && (StatusNameFilter == null || prop.StatusName.Contains(StatusNameFilter))
                         && (InvoiceIdFilterInt == 0 || InvoiceIdFilterInt == prop.InvoiceId)
                         && (OrderIdFilterInt == 0 || OrderIdFilterInt == prop.OrderId)
@@ -760,9 +758,7 @@ namespace Vuzol.ViewModel
                     return true;
                 }
 
-                // Парсимо кожне поле з валідацією
-                if (!TryParseInt(rowNumber, 1, "Заводський номер", out int factoryNumber))
-                    return (null, errors);
+                string factoryNumber = GetStringValue(rowNumber, 1);
 
                 string name = GetStringValue(rowNumber, 2);
                 if (string.IsNullOrWhiteSpace(name))
@@ -770,10 +766,13 @@ namespace Vuzol.ViewModel
                     errors.Add($"Рядок {rowNumber}, колонка 2 (Найменування): значення не може бути пусте");
                     return (null, errors);
                 }
+                string inventoryNumber = GetStringValue(rowNumber, 3);
 
-                if (!TryParseInt(rowNumber, 3, "Інвентарний номер", out int inventoryNumber))
+                if (string.IsNullOrWhiteSpace(inventoryNumber))
+                {
+                    errors.Add($"Рядок {rowNumber}, колонка 3 (Інвентарний номер): значення не може бути пусте");
                     return (null, errors);
-
+                }
                 if (!TryParseInt(rowNumber, 4, "Номер накладної", out int invoiceId))
                     return (null, errors);
 
