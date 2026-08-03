@@ -177,8 +177,7 @@ namespace Vuzol.ViewModel
             return new HomeViewModel(navigationProperty);
         }
         private HomeViewModel AddNewPropertyFunc(NavigationProperty navigationProperty)
-        {
-            // Перевірка валідації перед збереженням
+        {            
             if (!ValidateBeforeSave())
                 return null;
             Property property = GetNewProperty();            

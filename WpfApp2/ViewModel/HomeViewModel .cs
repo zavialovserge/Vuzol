@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
@@ -31,13 +32,19 @@ namespace Vuzol.ViewModel
         private string _invoiceIdFilter { get; set; }
         private string _bookIdFilter { get; set; }
         private string _orderBookIdFilter { get; set; }
-        private int _formIdFilter { get; set; }
+        private string _formIdFilter { get; set; }
         private string _statusNameFilter { get; set; }
         private string _fIO_R_STRFilter { get; set; }
+        private string _fIO_v_STRFilter { get; set; }
         private string _unitNameFilter { get; set; }
         private string _quantityFilter { get; set; }
         private string _priceFilter { get; set; }
         private string _additionalnfoFilter { get; set; }
+        private string _categoryDescriptionFilter { get; set; }
+        private string _materialResourcesDescriptionFilter { get; set; }
+        private string _costFilter { get; set; }
+        private string _quantityTypeDescriptionFilter { get; set; }
+        private string _orderIdFilter { get; set; }
         public HomeViewModel(NavigationProperty NavigationProperty)
         {
             SelectedList = new ObservableCollection<Property>(PropertyData.GetAllProperty());
@@ -116,72 +123,121 @@ namespace Vuzol.ViewModel
         }
         private bool Filters(Property prop)
         {
-            if (prop == null) return true;
-            string FactoryNumberFilterInt = "0";
-            string InventoryNumberFilterInt = "0";
-            int InvoiceIdFilterInt = 0;
-            int BookIdFilterInt = 0;
-            int OrderBookIdFilterInt = 0;
-            decimal QuantityFilterDouble = 0;
-            decimal PriceFilterDouble = 0;
+            if (prop == null) return true;            
+            int invoiceId = int.TryParse(InvoiceIdFilter, out invoiceId) ? invoiceId : -1;            
+            int orderId = int.TryParse(OrderIdFilter, out orderId) ? orderId : -1;
+            int formId = int.TryParse(FormIdFilter, out formId) ? formId : -1;            
+            int bookId = int.TryParse(BookIdFilter, out bookId) ? bookId : -1;
+            int orderBookId = int.TryParse(OrderBookIdFilter, out orderBookId) ? orderBookId : -1;
+            decimal cost = decimal.TryParse(CostFilter, out cost) ? cost : -1;
+            decimal quantity = decimal.TryParse(QuantityFilter, out quantity) ? quantity : -1;
 
+            if (string.IsNullOrEmpty(InventoryNumberFilter) && string.IsNullOrEmpty(NameFilter) && string.IsNullOrEmpty(CategoryDescriptionFilter) 
+                && string.IsNullOrEmpty(MaterialResourcesDescriptionFilter) && string.IsNullOrEmpty(CostFilter) 
+                && string.IsNullOrEmpty(QuantityTypeDescriptionFilter) && string.IsNullOrEmpty(OrderIdFilter) 
+                && string.IsNullOrEmpty(FactoryNumberFilter) && string.IsNullOrEmpty(StatusNameFilter) && string.IsNullOrEmpty(PriceFilter)
+                && string.IsNullOrEmpty(FIO_V_STRFilter) && string.IsNullOrEmpty(FIO_R_STRFilter)
+                && string.IsNullOrEmpty(InvoiceIdFilter)  && string.IsNullOrEmpty(UnitNameFilter) && string.IsNullOrEmpty(AdditionalnfoFilter)
+                && string.IsNullOrEmpty(FormIdFilter)  && string.IsNullOrEmpty(BookIdFilter) && string.IsNullOrEmpty(OrderBookIdFilter)
+                && string.IsNullOrEmpty(CostFilter) && string.IsNullOrEmpty(QuantityFilter)) return true;
 
-            bool canInvoiceIdFilter = (int.TryParse(InvoiceIdFilter, out InvoiceIdFilterInt));
-            bool canBookIdFilter = int.TryParse(BookIdFilter, out BookIdFilterInt);
-            bool canOrderBookIdFilter = int.TryParse(OrderBookIdFilter, out OrderBookIdFilterInt);
-            bool canQuantityFilter = decimal.TryParse(QuantityFilter, out QuantityFilterDouble);
-            bool canPriceFilter = decimal.TryParse(PriceFilter, out PriceFilterDouble);
+            if (!string.IsNullOrEmpty(InventoryNumberFilter) || !string.IsNullOrEmpty(NameFilter) || !string.IsNullOrEmpty(CategoryDescriptionFilter) 
+                || !string.IsNullOrEmpty(MaterialResourcesDescriptionFilter) || !string.IsNullOrEmpty(CostFilter) 
+                || !string.IsNullOrEmpty(QuantityTypeDescriptionFilter) || !string.IsNullOrEmpty(OrderIdFilter) 
+                || !string.IsNullOrEmpty(FactoryNumberFilter) || !string.IsNullOrEmpty(StatusNameFilter) 
+                || !string.IsNullOrEmpty(FIO_V_STRFilter) || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(AdditionalnfoFilter)
+                || !string.IsNullOrEmpty(InvoiceIdFilter) || !string.IsNullOrEmpty(UnitNameFilter) || !string.IsNullOrEmpty(FormIdFilter) 
+                || !string.IsNullOrEmpty(BookIdFilter) || !string.IsNullOrEmpty(OrderBookIdFilter)  || !string.IsNullOrEmpty(OrderIdFilter) 
+                || !string.IsNullOrEmpty(QuantityFilter) || !string.IsNullOrEmpty(PriceFilter) || !string.IsNullOrEmpty(CostFilter))
+                return ((InventoryNumberFilter == null || prop.InventoryNumber.ToLower().Contains(InventoryNumberFilter.ToLower()))
+                        && (NameFilter == null || prop.Name.ToLower().Contains(NameFilter.ToLower())) 
+                        && (CategoryDescriptionFilter == null || prop.CategoryDescription.ToLower().Contains(CategoryDescriptionFilter.ToLower()))
+                        && (MaterialResourcesDescriptionFilter == null 
+                        || prop.MaterialResourcesDescription.ToLower().Contains(MaterialResourcesDescriptionFilter.ToLower()))
+                        && (QuantityTypeDescriptionFilter == null 
+                        || prop.QuantityTypeDescription.ToLower().Contains(QuantityTypeDescriptionFilter.ToLower()))
+                        && (FactoryNumberFilter == null || prop.FactoryNumber.ToLower().Contains(FactoryNumberFilter.ToLower()))
+                        && (StatusNameFilter == null || prop.StatusName.ToLower().Contains(StatusNameFilter.ToLower()))                       
+                        && (FIO_V_STRFilter == null || prop.FIO_V_STR.ToLower().Contains(FIO_V_STRFilter.ToLower()))
+                        && (FIO_R_STRFilter == null || prop.FIO_R_STR.ToLower().Contains(FIO_R_STRFilter.ToLower()))
+                        && (UnitNameFilter == null || prop.UnitName.ToLower().Contains(UnitNameFilter.ToLower()))
+                        && (AdditionalnfoFilter == null || prop.AdditionalInfo.ToLower().Contains(AdditionalnfoFilter.ToLower()))
+                        && (InvoiceIdFilter == null || invoiceId == -1 || prop.InvoiceId == invoiceId)                        
+                        && (CostFilter == null || cost == -1 || prop.Cost == cost)
+                        && (FormIdFilter == null || formId == -1 || prop.FormId == formId)
+                        && (OrderIdFilter == null || orderId == -1 || prop.OrderId == orderId)
+                        && (BookIdFilter == null || bookId == -1 || prop.BookId == bookId)
+                        && (OrderBookIdFilter == null || orderBookId == -1 || prop.OrderBookId == orderBookId)
+                        && (QuantityFilter == null || quantity == -1 || prop.Quantity == quantity));
 
-            if (string.IsNullOrEmpty(FactoryNumberFilterInt)
-                && string.IsNullOrEmpty(NameFilter)
-                && string.IsNullOrEmpty(InventoryNumberFilterInt)
-                && string.IsNullOrEmpty(StatusNameFilter)
-                && !canInvoiceIdFilter
-                && !canBookIdFilter
-                && !canOrderBookIdFilter
-                && string.IsNullOrEmpty(FIO_R_STRFilter)
-                && string.IsNullOrEmpty(UnitNameFilter)
-                && string.IsNullOrEmpty(AdditionalnfoFilter)
-                && !canQuantityFilter
-                && !canPriceFilter
-                )
-                return true;
-
-            if (!string.IsNullOrEmpty(FactoryNumberFilterInt) || !string.IsNullOrEmpty(NameFilter)
-                 || !string.IsNullOrEmpty(InventoryNumberFilterInt) || !string.IsNullOrEmpty(StatusNameFilter)
-                 || InvoiceIdFilterInt != 0  || BookIdFilterInt != 0
-                 || OrderBookIdFilterInt != 0
-                 || !string.IsNullOrEmpty(FIO_R_STRFilter) || !string.IsNullOrEmpty(UnitNameFilter)
-                 || !string.IsNullOrEmpty(AdditionalnfoFilter)
-                 || QuantityFilterDouble != 0 || PriceFilterDouble != 0
-                 )
-                return ((!string.IsNullOrEmpty(FactoryNumberFilterInt) || FactoryNumberFilterInt == prop.FactoryNumber)
-                        && (NameFilter == null || prop.Name.Contains(NameFilter))
-                        && (!string.IsNullOrEmpty(InventoryNumberFilterInt) || InventoryNumberFilterInt == prop.InventoryNumber)
-                        && (StatusNameFilter == null || prop.StatusName.Contains(StatusNameFilter))
-                        && (InvoiceIdFilterInt == 0 || InvoiceIdFilterInt == prop.InvoiceId)
-                        && (BookIdFilterInt == 0 || BookIdFilterInt == prop.BookId)
-                        && (OrderBookIdFilterInt == 0 || OrderBookIdFilterInt == prop.OrderBookId)
-                        && (FIO_R_STRFilter == null || prop.FIO_R_STR.Contains(FIO_R_STRFilter))
-                        && (UnitNameFilter == null || prop.UnitName.Contains(UnitNameFilter))
-                        && (AdditionalnfoFilter == null || prop.AdditionalInfo.Contains(AdditionalnfoFilter))
-                        && (QuantityFilterDouble == 0 || QuantityFilterDouble == prop.Quantity)
-                        && (PriceFilterDouble == 0 || PriceFilterDouble == prop.Price)
-                        );
-
-            return FactoryNumberFilterInt == prop.FactoryNumber
+            return prop.InventoryNumber.Contains(InventoryNumberFilter)
                    || prop.Name.Contains(NameFilter)
-                   || InventoryNumberFilterInt == prop.InventoryNumber
-                   || prop.StatusName.Contains(StatusNameFilter)
-                   || InvoiceIdFilterInt == prop.InvoiceId
-                   || BookIdFilterInt == prop.BookId
-                   || OrderBookIdFilterInt == prop.OrderBookId
+                   || prop.CategoryDescription.Contains(CategoryDescriptionFilter)
+                   || prop.MaterialResourcesDescription.Contains(MaterialResourcesDescriptionFilter)                   
+                   || prop.QuantityTypeDescription.Contains(QuantityTypeDescriptionFilter)                   
+                   || prop.FactoryNumber.Contains(FactoryNumberFilter) 
+                   || prop.FactoryNumber.Contains(StatusNameFilter)
+                   || prop.FIO_V_STR.Contains(FIO_V_STRFilter) 
                    || prop.FIO_R_STR.Contains(FIO_R_STRFilter)
                    || prop.UnitName.Contains(UnitNameFilter)
                    || prop.AdditionalInfo.Contains(AdditionalnfoFilter)
-                   || QuantityFilterDouble == prop.Quantity
-                   || PriceFilterDouble == prop.Price
-                   ;
+                   || prop.InvoiceId == invoiceId                   
+                   || prop.Cost == cost
+                   || prop.FormId == formId
+                   || prop.OrderId == orderId
+                   || prop.BookId == bookId
+                   || prop.OrderBookId == orderBookId
+                   || prop.Quantity == quantity;
+        }
+        public string CategoryDescriptionFilter 
+        {
+            get { return _categoryDescriptionFilter; }
+            set
+            {
+                _categoryDescriptionFilter = value;
+                OnPropertyChanged(nameof(_categoryDescriptionFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string MaterialResourcesDescriptionFilter
+        {
+            get { return _materialResourcesDescriptionFilter; }
+            set
+            {
+                _materialResourcesDescriptionFilter = value;
+                OnPropertyChanged(nameof(_materialResourcesDescriptionFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string CostFilter
+        {
+            get { return _costFilter; }
+            set
+            {
+                _costFilter = value;
+                OnPropertyChanged(nameof(_costFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string QuantityTypeDescriptionFilter
+        {
+            get { return _quantityTypeDescriptionFilter; }
+            set
+            {
+                _quantityTypeDescriptionFilter = value;
+                OnPropertyChanged(nameof(_quantityTypeDescriptionFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string OrderIdFilter
+        {
+            get { return _orderIdFilter; }
+            set
+            {
+                _orderIdFilter = value;
+                OnPropertyChanged(nameof(_orderIdFilter));
+                SelectedListSource?.Refresh();
+            }
         }
         public string FactoryNumberFilter
         {
@@ -253,7 +309,7 @@ namespace Vuzol.ViewModel
                 SelectedListSource?.Refresh();
             }
         }
-        public int FormIdFilter
+        public string FormIdFilter
         {
             get { return _formIdFilter; }
             set
@@ -270,6 +326,16 @@ namespace Vuzol.ViewModel
             {
                 _fIO_R_STRFilter = value;
                 OnPropertyChanged(nameof(_fIO_R_STRFilter));
+                SelectedListSource?.Refresh();
+            }
+        }
+        public string FIO_V_STRFilter
+        {
+            get { return _fIO_v_STRFilter; }
+            set
+            {
+                _fIO_v_STRFilter = value;
+                OnPropertyChanged(nameof(_fIO_v_STRFilter));
                 SelectedListSource?.Refresh();
             }
         }

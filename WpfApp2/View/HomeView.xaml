@@ -44,19 +44,24 @@
         <!-- Filter ScrollViewer -->
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" x:Name="FilterScrollViewer">
             <StackPanel Orientation="Horizontal">
-                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FactoryNumberColumn}" Text="{Binding FactoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Заводський номер"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding InventoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Інвентарний номер"/>                
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=NameColumn}" Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Найменування"/>
-                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InventoryNumberColumn}" Text="{Binding InventoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Інвентарний номер"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FactoryNumberColumn}" Text="{Binding FactoryNumberFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Заводський номер"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=InvoiceIdColumn}" Text="{Binding InvoiceIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Номер накладної"/>
-                
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=OrderIdColumn}" Text="{Binding OrderIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Наказ на введеня в експлуатацію"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=BookIdColumn}" Text="{Binding BookIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Книга обліку"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=OrderBookIdColumn}" Text="{Binding OrderBookIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Книга закріплень"/>
-                
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FormIdColumn}" Text="{Binding FormIdFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Номер формуляру"/>                
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=StatusNameColumn}" Text="{Binding StatusNameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Статус"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FIO_R_STRColumn}" Text="{Binding FIO_R_STRFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Відповідальний"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=UnitNameColumn}" Text="{Binding UnitNameFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Відповідальний підрозділ"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=FIO_V_STRColumn}" Text="{Binding FIO_V_STRFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Видано в користування"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=QuantityColumn}" Text="{Binding QuantityFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Кількість"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=QuantityTypeDescriptionColumn}" Text="{Binding QuantityTypeDescriptionFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Одиниці виміру"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=PriceColumn}" Text="{Binding PriceFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Ціна"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=CostColumn}" Text="{Binding CostFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Вартість"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=CategoryDescriptionColumn}" Text="{Binding CategoryDescriptionFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Категорія"/>
+                <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=MaterialResourcesDescriptionColumn}" Text="{Binding MaterialResourcesDescriptionFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Матеріальні ресурси"/>
                 <TextBox Style="{StaticResource InputTextBoxStyle}" Width="{Binding ActualWidth, ElementName=AdditionalnfoColumn}" Text="{Binding AdditionalnfoFilter, UpdateSourceTrigger=PropertyChanged}" ToolTip="Додаткова інформація"/>
             </StackPanel>
         </ScrollViewer>
@@ -73,9 +78,9 @@
                       CellStyle="{StaticResource DataGridCellStyle}"
                       RowStyle="{StaticResource DataGridRowStyle}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="FactoryNumberColumn" Width="Auto" Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
+                    <DataGridTextColumn x:Name="InventoryNumberColumn" Width="Auto" Header="Інвентарний номер" Binding="{Binding InventoryNumber}"/>                   
                     <DataGridTextColumn x:Name="NameColumn" Width="Auto" Header="Найменування" Binding="{Binding Name}"/>
-                    <DataGridTextColumn x:Name="InventoryNumberColumn" Width="Auto" Header="Інвентарний номер" Binding="{Binding InventoryNumber}"/>
+                    <DataGridTextColumn x:Name="FactoryNumberColumn" Width="Auto" Header="Заводський номер" Binding="{Binding FactoryNumber}"/>
                     <DataGridTextColumn x:Name="InvoiceIdColumn" Width="Auto" Header="Номер накладної" Binding="{Binding InvoiceId}"/>
                     <DataGridTextColumn x:Name="OrderIdColumn" Width="Auto" Header="Наказ на введеня в експлуатацію" Binding="{Binding OrderId}"/>
                     <DataGridTextColumn x:Name="BookIdColumn" Width="Auto" Header="Книга обліку" Binding="{Binding BookId}"/>

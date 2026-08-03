@@ -76,7 +76,7 @@ namespace Vuzol.ViewModel
         private string GetCategoryName(string name)
         {
             InputDialogSample inputDialog =
-                       new InputDialogSample("Введіть звання", name);
+                       new InputDialogSample("Введіть категорію", name);
             if (inputDialog.ShowDialog() == false
                 || string.IsNullOrEmpty(inputDialog.Answer)) return string.Empty;
 
