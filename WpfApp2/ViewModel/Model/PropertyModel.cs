@@ -178,7 +178,7 @@ namespace Vuzol.ViewModel.Model
                    {
                        var descr = GetSoftwareEquipmentDescription(string.Empty, 0);
                        if (descr == null) return;
-                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0, FactoryNumber, descr.Item1, descr.Item2);
+                       SoftwareEquipment softwareEquipment = new SoftwareEquipment(0, InventoryNumber, descr.Item1, descr.Item2);
                        SoftwareEquipmentData.InsertSoftwareEquipment(softwareEquipment);
                        RefreshSoftwareEquipment();
                    }));
@@ -254,7 +254,17 @@ namespace Vuzol.ViewModel.Model
         private string _categoryDescription { get; set; }
         private string _materialResourcesDescription { get; set; }
         private string _quantityTypeDescription { get; set; }
+        private bool _canEditInventory { get; set; }
         public bool IsEdit { get; set; }
+        public bool CanEditInventory
+        {
+            get { return _canEditInventory; }
+            set
+            {
+                _canEditInventory = value;
+                OnPropertyChanged(nameof(_canEditInventory));
+            }
+        }
         public string AdditionalInfo
         {
             get { return _additionalInfo; }
@@ -499,7 +509,7 @@ namespace Vuzol.ViewModel.Model
         private void RefreshSoftwareEquipment()
         {
             SoftwareEquipmentList.Clear();
-            var softwareEquipmentData = SoftwareEquipmentData.GetAllSoftwareEquipment(FactoryNumber);
+            var softwareEquipmentData = SoftwareEquipmentData.GetAllSoftwareEquipment(InventoryNumber);
             foreach (var softwareEquipment in softwareEquipmentData)
             {
                 SoftwareEquipmentList.Add(softwareEquipment);

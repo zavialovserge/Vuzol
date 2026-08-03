@@ -35,13 +35,40 @@ namespace Vuzol.Services
                    LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
                    LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
 
-        private const string INSERT_PROPERTYS_SQL = @"CALL sp_insert_property(
-    @InvoiceId, @OrderBookId, @FormId, @OrderId,
-    @FactoryNumber, @InventoryNumber, @Name, @BookId,
-    @BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
-    @AdditionalInfo, @Quantity, @Price, @Date_D)";
-
-
+        //    private const string INSERT_PROPERTYS_SQL = @"CALL sp_insert_property(
+        //@InvoiceId, @OrderBookId, @FormId, @OrderId,
+        //@FactoryNumber, @InventoryNumber, @Name, @BookId,
+        //@BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
+        //@AdditionalInfo, @Quantity, @Price, @Date_D)";
+        private const string INSERT_PROPERTYS_SQL =
+            @"insert
+    into
+    public.""Property"" (""FactoryNumber"",
+    ""InventoryNumber"",
+    ""Name"",
+    ""InvoiceId"",
+    ""Fio_R"",
+    ""BookId"",
+    ""FormId"",
+    ""OrderId"",
+    ""PropertyTypeId"",
+    ""AdditionalInfo"",
+    ""DLM"",
+    ""OrderBookId"",
+    ""BookPage"",
+    ""OrderBookPage"",
+    ""Status"",
+    ""Price"",
+    ""Quantity"",
+    ""CategoryId"",
+    ""MaterialResourcesId"",
+    ""QuantityTypeId"",
+    ""Fio_V"")
+values(@FactoryNumber, @InventoryNumber, @Name, @InvoiceId, @Fio_R, @BookId, @FormId, @OrderId, 
+       @PropertyTypeId, @AdditionalInfo, CURRENT_TIMESTAMP, 
+       @OrderBookId, @BookPage, @OrderBookPage, @Status, @Price, @Quantity, 
+       @CategoryId, @MaterialResourcesId, @QuantityTypeId, @Fio_V);
+";
         private const string UPDATE_PROPERTYS_SQL =
                   @"UPDATE ""Property"" 
                    SET ""FactoryNumber"" =@FactoryNumber,
@@ -68,7 +95,9 @@ namespace Vuzol.Services
 
         private const string DELETE_PROPERTYS_SQL =
                                                  @"DELETE FROM ""HardwareEquipment"" 
-                                                  WHERE ""SubInventoryNumber"" = @InventoryNumber;
+                                                  WHERE ""MainInventoryNumber"" = @InventoryNumber;
+                                                  DELETE FROM ""SoftwareEquipment"" 
+                                                  WHERE ""MainInventoryNumber"" = @InventoryNumber;
                                                   DELETE FROM ""Property"" WHERE ""InventoryNumber"" = @InventoryNumber;";
 
         private const string EXIST_PROPERTY_SQL =
@@ -142,25 +171,30 @@ namespace Vuzol.Services
             int result = 0;
             try
             {
-                result = database.Execute(INSERT_PROPERTYS_SQL, new
+                var parameters = new
                 {
-                    propertyDTO.InvoiceId,
-                    propertyDTO.OrderBookId,
+                    InventoryNumber = propertyDTO.InventoryNumber,
+                    Name = propertyDTO.Name,
+                    InvoiceId = propertyDTO.InvoiceId,
+                    BookId = propertyDTO.BookId,
                     FormId = propertyDTO.FormId,
-                    propertyDTO.OrderId,
-                    propertyDTO.FactoryNumber,
-                    propertyDTO.InventoryNumber,
-                    propertyDTO.Name,
-                    propertyDTO.BookId,
-                    propertyDTO.BookPage,
-                    propertyDTO.OrderBookPage,
-                    propertyDTO.PropertyTypeName,
-                    propertyDTO.StatusName,
-                    propertyDTO.AdditionalInfo,
-                    propertyDTO.Quantity,
-                    propertyDTO.Price,
-                    Date_D = propertyDTO.OrderDate
-                });
+                    OrderBookId = propertyDTO.OrderBookId,
+                    OrderId = propertyDTO.OrderId,
+                    PropertyTypeId = propertyDTO.PropertyTypeId,
+                    Status = propertyDTO.Status,
+                    AdditionalInfo = propertyDTO.AdditionalInfo,
+                    BookPage = propertyDTO.BookPage,
+                    OrderBookPage = propertyDTO.OrderBookPage,
+                    Quantity = propertyDTO.Quantity,
+                    Price = propertyDTO.Price,
+                    FactoryNumber = propertyDTO.FactoryNumber,
+                    Fio_R = propertyDTO.Fio_R,
+                    Fio_V = propertyDTO.FIO_V,
+                    CategoryId = propertyDTO.CategoryId,
+                    MaterialResourcesId = propertyDTO.MaterialResourcesId,
+                    QuantityTypeId = propertyDTO.QuantityTypeId
+                };
+                result = database.Execute(INSERT_PROPERTYS_SQL, parameters);
             }
             catch (Exception ex)
             {

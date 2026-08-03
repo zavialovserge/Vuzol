@@ -11,18 +11,19 @@ namespace Vuzol.ViewModel
         private string _subInventoryNumber;
         private string _description;
         private double _quantity;
-        private string _previousSubFactoryNumber;
+        private string _previousSubInventoryNumber;
         public HardwareEquipmentViewModel(NavigationProperty NavigationProperty, Property current, PropertyModel propertyModel, bool isEdit = false)
         {
             HomeCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
                () => new AddViewModel(NavigationProperty, current));
             ChangeHardwareEquipmentCommand = new NavigateCommand<AddViewModel>(NavigationProperty,
-                () => isEdit ? EditHardwareEquipmentFunc(NavigationProperty, current) : AddHardwareEquipmentFunc(NavigationProperty, current));
+                () => isEdit ? EditHardwareEquipmentFunc(NavigationProperty, current, propertyModel) 
+                             : AddHardwareEquipmentFunc(NavigationProperty, current, propertyModel));
             List<Property> subInventoryNumberList = PropertyData.GetAllProperty();
-            _previousSubFactoryNumber = isEdit ? propertyModel.SelectedHardwareEquipment.SubInventoryNumber : "0";
-            SubInventoryNumberList = new ObservableCollection<string>(subInventoryNumberList.Select(a => "Заводський номер:" + a.FactoryNumber));
-            SubInventoryNumber = isEdit ? subInventoryNumberList.Where(a => a.FactoryNumber == _previousSubFactoryNumber)
-                                                                            .Select(a => "Заводський номер:" + a.FactoryNumber)
+            _previousSubInventoryNumber = isEdit ? propertyModel.SelectedHardwareEquipment.SubInventoryNumber : "0";
+            SubInventoryNumberList = new ObservableCollection<string>(subInventoryNumberList.Select(a => "Інвентарний номер:" + a.InventoryNumber));
+            SubInventoryNumber = isEdit ? subInventoryNumberList.Where(a => a.InventoryNumber == _previousSubInventoryNumber)
+                                                                            .Select(a => "Інвентарний номер:" + a.FactoryNumber)
                                                                             .First()
                                                : SubInventoryNumberList.First();
             ButtonName = isEdit ? "Коригувати" : "Додати";
@@ -30,21 +31,21 @@ namespace Vuzol.ViewModel
             _quantity = isEdit ? propertyModel.SelectedHardwareEquipment.Quantity : 0;
 
         }
-        private AddViewModel AddHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop)
+        private AddViewModel AddHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop, PropertyModel propertyModel)
         {
-            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.FactoryNumber);
+            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.InventoryNumber);
             HardwareEquipmentData.InsertHardwareEquipment(hardwareEquipment);
-            return new AddViewModel(navigationProperty, prop);
+            return new AddViewModel(navigationProperty, prop, propertyModel);
         }
-        private AddViewModel EditHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop)
+        private AddViewModel EditHardwareEquipmentFunc(NavigationProperty navigationProperty, Property prop, PropertyModel propertyModel)
         {
-            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.FactoryNumber);
-            HardwareEquipmentData.EditHardwareEquipment(hardwareEquipment, _previousSubFactoryNumber);
-            return new AddViewModel(navigationProperty, prop);
+            HardwareEquipment hardwareEquipment = GerNewHardwareEquipment(prop.InventoryNumber);
+            HardwareEquipmentData.EditHardwareEquipment(hardwareEquipment, _previousSubInventoryNumber);
+            return new AddViewModel(navigationProperty, prop, propertyModel,true);
         }
         private HardwareEquipment GerNewHardwareEquipment(string factoryNumber)
         {
-            string newFactoryNumber = SubInventoryNumber.Replace("Заводський номер:", string.Empty);
+            string newFactoryNumber = SubInventoryNumber.Replace("Інвентарний номер:", string.Empty);
             return new HardwareEquipment(factoryNumber, newFactoryNumber, Quantity, Description);
         }
         public ICommand HomeCommand { get; }

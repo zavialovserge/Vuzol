@@ -98,7 +98,9 @@
                                     <Run Text="*" Foreground="Red" FontWeight="Bold"/>
                                 </TextBlock>
                                 <TextBox Style="{StaticResource ValidatedTextBoxStyle}" 
-                                         Text="{Binding InventoryNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"/>
+                                         IsEnabled="{Binding CanEditInventory}"
+                                         Text="{Binding InventoryNumber, UpdateSourceTrigger=PropertyChanged, 
+                                         ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Style="{StaticResource LabelStyle}" >
@@ -214,27 +216,21 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="5"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="5"/>
-                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Наказ на експлуатацію"/>
                                 <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding OrderId, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="Дата наказу"/>
-                                <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding OrderDate, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="4">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Кількість"/>
                                 <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="6">
+                            <StackPanel Grid.Column="4">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Одиниця"/>
                                 <ComboBox Style="{StaticResource InputComboBoxStyle}" ItemsSource="{Binding QuantityTypes}" 
                                 SelectedValue="{Binding SelectedQuantityType, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="8">
+                            <StackPanel Grid.Column="6">
                                 <TextBlock Style="{StaticResource LabelStyle}" Text="Ціна"/>
                                 <TextBox Style="{StaticResource InputTextBoxStyle}" Text="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"/>
                             </StackPanel>
@@ -287,7 +283,7 @@
 
                 <!-- Komplektnist zalizo -->
                 <Border Style="{StaticResource CardStyle}">
-                    <StackPanel>
+                    <StackPanel IsEnabled="{Binding IsEdit}">
                         <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектність - залізо"/>
                         <DataGrid Style="{StaticResource ModernDataGridStyle}" Height="200"
                                   ItemsSource="{Binding HardwareEquipmentList}" 
@@ -309,7 +305,7 @@
 
                 <!-- Komplektnist prohramne zabezpechennya -->
                 <Border Style="{StaticResource CardStyle}">
-                    <StackPanel>
+                    <StackPanel IsEnabled="{Binding IsEdit}">
                         <TextBlock Style="{StaticResource CardTitleStyle}" Text="Комплектність - програмне забезпечення"/>
                         <DataGrid Style="{StaticResource ModernDataGridStyle}" Height="200"
                                   ItemsSource="{Binding SoftwareEquipmentList}" 

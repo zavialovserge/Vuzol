@@ -15,6 +15,8 @@ namespace Vuzol.View
             txtQuantity.Text = quantity.ToString();
             txtQuantity.IsEnabled = IsQuantityvisible;
             txtQuantity.Visibility = IsQuantityvisible ? Visibility.Visible : Visibility.Collapsed;
+            lblQuantity.IsEnabled = IsQuantityvisible;
+            lblQuantity.Visibility = IsQuantityvisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void btnDialogOk_Click(object sender, RoutedEventArgs e)

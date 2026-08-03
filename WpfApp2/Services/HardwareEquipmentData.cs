@@ -17,13 +17,13 @@ namespace Vuzol.Services
                              where ""MainInventoryNumber""=  @inventoryNumber ";
 
         private const string UPDATE_HARDWAREEQUIPMENT_SQL =
-                   @"UPDATE ""HardwareEquipment"" SET SubInventoryNumber = @SubInventoryNumber ,
+                   @"UPDATE ""HardwareEquipment"" SET ""SubInventoryNumber"" = @SubInventoryNumber ,
                             ""Quantity""=@Quantity, 
                             ""Description""=@Description
                     WHERE ""MainInventoryNumber"" = @MainInventoryNumber AND 
                             ""SubInventoryNumber"" = @PreviousSubInventoryNumber";
         private const string INSERT_HARDWAREEQUIPMENT_SQL =
-                  @"INSERT INTO ""dbo"".""HardwareEquipment""
+                  @"INSERT INTO ""HardwareEquipment""
                             (""MainInventoryNumber""
            ,""SubInventoryNumber""
            ,""Quantity""
