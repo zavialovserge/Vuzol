@@ -5,7 +5,7 @@
         public string FactoryNumber { get; set; }
         public string Name { get; set; }
         public string InventoryNumber { get; set; }
-        public int InvoiceId { get; set; }
+        public string InvoiceId { get; set; }
         public DateTime InvoiceDate { get; set; }
         public int BookId { get; set; }
         public int OrderBookId { get; set; }
@@ -37,7 +37,7 @@
         public decimal Price { get; set; }
         public decimal Cost { get; set; }
         public Property(string factoryNumber, string? name,
-            string inventoryNumber, int invoiceId,
+            string inventoryNumber, string invoiceId,
             int bookId, int orderBookId, int formId,
             string? formName, DateTime formDate,
             int orderId, int propertyTypeId,

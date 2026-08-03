@@ -5,7 +5,7 @@
         public string FactoryNumber { get; set; }
         public string? Name { get; set; }
         public string InventoryNumber { get; set; }
-        public int InvoiceId { get; set; }
+        public string InvoiceId { get; set; }
         public DateTime InvoiceDate { get; set; }
         public int BookId { get; set; }
         public int BookPage { get; set; }

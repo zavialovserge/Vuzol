@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
@@ -157,12 +156,12 @@ namespace Vuzol.ViewModel
                         && (QuantityTypeDescriptionFilter == null 
                         || prop.QuantityTypeDescription.ToLower().Contains(QuantityTypeDescriptionFilter.ToLower()))
                         && (FactoryNumberFilter == null || prop.FactoryNumber.ToLower().Contains(FactoryNumberFilter.ToLower()))
+                        && (InvoiceIdFilter == null || prop.InvoiceId.ToLower().Contains(InvoiceIdFilter.ToLower()))
                         && (StatusNameFilter == null || prop.StatusName.ToLower().Contains(StatusNameFilter.ToLower()))                       
                         && (FIO_V_STRFilter == null || prop.FIO_V_STR.ToLower().Contains(FIO_V_STRFilter.ToLower()))
                         && (FIO_R_STRFilter == null || prop.FIO_R_STR.ToLower().Contains(FIO_R_STRFilter.ToLower()))
                         && (UnitNameFilter == null || prop.UnitName.ToLower().Contains(UnitNameFilter.ToLower()))
                         && (AdditionalnfoFilter == null || prop.AdditionalInfo.ToLower().Contains(AdditionalnfoFilter.ToLower()))
-                        && (InvoiceIdFilter == null || invoiceId == -1 || prop.InvoiceId == invoiceId)                        
                         && (CostFilter == null || cost == -1 || prop.Cost == cost)
                         && (FormIdFilter == null || formId == -1 || prop.FormId == formId)
                         && (OrderIdFilter == null || orderId == -1 || prop.OrderId == orderId)
@@ -175,13 +174,13 @@ namespace Vuzol.ViewModel
                    || prop.CategoryDescription.Contains(CategoryDescriptionFilter)
                    || prop.MaterialResourcesDescription.Contains(MaterialResourcesDescriptionFilter)                   
                    || prop.QuantityTypeDescription.Contains(QuantityTypeDescriptionFilter)                   
-                   || prop.FactoryNumber.Contains(FactoryNumberFilter) 
-                   || prop.FactoryNumber.Contains(StatusNameFilter)
+                   || prop.FactoryNumber.Contains(FactoryNumberFilter)
+                   || prop.InvoiceId.Contains(InvoiceIdFilter)
+                   || prop.StatusName.Contains(StatusNameFilter)
                    || prop.FIO_V_STR.Contains(FIO_V_STRFilter) 
                    || prop.FIO_R_STR.Contains(FIO_R_STRFilter)
                    || prop.UnitName.Contains(UnitNameFilter)
                    || prop.AdditionalInfo.Contains(AdditionalnfoFilter)
-                   || prop.InvoiceId == invoiceId                   
                    || prop.Cost == cost
                    || prop.FormId == formId
                    || prop.OrderId == orderId
@@ -813,14 +812,22 @@ namespace Vuzol.ViewModel
                     return (null, errors);
                 }
                 string inventoryNumber = GetStringValue(rowNumber, 3);
-
                 if (string.IsNullOrWhiteSpace(inventoryNumber))
                 {
                     errors.Add($"Рядок {rowNumber}, колонка 3 (Інвентарний номер): значення не може бути пусте");
                     return (null, errors);
                 }
-                if (!TryParseInt(rowNumber, 4, "Номер накладної", out int invoiceId))
+                if (string.IsNullOrWhiteSpace(inventoryNumber))
+                {
+                    errors.Add($"Рядок {rowNumber}, колонка 3 (Інвентарний номер): значення не може бути пусте");
                     return (null, errors);
+                }
+                string invoiceId = GetStringValue(rowNumber, 4);
+                if (string.IsNullOrWhiteSpace(invoiceId))
+                {
+                    errors.Add($"Рядок {rowNumber}, колонка 4 (Номер накладної): значення не може бути пусте");
+                    return (null, errors);
+                }
 
                 string invoiceDate = GetStringValue(rowNumber, 5);
                 if (!TryParseDate(invoiceDate, "Дата накладної", out DateTime invoiceDateD))

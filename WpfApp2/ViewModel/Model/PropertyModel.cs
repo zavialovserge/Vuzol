@@ -240,7 +240,7 @@ namespace Vuzol.ViewModel.Model
         private string _inventoryNumber { get; set; }
         private string? _factoryNumber { get; set; }
         private string? _name { get; set; }
-        private int _invoiceId { get; set; }
+        private string _invoiceId { get; set; }
         private int _bookId { get; set; }
         private int _orderBookId { get; set; }
         private int _formId { get; set; }
@@ -341,7 +341,7 @@ namespace Vuzol.ViewModel.Model
                 AddError(nameof(Name), "Найменування є обов'язковим");
             }
         }       
-        public int InvoiceId
+        public string InvoiceId
         {
             get { return _invoiceId; }
             set
