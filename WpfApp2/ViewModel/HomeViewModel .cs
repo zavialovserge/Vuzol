@@ -497,7 +497,6 @@ namespace Vuzol.ViewModel
                    {
                        try
                        {
-                           // Конвертуємо ObservableCollection в List
                            var dataToExport = SelectedList.ToList();
                            var exportCommand = new ExcelExportCommand(dataToExport);
                            exportCommand.Execute(null);

@@ -93,13 +93,12 @@ namespace Vuzol.ViewModel.Command
         /// Експортує дані в робочий лист Excel з заголовками та стилізацією
         /// </summary>
         private void ExportDataToWorksheet(Excel._Worksheet worksheet, List<Property> properties)
-        {
-            // Визначення заголовків колонок
+        {            
             var headers = new[]
             {
-                "Заводський номер",
+                "Інвентарний номер",                
                 "Найменування",
-                "Інвентарний номер",
+                "Заводський номер",
                 "Номер накладної",
                 "Дата накладної",
                 "Книга обліку",
@@ -116,31 +115,29 @@ namespace Vuzol.ViewModel.Command
                 "Кількість",
                 "Відповідальна особа",
                 "Відповідальний підрозділ",
+                "Видано в користування",
+                "Категорія",
+                "Матеріальні ресурси",                
                 "Додаткова інформація"
             };
 
-            // Запис заголовків в першому рядку
             for (int col = 0; col < headers.Length; col++)
             {
                 Excel.Range headerCell = (Excel.Range)worksheet.Cells[1, col + 1];
                 headerCell.Value = headers[col];
 
-                // Стилізація заголовків
                 FormatHeaderCell(headerCell);
             }
 
-            // Запис даних
             for (int row = 0; row < properties.Count; row++)
             {
                 var property = properties[row];
-                int excelRow = row + 2; // +2 тому що перший рядок - заголовки
-
+                int excelRow = row + 2; 
                 try
-                {
-                    // Запис кожного поля з безпечною обробкою null значень
-                    worksheet.Cells[excelRow, 1] = property.FactoryNumber;
+                {                    
+                    worksheet.Cells[excelRow, 1] = property.InventoryNumber;
                     worksheet.Cells[excelRow, 2] = property.Name ?? string.Empty;
-                    worksheet.Cells[excelRow, 3] = property.InventoryNumber;
+                    worksheet.Cells[excelRow, 3] = property.FactoryNumber;                    
                     worksheet.Cells[excelRow, 4] = property.InvoiceId;
                     worksheet.Cells[excelRow, 5] = property.InvoiceDate == DateTime.MinValue ?
                         string.Empty : property.InvoiceDate.ToString("dd.MM.yyyy");
@@ -160,9 +157,12 @@ namespace Vuzol.ViewModel.Command
                     worksheet.Cells[excelRow, 17] = property.Quantity.ToString("F2");
                     worksheet.Cells[excelRow, 18] = property.FIO_R_STR ?? string.Empty;
                     worksheet.Cells[excelRow, 19] = property.UnitName ?? string.Empty;
-                    worksheet.Cells[excelRow, 20] = property.AdditionalInfo ?? string.Empty;
+                    worksheet.Cells[excelRow, 20] = property.FIO_V_STR ?? string.Empty;
+                    worksheet.Cells[excelRow, 21] = property.CategoryDescription ?? string.Empty;
+                    worksheet.Cells[excelRow, 22] = property.MaterialResourcesDescription ?? string.Empty;
+                    worksheet.Cells[excelRow, 23] = property.AdditionalInfo ?? string.Empty;
 
-                    // Альтернативне фарбування рядків для кращої читабельності
+                    
                     if (row % 2 == 1)
                     {
                         Excel.Range rowRange = worksheet.Range[$"A{excelRow}:T{excelRow}"];
@@ -171,13 +171,11 @@ namespace Vuzol.ViewModel.Command
                     }
                 }
                 catch (Exception ex)
-                {
-                    // Логуємо помилку при записі рядка, але продовжуємо
+                {                    
                     System.Diagnostics.Debug.WriteLine($"Помилка при експорті рядка {excelRow}: {ex.Message}");
                 }
             }
 
-            // Установлення мінімальної ширини першої колонки для заголовків
             worksheet.Columns[1].ColumnWidth = 15;
         }
 
