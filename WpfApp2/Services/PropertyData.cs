@@ -1,6 +1,13 @@
 ﻿using Dapper;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Word;
+using Microsoft.SqlServer.Server;
 using System.Data;
+using System.Diagnostics;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Xml.Linq;
 using Vuzol.Model.Db;
 using Vuzol.ViewModel.Model;
 using WpfApp2.Services;
@@ -34,12 +41,12 @@ namespace Vuzol.Services
                    LEFT JOIN ""QuantityType"" as qt ON qt.""Id"" = pr.""QuantityTypeId""
                    LEFT JOIN ""Order"" as o ON o.""OrderId"" = pr.""OrderId""
                    LEFT JOIN ""PropertyStatus"" as ps ON ps.""Id"" = pr.""Status""";
+        
+        private const string INSERT_EXCEL_PROPERTYS_SQL = @"CALL insertpropertyfromexcel(
+        @InventoryNumber, @Name,@FactoryNumber,@PropertyTypeName,@MaterialResourcesDescription,@InvoiceId,@InvoiceDate,
+        @BookId,@BookPage,@OrderBookId,@OrderBookPage,@CategoryDescription,@FormId,@FormDate, @OrderId,@OrderDate, @StatusName,@QuantityTypeDescription,
+        @Quantity, @Price,@Fio_R_STR,@Fio_V_STR,@UnitName, @AdditionalInfo)";
 
-        //    private const string INSERT_PROPERTYS_SQL = @"CALL sp_insert_property(
-        //@InvoiceId, @OrderBookId, @FormId, @OrderId,
-        //@FactoryNumber, @InventoryNumber, @Name, @BookId,
-        //@BookPage, @OrderBookPage, @PropertyTypeName, @StatusName,
-        //@AdditionalInfo, @Quantity, @Price, @Date_D)";
         private const string INSERT_PROPERTYS_SQL =
             @"insert
     into
@@ -203,8 +210,56 @@ values(@FactoryNumber, @InventoryNumber, @Name, @InvoiceId, @Fio_R, @BookId, @Fo
             }
             return result == 1;
             
-        }      
+        }
+        public static void InsertFromExcelIntoDb(Property selectedProperty)
+        {
+            DbData dbData = new DbData();
+            using IDbConnection database = dbData.Connect();
+            PropertyDTO propertyDTO = ToDtoProperty(selectedProperty);
+            int result = 0;
+            try
+            {
+                var parameters = new
+                {
+                    InventoryNumber = propertyDTO.InventoryNumber,
+                    Name = propertyDTO.Name,
+                    FactoryNumber = propertyDTO.FactoryNumber,
+                    PropertyTypeName = propertyDTO.PropertyTypeName,
+                    MaterialResourcesDescription = propertyDTO.MaterialResourcesDescription,
+                    InvoiceId = propertyDTO.InvoiceId,
+                    InvoiceDate = propertyDTO.InvoiceDate,
+                    BookId = propertyDTO.BookId,
+                    BookPage = propertyDTO.BookPage,
+                    OrderBookId = propertyDTO.OrderBookId,
+                    OrderBookPage = propertyDTO.OrderBookPage,
+                    FormId = propertyDTO.FormId,
+                    FormDate = propertyDTO.FormDate,
+                    OrderId = propertyDTO.OrderId,
+                    OrderDate = propertyDTO.OrderDate,
+                    StatusName = propertyDTO.StatusName,
+                    QuantityTypeDescription = propertyDTO.QuantityTypeDescription,
+                    CategoryDescription = propertyDTO.CategoryDescription,
+                    Quantity = propertyDTO.Quantity,
+                    Price = propertyDTO.Price,
+                    Fio_R_STR = propertyDTO.FIO_R_STR,
+                    Fio_V_STR = propertyDTO.FIO_V_STR,
+                    UnitName = propertyDTO.UnitName,
+                    AdditionalInfo = propertyDTO.AdditionalInfo                   
+                };
+                var paramToStr = parameters.GetType().GetProperties()
+                    .Select(prop => $"{prop.Name}: {prop.GetValue(parameters)}")
+                    .ToArray();
+                string pStr = string.Join(", ", paramToStr);
+                database.Execute(INSERT_EXCEL_PROPERTYS_SQL, parameters);              
+                
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Помилка при додаванні Property в базу даних: {ex.Message}";
+                ErrorLogger.LogError(ex, errorMessage);
+            }
 
+        }
         //Need to fix Don`t use this method for now, it is not working properly
         public static bool InsertMassIntoDb(List<Property> selectedProperty)
         {
@@ -304,9 +359,7 @@ values(@FactoryNumber, @InventoryNumber, @Name, @InvoiceId, @Fio_R, @BookId, @Fo
                        FormDate = prop.FormDate,
                        OrderId = prop.OrderId,
                        PropertyTypeId = prop.PropertyTypeId,
-                       AdditionalInfo = prop.AdditionalInfo.Contains("\'")
-                                              ? prop.AdditionalInfo.Replace("\'", "''")
-                                              : prop.AdditionalInfo,                       
+                       AdditionalInfo = prop.AdditionalInfo,                       
                        Fio_R = prop.FIO_R,
                        FIO_V = prop.FIO_V,
                        BookPage = prop.BookPage,
@@ -318,6 +371,14 @@ values(@FactoryNumber, @InventoryNumber, @Name, @InvoiceId, @Fio_R, @BookId, @Fo
                        MaterialResourcesId = prop.MaterialResourcesId,
                        QuantityTypeId = prop.QuantityTypeId,    
                        CategoryId = prop.CategoryId,
+                       MaterialResourcesDescription = prop.MaterialResourcesDescription,
+                       QuantityTypeDescription = prop.QuantityTypeDescription,
+                       StatusName = prop.StatusName,
+                       FIO_R_STR = prop.FIO_R_STR,
+                       FIO_V_STR = prop.FIO_V_STR,
+                       UnitName = prop.UnitName,
+                       CategoryDescription = prop.CategoryDescription,
+                       PropertyTypeName = prop.PropertyTypeName
                    };
     }
 }

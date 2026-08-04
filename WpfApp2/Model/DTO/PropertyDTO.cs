@@ -22,7 +22,6 @@
         public int Fio_R { get; set; }
         public int FIO_V { get; set; }
         public string FIO_R_STR { get; set; }
-        public string FIO_I_STR { get; set; }
         public string FIO_V_STR { get; set; }
         public string UnitName { get; set; }
         public DateTime OrderDate { get; set; }
